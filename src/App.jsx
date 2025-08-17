@@ -1,12 +1,7 @@
-import { Link, Routes, Route } from "react-router-dom"
+import { Link, Routes, Route } from "react-router-dom";
+import HeatmapRegions from "./pages/HeatmapRegions.jsx";
 
-function Home() {
-  return <h2>Home</h2>
-}
-
-function Workouts() {
-  return <h2>Workouts</h2>
-}
+function Home() { return <h2>Home</h2>; }
 
 export default function App() {
   return (
@@ -14,12 +9,12 @@ export default function App() {
       <h1>Workout Prototype</h1>
       <nav style={{ display: "flex", gap: 12, marginBottom: 24 }}>
         <Link to="/">Home</Link>
-        <Link to="/workouts">Workouts</Link>
+        <Link to="/heatmap">Heatmap</Link>
       </nav>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/workouts" element={<Workouts />} />
+        <Route path="/heatmap" element={<HeatmapRegions />} />
       </Routes>
     </div>
-  )
+  );
 }

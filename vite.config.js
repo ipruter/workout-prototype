@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-export default defineConfig({
+// use root in dev; GH Pages subpath only in prod
+export default defineConfig(({ command }) => ({
   plugins: [react()],
-  base: '/workout-prototype/', // IMPORTANT: repo name with slashes
-})
-
+  base: command === 'build' ? '/workout-prototype/' : '/',
+}));
