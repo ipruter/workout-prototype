@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import MuscleHeatmapRegions from "../components/MuscleHeatmapRegions.jsx";
 import { REGION_META } from "../data/regions-config.js";
+import WeeklyPlanner from "../components/WeeklyPlanner.jsx";
 
 function idsFor(view) {
   return Object.values(REGION_META).filter(r => r.view === view).map(r => r.id);
@@ -8,12 +9,18 @@ function idsFor(view) {
 
 const seed = Object.fromEntries(Object.values(REGION_META).map(r => [r.id, 0]));
 
-export default function HeatmapRegions() {
-  const side = "front";                   // hardcode the background photo for now
-  const [view, setView] = useState("front");   // front | back | deep
-  const [data, setData] = useState(seed);
 
+export default function HeatmapRegions() {
+  // Which photo to show (front/back)
+  const [side, setSide] = useState("front");
+
+  // Which regions to color (front/back/deep)
+  const [layer, setLayer] = useState("front");
+  const view = layer; // the component expects 'view' = 'front' | 'back' | 'deep'
+
+  const [data, setData] = useState(seed);
   const visibleIds = useMemo(() => idsFor(view), [view]);
+
   const setAll = (val) =>
     setData(d => {
       const c = { ...d };
@@ -23,12 +30,24 @@ export default function HeatmapRegions() {
 
   return (
     <div style={{ maxWidth: 1100, margin: "40px auto", padding: "0 16px" }}>
+      <WeeklyPlanner />
+      <hr style={{ margin: "28px 0" }} />
       <h1>Muscle Region Heatmaps</h1>
 
+      {/* Four explicit modes */}
       <div style={{ display:"flex", gap:8, marginBottom:12, flexWrap:"wrap" }}>
-        <button onClick={() => setView("front")} disabled={view==="front"}>Surface Front</button>
-        <button onClick={() => setView("back")}  disabled={view==="back"}>Surface Back</button>
-        <button onClick={() => setView("deep")}  disabled={view==="deep"}>Deep</button>
+        <button onClick={() => { setSide("front"); setLayer("front"); }}
+                disabled={side==="front" && layer==="front"}>Front (surface)</button>
+
+        <button onClick={() => { setSide("back"); setLayer("back"); }}
+                disabled={side==="back" && layer==="back"}>Back (surface)</button>
+
+        <button onClick={() => { setSide("front"); setLayer("deep"); }}
+                disabled={side==="front" && layer==="deep"}>Deep (front)</button>
+
+        <button onClick={() => { setSide("back"); setLayer("deep"); }}
+                disabled={side==="back" && layer==="deep"}>Deep (back)</button>
+
         <button onClick={() => setAll(0)} style={{ marginLeft:16 }}>Clear</button>
         <button onClick={() => setAll(1)}>Max</button>
       </div>
@@ -36,8 +55,8 @@ export default function HeatmapRegions() {
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:24, alignItems:"start" }}>
         <MuscleHeatmapRegions
           data={data}
-          view={view}
-          side={side}   // <<< background photo (front) for now
+          view={view}   // which regions to color
+          side={side}   // which photo to show
           onRegionClick={(id) =>
             setData(d => ({ ...d, [id]: Math.min(1, (d[id] ?? 0) + 0.1) }))
           }
