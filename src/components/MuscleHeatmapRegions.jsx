@@ -1,5 +1,5 @@
 // src/components/MuscleHeatmapRegions.jsx
-import { useMemo } from "react";
+import { useMemo, useRef, useState } from "react";
 import { REGION_META, SHAPES } from "../data/regions-config.js";
 
 const clamp01 = (v) => Math.max(0, Math.min(1, v ?? 0));
@@ -20,6 +20,38 @@ export default function MuscleHeatmapRegions({
   showLegend = true,
   style,
 }) {
+  // --- Tracer (dev) ---
+const [traceOn, setTraceOn] = useState(false);
+const [tracePts, setTracePts] = useState([]);
+const svgRef = useRef(null);
+
+function svgCoords(evt) {
+  const svg = svgRef.current;
+  const pt = svg.createSVGPoint();
+  pt.x = evt.clientX; pt.y = evt.clientY;
+  const p = pt.matrixTransform(svg.getScreenCTM().inverse());
+  return { x: Number(p.x.toFixed(1)), y: Number(p.y.toFixed(1)) };
+}
+
+function onSvgClick(evt) {
+  if (!traceOn) return;
+  const p = svgCoords(evt);
+  setTracePts((arr) => [...arr, p]);
+}
+
+  const traceD = tracePts.length
+    ? `M ${tracePts[0].x} ${tracePts[0].y} ` + tracePts.slice(1).map(p => `L ${p.x} ${p.y}`).join(" ")
+    : "";
+
+  function undoPt()  { setTracePts((arr) => arr.slice(0, -1)); }
+  function clearPts(){ setTracePts([]); }
+  function finishPath(close = true) {
+  const d = traceD + (tracePts.length >= 3 && close ? " Z" : "");
+  navigator.clipboard?.writeText(d);
+  console.log("PATH d=", d);
+  alert("Copied path d to clipboard:\n" + d);
+  }
+
   // Only normalize values for regions in the current view
     // background image to display
   const base = import.meta.env.BASE_URL || "/";
@@ -57,8 +89,26 @@ export default function MuscleHeatmapRegions({
           <span style={{ fontSize: 12, opacity: 0.75 }}>High</span>
         </div>
       )}
+        {/* Tracer UI (dev) */}
+      <div style={{ display:"flex", gap:8, alignItems:"center", margin:"8px 0" }}>
+        <label style={{ display:"flex", alignItems:"center", gap:6 }}>
+          <input type="checkbox" checked={traceOn} onChange={e=>setTraceOn(e.target.checked)} />
+          Trace mode
+          </label>
+        <button onClick={undoPt}  disabled={!tracePts.length}>Undo</button>
+        <button onClick={()=>finishPath(true)} disabled={!tracePts.length}>Finish + Copy</button>
+        <button onClick={clearPts} disabled={!tracePts.length}>Clear</button>
+        <div style={{ fontSize:12, opacity:.7 }}>Points: {tracePts.length}</div>
+      </div>
 
-      <svg viewBox={viewBoxStr} width="100%" style={{ display: "block" }}>
+      
+
+      <svg
+        ref={svgRef}
+        onClick={onSvgClick}
+        viewBox={viewBoxStr}
+        width="100%"
+        style={{ display: "block" }} >
       {/* background photo (front/back) */}
       <image
       href={imgHref}
@@ -67,7 +117,7 @@ export default function MuscleHeatmapRegions({
       width={200}
       height={420}
       preserveAspectRatio="xMidYMid slice"
-      opacity="0.22"
+      opacity="1"
       pointerEvents="none"   // clicks pass through to your regions
       />
 
@@ -79,15 +129,18 @@ export default function MuscleHeatmapRegions({
           if (!s) return null;
 
           const common = {
-            onClick: handle(r.id),
+            onClick: traceOn ? undefined : handle(r.id),
             fill,
+            fillOpacity: 0.5,   // <-- make the fill fully opaque
+            opacity: 0.5,
+            strokOpacity: 0.5,
             stroke: "#454545",
-            cursor: onRegionClick ? "pointer" : "default",
+            cursor: traceOn ? "crosshair" : (onRegionClick ? "pointer" : "default"),
           };
 
           if (s.type === "path") {
             return (
-              <path key={r.id} {...common} d={s.d}>
+              <path key={r.id} {...common} d={s.d} transform={s.transform}>
                 <title>{r.label}: {Number.isFinite(data[r.id]) ? data[r.id] : 0}</title>
               </path>
             );

@@ -22,6 +22,11 @@ export default function WeeklyPlanner() {
 
   useEffect(()=>localStorage.setItem(STORAGE_PLAN, JSON.stringify(plan)), [plan]);
   useEffect(()=>localStorage.setItem(STORAGE_1RM, JSON.stringify(oneRM)), [oneRM]);
+  useEffect(() => {
+  // let listeners below recompute heatmap when the plan changes
+  window.dispatchEvent(new Event("planner-updated"));
+}, [plan]);
+
 
   const addWorkout = (day, name) => {
     if (!name) return;
