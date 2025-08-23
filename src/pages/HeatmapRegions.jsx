@@ -5,15 +5,25 @@ import MuscleHeatmapRegions from "../components/MuscleHeatmapRegions.jsx";
 import { REGION_META, SHAPES } from "../data/regions-config.js";
 import { WORKOUT_TARGETS } from "../data/workout-targets.js";
 
-// --- helpers ---
-function idsFor(view) {
-  return Object.values(REGION_META).filter(r => r.view === view).map(r => r.id);
-}
+// --- helpers -------------------------------------------------
 const seed = Object.fromEntries(Object.values(REGION_META).map(r => [r.id, 0]));
-const loadPlan = () => {
+
+function idsFor(view, side) {
+  return Object.values(REGION_META)
+    .filter(r => r.view === view && (!r.side || r.side === side))
+    .map(r => r.id);
+}
+
+
+// ...
+
+function groupKey(id) {
+  return id.endsWith("_l") || id.endsWith("_r") ? id.slice(0, -2) : id;
+}
+function loadPlan() {
   try { return JSON.parse(localStorage.getItem("planner-v1")) || {}; }
   catch { return {}; }
-};
+}
 function computeRegionSets(plan) {
   const totals = {};
   for (const day of Object.keys(plan)) {
@@ -26,42 +36,58 @@ function computeRegionSets(plan) {
       }
     }
   }
-  return totals;
+  return totals; // raw (may be fractional); we round for display
 }
+const META_BY_ID = Object.fromEntries(Object.values(REGION_META).map(m => [m.id, m]));
 
+// --- page ----------------------------------------------------
 export default function HeatmapRegions() {
-  // which photo to show / which layer to color
-  const [side,  setSide]  = useState("front");     // 'front' | 'back'
-  const [layer, setLayer] = useState("front");     // 'front' | 'back' | 'deep'
+  // which photo / which layer
+  const [side,  setSide]  = useState("front");   // 'front' | 'back'
+  const [layer, setLayer] = useState("front");   // 'front' | 'back' | 'deep'
   const view = layer;
 
-  // safe lookup for labels even if key !== id in REGION_META
-  const META_BY_ID = useMemo(
-    () => Object.fromEntries(Object.values(REGION_META).map(m => [m.id, m])),
-    []
-  );
+  // visible ids for this layer
+  const visibleIds = useMemo(() => idsFor(view, side), [view, side]);
 
-  const visibleIds = useMemo(() => idsFor(view), [view]);
+  // build groups for this layer: { baseKey -> [ids...] }
+  const groups = useMemo(() => {
+    const g = new Map();
+    for (const id of visibleIds) {
+      const k = groupKey(id);
+      if (!g.has(k)) g.set(k, []);
+      g.get(k).push(id);
+    }
+    return g; // Map<string, string[]>
+  }, [visibleIds]);
 
-  // integers for right panel; normalized 0..1 for coloring
-  const [counts, setCounts] = useState({});
-  const [data,   setData]   = useState(seed);
+  // counts for display (by group), normalized colors for shapes (by id)
+  const [groupCounts, setGroupCounts] = useState({});  // { baseKey: integer }
+  const [data, setData] = useState(seed);              // { id: 0..1 }
   const [maxInView, setMaxInView] = useState(1);
 
-  // recompute from planner
+  // recompute from planner whenever plan or view changes
   useEffect(() => {
     const recompute = () => {
-      const plan   = loadPlan();
-      const totals = computeRegionSets(plan);
+      const plan = loadPlan();
+      const totals = computeRegionSets(plan);   // per-id totals
 
-      // integers for display
-      setCounts(Object.fromEntries(Object.entries(totals).map(([k,v]) => [k, Math.round(v)])));
+      // aggregate by group
+      const gc = {};
+      for (const [k, ids] of groups.entries()) {
+        gc[k] = Math.round(ids.reduce((sum, id) => sum + (totals[id] ?? 0), 0));
+      }
+      setGroupCounts(gc);
 
-      // normalize for current view
-      const max = Math.max(1, ...visibleIds.map(id => totals[id] ?? 0));
-      setMaxInView(Math.round(max));
+      // normalize using group totals; assign same value to both sides
+      const maxGroup = Math.max(1, ...Object.values(gc));
+      setMaxInView(maxGroup);
+
       const next = { ...seed };
-      for (const id of visibleIds) next[id] = (totals[id] ?? 0) / max;
+      for (const [k, ids] of groups.entries()) {
+        const norm = (gc[k] ?? 0) / maxGroup;
+        for (const id of ids) next[id] = norm;
+      }
       setData(next);
     };
 
@@ -72,16 +98,24 @@ export default function HeatmapRegions() {
       window.removeEventListener("planner-updated", recompute);
       window.removeEventListener("storage", recompute);
     };
-  }, [view, visibleIds]);
+  }, [groups]);
 
-  // dev guard to catch any stray ids
+  // label for a group: use the first member's label and strip (L)/(R)
+  function labelForGroup(k, ids) {
+    const meta = META_BY_ID[ids[0]];
+    return (meta?.label ?? k).replace(/\s*\((L|R)\)\s*$/i, "");
+  }
+
+  // dev warnings to catch stray ids
   useEffect(() => {
     const shapeIds = new Set(Object.keys(SHAPES));
-    visibleIds.forEach(id => {
-      if (!META_BY_ID[id]) console.warn("No REGION_META for id:", id);
-      if (!shapeIds.has(id)) console.warn("No SHAPES entry for id:", id);
-    });
-  }, [visibleIds, META_BY_ID]);
+    for (const [k, ids] of groups.entries()) {
+      ids.forEach(id => {
+        if (!META_BY_ID[id]) console.warn("No REGION_META for id:", id);
+        if (!shapeIds.has(id)) console.warn("No SHAPES entry for id:", id);
+      });
+    }
+  }, [groups]);
 
   return (
     <div style={{ maxWidth: 1100, margin: "40px auto", padding: "0 16px" }}>
@@ -107,29 +141,27 @@ export default function HeatmapRegions() {
         Coloring is normalized within the current view. Max in view: <strong>{maxInView}</strong> sets/week.
       </div>
 
-      {/* Two-column layout: heatmap (left) + integer list (right) */}
+      {/* Two-column layout: heatmap (left) + group list (right) */}
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:24, alignItems:"start" }}>
         <MuscleHeatmapRegions
-          data={data}        // normalized 0..1 from planner
+          data={data}        // normalized 0..1 from grouped totals
           view={view}
-          side={side}
-          onRegionClick={undefined} // no manual editing
+          side={side}        // <-- ensures back image shows on back/deep(back)
+          onRegionClick={undefined}
           showLegend={true}
         />
 
         <div>
           <h3 style={{ marginTop: 0 }}>Sets/week — {view} regions</h3>
           <div style={{ display:"grid", gridTemplateColumns:"auto auto", gap:8 }}>
-            {visibleIds.map((id) => {
-              const meta = META_BY_ID[id];
-              const n = counts[id] ?? 0;
-              return (
-                <Fragment key={id}>
-                  <div style={{ fontSize:13, opacity:.85 }}>{meta?.label ?? id}</div>
-                  <div style={{ width:60, textAlign:"right", fontWeight:600 }}>{n}</div>
-                </Fragment>
-              );
-            })}
+            {Array.from(groups.entries()).map(([k, ids]) => (
+              <Fragment key={k}>
+                <div style={{ fontSize:13, opacity:.85 }}>{labelForGroup(k, ids)}</div>
+                <div style={{ width:60, textAlign:"right", fontWeight:600 }}>
+                  {groupCounts[k] ?? 0}
+                </div>
+              </Fragment>
+            ))}
           </div>
         </div>
       </div>
