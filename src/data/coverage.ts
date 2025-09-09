@@ -42,6 +42,7 @@ export const WORKOUT_TARGETS_BY_NAME = {
     forearm_flex_l: 0.3, forearm_flex_r: 0.3,
     traps_lower_l: 0.2, traps_lower_r: 0.2,
     rhomboids_l: 0.2, rhomboids_r: 0.2,
+    rear_delt_l: 0.25, rear_delt_r: 0.25,
   },
   "Back Squat": {
     quads_rf_upper_l: 0.25, quads_rf_upper_r: 0.25,
@@ -140,6 +141,19 @@ export const WORKOUT_TARGETS_BY_NAME = {
     rhomboids_l: 0.6, rhomboids_r: 0.6,
     traps_mid_l: 0.6, traps_mid_r: 0.6,
   },
+  "Front Squat": {
+  quads_rf_upper_l: 0.35, quads_rf_upper_r: 0.35,
+  quads_rf_lower_l: 0.45, quads_rf_lower_r: 0.45,
+  quads_vl_l: 0.75, quads_vl_r: 0.75,
+  quads_vm_l: 0.80, quads_vm_r: 0.80,
+  quads_vi_l: 0.65, quads_vi_r: 0.65,
+  caudal_glute_max_l: 0.55, caudal_glute_max_r: 0.55,
+  cranial_glute_max_l: 0.30, cranial_glute_max_r: 0.30,
+  glute_med_l: 0.35, glute_med_r: 0.35,
+  erectors_thor_l: 0.45, erectors_thor_r: 0.45,
+  erectors_lum_l: 0.35, erectors_lum_r: 0.35,
+}
+    
 };
 
 // 2) Build coverageByLR keyed by lift IDs using your catalog.
