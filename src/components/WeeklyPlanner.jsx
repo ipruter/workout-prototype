@@ -1,5 +1,5 @@
 // src/components/WeeklyPlanner.jsx
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { WORKOUTS } from "../data/workouts.js";
 
 const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
@@ -8,7 +8,40 @@ const STORAGE_PLAN = "planner-v1";
 const STORAGE_1RM  = "one-rep-max-v1";
 const round5 = (x) => Math.round(x/5)*5;
 
-export default function WeeklyPlanner() {
+/** Heuristic: map intensity% to an effort proxy (RIR) so ProgramMetrics has something.
+ *  Feel free to tweak later or swap for a real RIR input.
+ */
+function intensityToRIR(intensityPct) {
+  const x = Number(intensityPct) || 0;
+  if (x >= 90) return 0;      // near-max work
+  if (x >= 85) return 1;
+  if (x >= 80) return 2;
+  if (x >= 70) return 3;
+  return 4;
+}
+
+/** Convert your per-day plan object into ProgramMetrics' weeklySets format. */
+function planToWeeklySets(plan) {
+  // weeklySets item: { liftId, sets, reps, RIR }
+  const map = new Map(); // key: lift|reps|RIR
+
+  for (const day of DAYS) {
+    for (const w of (plan[day] || [])) {
+      const liftId = slug(w.name);     // use slug(name) as the lift id
+      const reps   = Number(w.reps) || 0;
+      const sets   = Number(w.sets) || 0;
+      const RIR    = intensityToRIR(w.intensity);
+
+      const k = `${liftId}|${reps}|${RIR}`;
+      const cur = map.get(k);
+      if (cur) cur.sets += sets;
+      else map.set(k, { liftId, sets, reps, RIR });
+    }
+  }
+  return Array.from(map.values());
+}
+
+export default function WeeklyPlanner({ onPlanChange }) {
   // plan: { Mon: [ {id,name,sets,reps,intensity} ], ... }
   const empty = Object.fromEntries(DAYS.map(d => [d, []]));
   const [plan, setPlan] = useState(() => {
@@ -20,13 +53,16 @@ export default function WeeklyPlanner() {
     try { return JSON.parse(localStorage.getItem(STORAGE_1RM)) ?? {}; } catch { return {}; }
   });
 
+  // persist to localStorage
   useEffect(()=>localStorage.setItem(STORAGE_PLAN, JSON.stringify(plan)), [plan]);
   useEffect(()=>localStorage.setItem(STORAGE_1RM, JSON.stringify(oneRM)), [oneRM]);
-  useEffect(() => {
-  // let listeners below recompute heatmap when the plan changes
-  window.dispatchEvent(new Event("planner-updated"));
-}, [plan]);
 
+  // notify parent + your existing event whenever the plan changes
+  useEffect(() => {
+    const weeklySets = planToWeeklySets(plan);
+    if (onPlanChange) onPlanChange(weeklySets);
+    window.dispatchEvent(new Event("planner-updated"));
+  }, [plan, onPlanChange]);
 
   const addWorkout = (day, name) => {
     if (!name) return;
@@ -44,6 +80,7 @@ export default function WeeklyPlanner() {
     const rm = Number(oneRM[slug(name)]);
     if (!Number.isFinite(rm) || rm <= 0) return "—";
     return round5(rm * (Number(intensity)||0) / 100);
+    // purely display; metrics use sets/reps and the RIR heuristic above
   };
 
   const setRM = (name, val) =>
@@ -78,7 +115,10 @@ export default function WeeklyPlanner() {
               {plan[day].map(w => (
                 <div key={w.id} style={{ border:"1px solid #f2f2f2", borderRadius:10, padding:8 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
-                    <div style={{ fontWeight:600, flex:1, minWidth:0, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }} title={w.name}>
+                    <div style={{
+                      fontWeight:600, flex:1, minWidth:0, whiteSpace:"nowrap",
+                      overflow:"hidden", textOverflow:"ellipsis"
+                    }} title={w.name}>
                       {w.name}
                     </div>
                     <button onClick={()=>removeWorkout(day, w.id)} title="Remove">✕</button>

@@ -1,6 +1,9 @@
 // src/components/MuscleHeatmapRegions.jsx
 import { useMemo, useRef, useState } from "react";
 import { REGION_META, SHAPES } from "../data/regions-config.js";
+import { coverageByLR } from "../data/coverage";
+import { CATALOG_BY_ID } from "../data/lifts";
+
 
 export default function MuscleHeatmapRegions({
   data = {},            // { [regionId]: 0..1 }

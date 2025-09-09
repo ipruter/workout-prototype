@@ -1,11 +1,43 @@
-// src/pages/HeatmapRegions.jsx
-import { Fragment, useEffect, useMemo, useState } from "react";
-import WeeklyPlanner from "../components/WeeklyPlanner.jsx";
-import MuscleHeatmapRegions from "../components/MuscleHeatmapRegions.jsx";
-import { REGION_META, SHAPES } from "../data/regions-config.js";
-import { WORKOUT_TARGETS } from "../data/workout-targets.js";
+import React, { Fragment, useEffect, useMemo, useState } from "react";
+import WeeklyPlanner from "../components/WeeklyPlanner";
+import MuscleHeatmapRegions from "../components/MuscleHeatmapRegions";
+import ProgramMetrics from "../components/ProgramMetrics";
+import { REGION_META, SHAPES } from "../data/regions-config";
+import { CATALOG_BY_ID } from "../data/lifts";           // omit .ts
+import { coverageByLR } from "../data/coverage";         // omit .ts
+import {
+ computeModifiedSets,
+ defaultEffortWeight as wEffort,
+ defaultHypertrophyWeight as wHyp,
+ } from "../utils/metrics";    // new metrics core
+
+// Accept rows with {name,...} or {liftId,...} and normalize to {liftId,...}
+function normalizeWeeklySets(raw = [], nameToId = {}) {
+  const out = [];
+  for (const row of raw || []) {
+    if (!row) continue;
+    let { liftId, name, sets, reps, RIR } = row;
+
+    // Map display name -> id if needed
+    if (!liftId && typeof name === "string") {
+      liftId = nameToId[name.trim().toLowerCase()];
+    }
+
+    const s = Number(sets) || 0;
+    if (!liftId || s <= 0) continue; // drop invalid rows
+
+    out.push({
+      liftId,
+      sets: s,
+      reps: Number.isFinite(+reps) ? +reps : undefined,
+      RIR: Number.isFinite(+RIR) ? +RIR : undefined,
+    });
+  }
+  return out;
+}
 
 // --- helpers -------------------------------------------------
+const META_BY_ID = Object.fromEntries(Object.values(REGION_META).map(m => [m.id, m]));
 const seed = Object.fromEntries(Object.values(REGION_META).map(r => [r.id, 0]));
 
 function idsFor(view, side) {
@@ -13,32 +45,37 @@ function idsFor(view, side) {
     .filter(r => r.view === view && (!r.side || r.side === side))
     .map(r => r.id);
 }
-
-
-// ...
-
 function groupKey(id) {
   return id.endsWith("_l") || id.endsWith("_r") ? id.slice(0, -2) : id;
 }
-function loadPlan() {
+
+const NAME_TO_ID = Object.fromEntries(
+  Object.entries(CATALOG_BY_ID).map(([id, o]) => [o.name.trim().toLowerCase(), id])
+);
+
+// legacy WeeklyPlanner support (localStorage + event)
+const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+
+function loadLegacyPlannerPlan() {
   try { return JSON.parse(localStorage.getItem("planner-v1")) || {}; }
   catch { return {}; }
 }
-function computeRegionSets(plan) {
-  const totals = {};
-  for (const day of Object.keys(plan)) {
-    for (const w of plan[day]) {
-      const sets = Math.max(0, Number(w.sets) || 0);
-      const map  = WORKOUT_TARGETS[w.name];
-      if (!map || sets <= 0) continue;
-      for (const id of Object.keys(map)) {
-        totals[id] = (totals[id] ?? 0) + sets * map[id];
-      }
+
+function flattenPlanToRows(plan) {
+  // produces rows shaped like { name, sets, reps, RIR }
+  const rows = [];
+  for (const d of DAYS) {
+    for (const e of plan[d] || []) {
+      rows.push({
+        name: e.name || e.liftName || e.lift || "",   // be forgiving
+        sets: e.sets,
+        reps: e.reps,
+        RIR:  e.RIR,
+      });
     }
   }
-  return totals; // raw (may be fractional); we round for display
+  return rows;
 }
-const META_BY_ID = Object.fromEntries(Object.values(REGION_META).map(m => [m.id, m]));
 
 // --- page ----------------------------------------------------
 export default function HeatmapRegions() {
@@ -47,10 +84,75 @@ export default function HeatmapRegions() {
   const [layer, setLayer] = useState("front");   // 'front' | 'back' | 'deep'
   const view = layer;
 
+  // Raw planner rows (either via onPlanChange or legacy localStorage)
+const [weeklySetsRaw, setWeeklySetsRaw] = useState([]);
+
+// If the planner isn't calling onPlanChange, pull from legacy storage + event
+useEffect(() => {
+  const syncFromLS = () => {
+    const plan = loadLegacyPlannerPlan();
+    const rows = flattenPlanToRows(plan);
+    if (rows.length) setWeeklySetsRaw(rows);
+  };
+
+  // initial load
+  if (!weeklySetsRaw.length) syncFromLS();
+
+  // keep in sync with old event + storage changes
+  window.addEventListener("planner-updated", syncFromLS);
+  window.addEventListener("storage", syncFromLS);
+  return () => {
+    window.removeEventListener("planner-updated", syncFromLS);
+    window.removeEventListener("storage", syncFromLS);
+  };
+}, [weeklySetsRaw.length]);
+
+// Build name -> id map safely (once)
+const nameToId = useMemo(() => {
+  const entries = Object.entries(CATALOG_BY_ID || {}).filter(
+    ([, lift]) => lift && typeof lift.name === "string"
+  );
+  return Object.fromEntries(entries.map(([id, lift]) => [lift.name.trim().toLowerCase(), id]));
+}, []);
+
+// Normalize rows to { liftId, sets, reps, RIR }
+const weeklySets = useMemo(
+  () => normalizeWeeklySets(weeklySetsRaw, nameToId),
+  [weeklySetsRaw, nameToId]
+);
+
+// Optional: dev sanity logs
+useEffect(() => {
+  console.log("[Heatmap] weeklySetsRaw:", weeklySetsRaw);
+  console.log("[Heatmap] weeklySets (normalized):", weeklySets);
+  weeklySets.forEach(r => {
+    if (!CATALOG_BY_ID[r.liftId]) console.warn("[Heatmap] unknown liftId:", r.liftId, r);
+    if (!coverageByLR[r.liftId])  console.warn("[Heatmap] no coverage for:", r.liftId, CATALOG_BY_ID[r.liftId]?.name);
+  });
+}, [weeklySetsRaw, weeklySets]);
+
+
   // visible ids for this layer
   const visibleIds = useMemo(() => idsFor(view, side), [view, side]);
 
-  // build groups for this layer: { baseKey -> [ids...] }
+  // === Metrics (single source of truth) ======================
+  // Compute modified sets per region using our new pipeline.
+  const metrics = useMemo(() => {
+    return computeModifiedSets({
+      catalogById: CATALOG_BY_ID,
+      weeklySets,
+      coverageByLR,
+      wEffort,
+      wHyp,
+      threshold: 0.40,
+      floor: 0.30,
+      gBoost: 0.12,
+    });
+  }, [weeklySets]);
+
+  const modifiedSets = metrics.modifiedSets || {};
+
+  // Build group totals for the view (sum left/right)
   const groups = useMemo(() => {
     const g = new Map();
     for (const id of visibleIds) {
@@ -61,44 +163,21 @@ export default function HeatmapRegions() {
     return g; // Map<string, string[]>
   }, [visibleIds]);
 
-  // counts for display (by group), normalized colors for shapes (by id)
-  const [groupCounts, setGroupCounts] = useState({});  // { baseKey: integer }
-  const [data, setData] = useState(seed);              // { id: 0..1 }
-  const [maxInView, setMaxInView] = useState(1);
-
-  // recompute from planner whenever plan or view changes
-  useEffect(() => {
-    const recompute = () => {
-      const plan = loadPlan();
-      const totals = computeRegionSets(plan);   // per-id totals
-
-      // aggregate by group
-      const gc = {};
-      for (const [k, ids] of groups.entries()) {
-        gc[k] = Math.round(ids.reduce((sum, id) => sum + (totals[id] ?? 0), 0));
-      }
-      setGroupCounts(gc);
-
-      // normalize using group totals; assign same value to both sides
-      const maxGroup = Math.max(1, ...Object.values(gc));
-      setMaxInView(maxGroup);
-
-      const next = { ...seed };
-      for (const [k, ids] of groups.entries()) {
-        const norm = (gc[k] ?? 0) / maxGroup;
-        for (const id of ids) next[id] = norm;
-      }
-      setData(next);
-    };
-
-    recompute();
-    window.addEventListener("planner-updated", recompute);
-    window.addEventListener("storage", recompute);
-    return () => {
-      window.removeEventListener("planner-updated", recompute);
-      window.removeEventListener("storage", recompute);
-    };
-  }, [groups]);
+  const { groupCounts, heatData, maxInView } = useMemo(() => {
+    const gc = {};
+    for (const [k, ids] of groups.entries()) {
+      const sum = ids.reduce((acc, id) => acc + (modifiedSets[id] || 0), 0);
+      const val = ids.length > 1 ? sum / ids.length : sum; // 👈 average L/R
+      gc[k] = Math.round(val);
+    }
+    const maxGroup = Math.max(1, ...Object.values(gc));
+    const nextHeat = { ...seed };
+    for (const [k, ids] of groups.entries()) {
+      const norm = (gc[k] || 0) / maxGroup;
+      ids.forEach(id => { nextHeat[id] = norm; });
+    }
+  return { groupCounts: gc, heatData: nextHeat, maxInView: maxGroup };
+  }, [groups, modifiedSets]);
 
   // label for a group: use the first member's label and strip (L)/(R)
   function labelForGroup(k, ids) {
@@ -107,7 +186,7 @@ export default function HeatmapRegions() {
   }
 
   // dev warnings to catch stray ids
-  useEffect(() => {
+  useMemo(() => {
     const shapeIds = new Set(Object.keys(SHAPES));
     for (const [k, ids] of groups.entries()) {
       ids.forEach(id => {
@@ -120,7 +199,7 @@ export default function HeatmapRegions() {
   return (
     <div style={{ maxWidth: 1100, margin: "40px auto", padding: "0 16px" }}>
       {/* ===== WEEKLY PLANNER ON TOP ===== */}
-      <WeeklyPlanner />
+      <WeeklyPlanner onPlanChange={setWeeklySetsRaw} />
       <hr style={{ margin: "28px 0" }} />
 
       {/* ===== HEATMAP SECTION ===== */}
@@ -144,15 +223,15 @@ export default function HeatmapRegions() {
       {/* Two-column layout: heatmap (left) + group list (right) */}
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:24, alignItems:"start" }}>
         <MuscleHeatmapRegions
-          data={data}        // normalized 0..1 from grouped totals
+          data={heatData}     // normalized 0..1 from grouped modified sets
           view={view}
-          side={side}        // <-- ensures back image shows on back/deep(back)
+          side={side}
           onRegionClick={undefined}
           showLegend={true}
         />
 
         <div>
-          <h3 style={{ marginTop: 0 }}>Sets/week — {view} regions</h3>
+          <h3 style={{ marginTop: 0 }}>Modified sets/week — {view} regions</h3>
           <div style={{ display:"grid", gridTemplateColumns:"auto auto", gap:8 }}>
             {Array.from(groups.entries()).map(([k, ids]) => (
               <Fragment key={k}>
@@ -162,6 +241,18 @@ export default function HeatmapRegions() {
                 </div>
               </Fragment>
             ))}
+          </div>
+
+          <div style={{ marginTop: 24 }}>
+            <ProgramMetrics
+              catalogById={CATALOG_BY_ID}
+              weeklySets={weeklySets}
+              coverageByLR={coverageByLR}
+              wEffort={wEffort}
+              wHyp={wHyp}
+              regionOrder={Array.from(groups.keys())}
+              regionLabel={(rid) => labelForGroup(rid, groups.get(rid) || [rid])}
+            />
           </div>
         </div>
       </div>

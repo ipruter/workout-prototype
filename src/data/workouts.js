@@ -1,13 +1,50 @@
 // src/data/workouts.js
+// Canonical workout names, matching CATALOG_BY_ID + WORKOUT_TARGETS
 export const WORKOUTS = [
-  "Ab Wheel Rollout","Back Squat","Barbell Row","Bench Press (Barbell)",
-  "Bench Press (Dumbbell)","Biceps Curl (Barbell)","Biceps Curl (Dumbbell)",
-  "Bulgarian Split Squat","Cable Crunch","Cable Row","Calf Raise (Seated)",
-  "Calf Raise (Standing)","Chin-Up","Conventional Deadlift","Dip",
-  "Dumbbell Row","Face Pull","Front Raise","Front Squat","Goblet Squat",
-  "Hanging Leg Raise","Hip Thrust","Incline Bench Press","Lat Pulldown",
-  "Lateral Raise","Leg Curl","Leg Extension","Leg Press","Lunge (Walking)",
-  "Overhead Press","Overhead Triceps Extension","Plank","Pull-Up",
-  "Push-Up","Rear Delt Fly","Romanian Deadlift","Russian Twist",
-  "Triceps Pushdown"
-].sort((a,b)=>a.localeCompare(b));
+  "Ab Wheel Rollout",
+  "Back Squat (High-Bar)",
+  "Front Squat",
+  "Goblet Squat",
+  "Bulgarian Split Squat",
+  "Lunge (Walking)",
+  "Leg Press",
+  "Leg Extension",
+  "Seated Leg Curl",
+  "Romanian Deadlift",
+  "Conventional Deadlift",
+  "Hip Thrust",
+  "Calf Raise (Standing)",
+  "Calf Raise (Seated)",
+  "Donkey Calf Raise",
+
+  "Bench Press (Barbell)",
+  "Bench Press (Dumbbell)",
+  "Incline Bench Press (Barbell)",
+  "Overhead Press (Barbell)",
+  "Overhead Press (Dumbbell)",
+  "Dip",
+  "Push-Up",
+  "Overhead Triceps Extension",
+  "Triceps Pushdown",
+
+  "Barbell Row",
+  "Dumbbell Row",
+  "Seated Cable Row",
+  "Lat Pulldown",
+  "Chin-Up",
+  "Face Pull",
+  "Rear Delt Fly",
+  "Lateral Raise",
+  "Front Raise",
+  "Upright Row (Wide)",
+
+  "Biceps Curl (Barbell)",
+  "Biceps Curl (Dumbbell)",
+
+  "Abduction Machine",
+  "Cable Crunch",
+  "Hanging Leg Raise",
+  "Plank",
+  "Russian Twist",
+].sort((a, b) => a.localeCompare(b));
+
