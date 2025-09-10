@@ -1,50 +1,54 @@
 // src/data/workout-targets.js
 /* data prompt:
-  Give me estimated raw EMG activation values (%MVIC) for each major muscle involved in [insert exercise], then adjust them ONLY for hypertrophy-relevant factors my program does not handle, including:
-Loaded stretch
-Active range of motion (ROM)
-Contraction quality (e.g., partial vs full shortening)
-Stabilizer vs mover role (only if EMG is high but mechanical tension is low)
-DO NOT adjust for:
-Prime mover status
-Relative contribution within the lift
+
+“Use realistic, literature-supported raw EMG baselines that respect biomechanics (e.g., flat bench favors mid-sternal pec, incline favors clavicular, dips favor lower sternal; lateral > medial ≥ long head in triceps for pressing). Distribute values accordingly before applying my modifiers.”
+“Use literature-consistent raw EMG baselines that reflect biomechanics (flat bench: sternal > clavicular > lower; triceps lateral ≥ medial > long; anterior delt ≥ long head). State raw baselines first, then apply my modifiers.”
+
+Using these emg numbers, adjust each muscle's effective hypertrophy contribution per set using the following scoring system:
+Step 1 — ROM Adjustment
+If the muscle works through a full range of motion: ×1
+If partial ROM: ×0.75
+If minimal ROM or isometric: ×0.5
+Step 2 — Stretch Adjustment
+If the muscle is loaded in a lengthened (stretched) position: ×1
+If no meaningful stretch: ×0.8
+Step 3 — Synergist Role Adjustment
+If the muscle is a prime mover: ×1
+If it’s an active synergist: ×1
+If it's a passive stabilizer or works isometrically only: ×0.5
+Apply these multipliers to the raw EMG percentage and return the final adjusted value for each involved muscle.
+Do NOT cap the values, even if they exceed 100%. Just return the adjusted percentages.
+Assume I will apply my own normalization where the prime mover’s adjusted value becomes 0.6 productive sets, and other muscles are scaled relative to that, with a hard cap of 1.25 after normalization.
+Your only job is to give me the raw EMG × the above modifiers, per muscle, per exercise. Let’s start with [INSERT LIFT NAME HERE].
 */
 // 1) Keep your original name-keyed targets here (easy to tweak):
 export const WORKOUT_TARGETS_BY_NAME = {
   "Bench Press (Barbell)": {
-  // Pectoralis major
-  clavicular_l: 0.55,      clavicular_r: 0.55,
-  sternal_upper_l: 0.72,   sternal_upper_r: 0.72,
-  sternal_lower_l: 0.68,   sternal_lower_r: 0.68,
+  clavicular_l: 0.42, clavicular_r: 0.42,
+  sternal_upper_l: 0.62, sternal_upper_r: 0.62,
+  sternal_lower_l: 0.38, sternal_lower_r: 0.38,
 
-  // Anterior deltoid
-  ant_delt_l: 0.50,        ant_delt_r: 0.50,
+  ant_delt_l: 0.24, ant_delt_r: 0.24,
 
-  // Triceps brachii (heads)
-  triceps_long_l: 0.35,    triceps_long_r: 0.35,  // less involved vs lat/med on flat bench
-  triceps_med_l: 0.58,     triceps_med_r: 0.58,
-  triceps_lat_l: 0.52,     triceps_lat_r: 0.52,
+  triceps_long_l: 0.224, triceps_long_r: 0.224,
+  triceps_med_l: 0.344, triceps_med_r: 0.344,
+  triceps_lat_l: 0.384, triceps_lat_r: 0.384,
 
-  // Scapular protractors (stabilizer/mover mix)
-  serratus_l: 0.18,        serratus_r: 0.18,
+  serratus_l: 0.04, serratus_r: 0.04
 },
   "Incline Bench Press": {
-  // Pectoralis major (incline bias → clavicular > sternal)
-  clavicular_l: 0.78,      clavicular_r: 0.78,
-  sternal_upper_l: 0.58,   sternal_upper_r: 0.58,
-  sternal_lower_l: 0.30,   sternal_lower_r: 0.30,
+  clavicular_l: 0.78, clavicular_r: 0.78,
+  sternal_upper_l: 0.58, sternal_upper_r: 0.58,
+  sternal_lower_l: 0.30, sternal_lower_r: 0.30,
 
-  // Delts
-  ant_delt_l: 0.62,        ant_delt_r: 0.62,
-  lat_delt_l: 0.12,        lat_delt_r: 0.12,
+  ant_delt_l: 0.372, ant_delt_r: 0.372,
+  lat_delt_l: 0.072, lat_delt_r: 0.072,
 
-  // Triceps (long head slightly reduced with shoulder flexion)
-  triceps_long_l: 0.30,    triceps_long_r: 0.30,
-  triceps_med_l: 0.55,     triceps_med_r: 0.55,
-  triceps_lat_l: 0.50,     triceps_lat_r: 0.50,
+  triceps_long_l: 0.20, triceps_long_r: 0.20,
+  triceps_med_l: 0.44, triceps_med_r: 0.44,
+  triceps_lat_l: 0.40, triceps_lat_r: 0.40,
 
-  // Scapular protractor
-  serratus_l: 0.20,        serratus_r: 0.20,
+  serratus_l: 0.04, serratus_r: 0.04
 },
   "Overhead Press": {
     ant_delt_l: 0.7, ant_delt_r: 0.7,
@@ -59,89 +63,92 @@ export const WORKOUT_TARGETS_BY_NAME = {
     rear_delt_l: 0.35, rear_delt_r: 0.35,
   },
   "Chin-Up": {
-  // Lats (segment weights; good loaded stretch overhead)
-  lats_costal_l:    0.78, lats_costal_r:    0.78,
-  lats_iliac_l:     0.70, lats_iliac_r:     0.70,
+   // Lats
+  lats_costal_l: 0.80,  lats_costal_r: 0.80,
+  lats_iliac_l: 0.72,   lats_iliac_r: 0.72,
   lats_vertebral_l: 0.65, lats_vertebral_r: 0.65,
 
-  // Teres major (strong adduction/ext assist — add if you have this region)
-  teres_major_l: 0.58, teres_major_r: 0.58,
+  // Teres major
+  teres_major_l: 0.60, teres_major_r: 0.60,
 
-  // Elbow flexors (supinated bias → short head/brachialis strong; modest long head)
-  bicep_short_l: 0.72, bicep_short_r: 0.72,
-  bicep_long_l:  0.62, bicep_long_r:  0.62,
-  brachialis_l:  0.68, brachialis_r:  0.68,
+  // Elbow flexors
+  bicep_short_l: 0.75, bicep_short_r: 0.75,
+  bicep_long_l: 0.60,  bicep_long_r: 0.60,
+  brachialis_l: 0.70,  brachialis_r: 0.70,
 
-  // Forearm/finger flexors (grip: high EMG, mostly isometric → discounted)
-  forearm_flex_l: 0.38, forearm_flex_r: 0.38,
+  // Forearm/finger flexors (isometric penalty ×0.20)
+  forearm_flex_l: 0.08, forearm_flex_r: 0.08,
 
-  // Scapular retractors/depressors (good dynamic ROM + loaded)
+  // Scapular retractors/depressors
   traps_lower_l: 0.55, traps_lower_r: 0.55,
   traps_mid_l:   0.45, traps_mid_r:   0.45,
-  rhomboids_l:   0.45, rhomboids_r:   0.45,
+  rhomboids_l:   0.45, rhomboids_r:  0.45,
 
-  // Posterior delts (modest contribution)
-  rear_delt_l: 0.35, rear_delt_r: 0.35,
+  // Rear delts (corrected lower value)
+  rear_delt_l: 0.20, rear_delt_r: 0.20,
+
+  // Serratus (stabilizer penalty ×0.20)
+  serratus_l: 0.05, serratus_r: 0.05
 },
   "Back Squat": {
-  // Quads
-  quads_rf_upper_l: 0.37, quads_rf_upper_r: 0.37,   // rectus femoris (biarticular; less hypertrophy-relevant)
-  quads_rf_lower_l: 0.44, quads_rf_lower_r: 0.44,
-  quads_vl_l: 0.77,       quads_vl_r: 0.77,         // vastus lateralis
-  quads_vm_l: 0.83,       quads_vm_r: 0.83,         // vastus medialis
-  quads_vi_l: 0.68,       quads_vi_r: 0.68,         // vastus intermedius (proxy)
+   // Quads (×1.0)
+  quads_rf_upper_l: 0.38, quads_rf_upper_r: 0.38,
+  quads_rf_lower_l: 0.42, quads_rf_lower_r: 0.42,
+  quads_vl_l: 0.80,       quads_vl_r: 0.80,
+  quads_vm_l: 0.85,       quads_vm_r: 0.85,
+  quads_vi_l: 0.70,       quads_vi_r: 0.70,
 
-  // Glutes / adductors
-  caudal_glute_max_l: 0.72,  caudal_glute_max_r: 0.72,  // lower (hip-ext bias)
-  cranial_glute_max_l: 0.62, cranial_glute_max_r: 0.62, // upper
-  glute_med_l: 0.40,         glute_med_r: 0.40,
-  adductor_mag_l: 0.78,      adductor_mag_r: 0.78,      // posterior fibers act as hip extensors
+  // Glutes / adductors (×1.0 except glute med)
+  caudal_glute_max_l: 0.75,  caudal_glute_max_r: 0.75,
+  cranial_glute_max_l: 0.60, cranial_glute_max_r: 0.60,
+  glute_med_l: 0.08,         glute_med_r: 0.08,       // 0.40 × 0.20
+  adductor_mag_l: 0.80,      adductor_mag_r: 0.80,
 
-  // Hamstrings (net small length change in squat)
-  ham_bf_long_l: 0.19, ham_bf_long_r: 0.19,
-  ham_semimem_l: 0.19, ham_semimem_r: 0.19,
-  ham_semitend_l: 0.19, ham_semitend_r: 0.19,
+  // Hamstrings (×0.20)
+  ham_bf_long_l: 0.04, ham_bf_long_r: 0.04,
+  ham_semimem_l: 0.04, ham_semimem_r: 0.04,
+  ham_semitend_l: 0.04, ham_semitend_r: 0.04,
 
-  // Spinal erectors (mostly isometric, still meaningful tension)
-  erectors_thor_l: 0.34, erectors_thor_r: 0.34,
-  erectors_lum_l: 0.45,  erectors_lum_r: 0.45,
+  // Spinal erectors (×0.20)
+  erectors_thor_l: 0.07, erectors_thor_r: 0.07,
+  erectors_lum_l:  0.09, erectors_lum_r:  0.09,
 
-  // Calves (stabilizers)
-  gastro_med_l: 0.20, gastro_med_r: 0.20,
-  gastro_lat_l: 0.20, gastro_lat_r: 0.20,
-  soleus_post_l: 0.16, soleus_post_r: 0.16,
+  // Calves (×0.20)
+  gastro_med_l: 0.044, gastro_med_r: 0.044,
+  gastro_lat_l: 0.044, gastro_lat_r: 0.044,
+  soleus_post_l: 0.036, soleus_post_r: 0.036
 },
   "Romanian Deadlift": {
-  // Hamstrings (long-length hinge; strongest hypertrophy signal)
-  ham_bf_long_l: 0.82, ham_bf_long_r: 0.82,
-  ham_semimem_l: 0.79, ham_semimem_r: 0.79,
+   // Hamstrings (×1.0)
+  ham_bf_long_l: 0.84, ham_bf_long_r: 0.84,
+  ham_semimem_l: 0.80, ham_semimem_r: 0.80,
   ham_semitend_l: 0.76, ham_semitend_r: 0.76,
-  ham_bf_short_l: 0.18, ham_bf_short_r: 0.18,   // knee-only head: minimal in RDL
+  ham_bf_short_l: 0.16, ham_bf_short_r: 0.16,
 
-  // Glutes / adductors
-  caudal_glute_max_l: 0.78, caudal_glute_max_r: 0.78,  // lower/caudal fibers bias hip ext.
-  cranial_glute_max_l: 0.48, cranial_glute_max_r: 0.48,
-  glute_med_l: 0.28,         glute_med_r: 0.28,        // frontal-plane stabilization
-  glute_min_l: 0.20,         glute_min_r: 0.20,
-  adductor_mag_l: 0.62,      adductor_mag_r: 0.62,     // posterior fibers assist hip ext.
+  // Glutes / adductors (×1.0 except med/min)
+  caudal_glute_max_l: 0.76, caudal_glute_max_r: 0.76,
+  cranial_glute_max_l: 0.46, cranial_glute_max_r: 0.46,
+  glute_med_l: 0.056,       glute_med_r: 0.056,   // 0.28 × 0.20
+  glute_min_l: 0.040,       glute_min_r: 0.040,   // 0.20 × 0.20
+  adductor_mag_l: 0.62,     adductor_mag_r: 0.62,
 
-  // Spinal erectors (high tension, mostly isometric → small quality discount)
-  erectors_lum_l: 0.62,  erectors_lum_r: 0.62,
-  erectors_thor_l: 0.44, erectors_thor_r: 0.44,
+  // Spinal erectors (×0.20)
+  erectors_lum_l: 0.12,  erectors_lum_r: 0.12,
+  erectors_thor_l: 0.084, erectors_thor_r: 0.084,
 
-  // Upper back / grip stabilizers (modest ROM; postural/isometric)
-  traps_mid_l: 0.27,   traps_mid_r: 0.27,
-  traps_upper_l: 0.20, traps_upper_r: 0.20,
-  traps_lower_l: 0.23, traps_lower_r: 0.23,
-  lats_vertebral_l: 0.18, lats_vertebral_r: 0.18,
-  lats_costal_l: 0.13,    lats_costal_r: 0.13,
-  lats_iliac_l: 0.09,     lats_iliac_r: 0.09,
+  // Upper back / lats / traps (×0.20)
+  traps_mid_l: 0.052,   traps_mid_r: 0.052,
+  traps_upper_l: 0.036, traps_upper_r: 0.036,
+  traps_lower_l: 0.044, traps_lower_r: 0.044,
+  lats_vertebral_l: 0.032, lats_vertebral_r: 0.032,
+  lats_costal_l: 0.024,    lats_costal_r: 0.024,
+  lats_iliac_l: 0.020,     lats_iliac_r: 0.020,
 
-  // Forearms / calves
-  forearm_flex_l: 0.83, forearm_flex_r: 0.83,   // grip-intensive
-  gastro_med_l: 0.12,   gastro_med_r: 0.12,
-  gastro_lat_l: 0.12,   gastro_lat_r: 0.12,
-  soleus_post_l: 0.14,  soleus_post_r: 0.14,
+  // Forearms / calves (×0.20)
+  forearm_flex_l: 0.164, forearm_flex_r: 0.164,
+  gastro_med_l: 0.024,   gastro_med_r: 0.024,
+  gastro_lat_l: 0.024,   gastro_lat_r: 0.024,
+  soleus_post_l: 0.028,  soleus_post_r: 0.028
 },
 
   "Hip Thrust": {
@@ -157,16 +164,16 @@ export const WORKOUT_TARGETS_BY_NAME = {
 
   // NOTE: leading space fixed below via sanitizer; leaving as-is here:
   "Seated Leg Curl": {
-  // Hamstrings (high at long length in seated position)
-  ham_bf_long_l: 0.86, ham_bf_long_r: 0.86,
-  ham_semimem_l: 0.83, ham_semimem_r: 0.83,
-  ham_semitend_l: 0.80, ham_semitend_r: 0.80,
-  ham_bf_short_l: 0.70, ham_bf_short_r: 0.70, // knee-only head: strong here
+  // Hamstrings (×1.0)
+  ham_bf_long_l: 0.88, ham_bf_long_r: 0.88,
+  ham_semimem_l: 0.84, ham_semimem_r: 0.84,
+  ham_semitend_l: 0.82, ham_semitend_r: 0.82,
+  ham_bf_short_l: 0.72, ham_bf_short_r: 0.72,
 
-  // Calves (gastroc is a knee flexor but biased down if dorsiflexed)
-  gastro_med_l: 0.18, gastro_med_r: 0.18,
-  gastro_lat_l: 0.18, gastro_lat_r: 0.18,
-  soleus_post_l: 0.08, soleus_post_r: 0.08,
+  // Calves
+  gastro_med_l: 0.12, gastro_med_r: 0.12,   // 0.20 × 0.60
+  gastro_lat_l: 0.12, gastro_lat_r: 0.12,   // 0.20 × 0.60
+  soleus_post_l: 0.016, soleus_post_r: 0.016 // 0.08 × 0.20
 },
 
   "Calf Raise (Standing)":  {
@@ -178,108 +185,106 @@ export const WORKOUT_TARGETS_BY_NAME = {
 
   // plurals/variants handled by alias map below:
   "Donkey Calf Raises": {
-  gastro_med_l: 0.92, gastro_med_r: 0.92,  // medial gastrocnemius
-  gastro_lat_l: 0.92, gastro_lat_r: 0.92,  // lateral gastrocnemius
-  soleus_post_l: 0.52, soleus_post_r: 0.52 // soleus (less than seated)
+  gastro_med_l: 0.92, gastro_med_r: 0.92,
+  gastro_lat_l: 0.92, gastro_lat_r: 0.92,
+  soleus_post_l: 0.208, soleus_post_r: 0.208 // 0.52 × 0.40
 },
   "Abduction Machine": {
-  glute_med_l: 0.88, glute_med_r: 0.88,
-  glute_min_l: 0.72, glute_min_r: 0.72,
-  tensor_fasciae_l: 0.60, tensor_fasciae_r: 0.60,
-  cranial_glute_max_l: 0.20, cranial_glute_max_r: 0.20,
+  glute_med_l: 0.704, glute_med_r: 0.704,       // 0.88 × 0.8
+  glute_min_l: 0.592, glute_min_r: 0.592,       // 0.74 × 0.8
+  tensor_fasciae_l: 0.528, tensor_fasciae_r: 0.528, // 0.66 × 0.8
+  cranial_glute_max_l: 0.20, cranial_glute_max_r: 0.20 // 0.25 × 0.8
 },
   "Upright Rows (wide)": {
-  // Delts
-  lat_delt_l: 0.78, lat_delt_r: 0.78,   // primary target with wide grip
-  ant_delt_l: 0.32, ant_delt_r: 0.32,   // some shoulder flexion component
-  post_delt_l: 0.38, post_delt_r: 0.38, // posterior fibers assist in abduction path
+  lat_delt_l: 0.80, lat_delt_r: 0.80,
+  ant_delt_l: 0.30, ant_delt_r: 0.30,
+  post_delt_l: 0.35, post_delt_r: 0.35,
 
-  // Traps & scapular upward rotation
-  traps_upper_l: 0.50, traps_upper_r: 0.50,
-  traps_mid_l:   0.22, traps_mid_r:   0.22,
+  // Traps & scapular upward rotation (×1.0)
+  traps_upper_l: 0.52, traps_upper_r: 0.52,
+  traps_mid_l:   0.20, traps_mid_r:   0.20,
   traps_lower_l: 0.18, traps_lower_r: 0.18,
   rhomboids_l:   0.18, rhomboids_r:   0.18,
 
-  // Elbow flexors (static grip; modest hypertrophy relevance)
-  bicep_short_l: 0.15, bicep_short_r: 0.15,
+  // Elbow flexors (isometric ×0.20)
+  bicep_short_l: 0.03, bicep_short_r: 0.03
 },
   "Dip": {
-  // Pectoralis major (deep stretch; sternal > clavicular)
-  clavicular_l: 0.26,        clavicular_r: 0.26,
-  sternal_upper_l: 0.65,     sternal_upper_r: 0.65,
-  sternal_lower_l: 0.88,     sternal_lower_r: 0.88,
+  clavicular_l: 0.22, clavicular_r: 0.22,
+  sternal_upper_l: 0.58, sternal_upper_r: 0.58,
+  sternal_lower_l: 0.90, sternal_lower_r: 0.90,
 
-  // Triceps (elbow extension; long head discounted slightly for shoulder ext.)
-  triceps_long_l: 0.42,      triceps_long_r: 0.42,
-  triceps_med_l: 0.64,       triceps_med_r: 0.64,
-  triceps_lat_l: 0.56,       triceps_lat_r: 0.56,
+  // Triceps (after ×0.8)
+  triceps_long_l: 0.256, triceps_long_r: 0.256,
+  triceps_med_l: 0.48,  triceps_med_r: 0.48,
+  triceps_lat_l: 0.44,  triceps_lat_r: 0.44,
 
-  // Delts (anterior acts more as antagonist/positioning here)
-  ant_delt_l: 0.18,          ant_delt_r: 0.18,
+  // Delts (after ×0.60)
+  ant_delt_l: 0.096, ant_delt_r: 0.096,
 
-  // Scapular control (depression/protraction)
-  serratus_l: 0.22,          serratus_r: 0.22,
-  traps_lower_l: 0.22,       traps_lower_r: 0.22,
-  traps_mid_l: 0.14,         traps_mid_r: 0.14,
-  rhomboids_l: 0.12,         rhomboids_r: 0.12,
+  // Scapular stabilizers (after ×0.20)
+  serratus_l: 0.05,    serratus_r: 0.05,
+  traps_lower_l: 0.048, traps_lower_r: 0.048,
+  traps_mid_l: 0.024,   traps_mid_r: 0.024,
+  rhomboids_l: 0.02,    rhomboids_r: 0.02
 },
   "Seated Cable Row": {
-  // Lats (segment weights; good ROM, modest stretch vs overhead pulls)
-  lats_costal_l:    0.60, lats_costal_r:    0.60,
-  lats_iliac_l:     0.52, lats_iliac_r:     0.52,
-  lats_vertebral_l: 0.58, lats_vertebral_r: 0.58,
+  // Lats (after ×0.8)
+  lats_costal_l: 0.44, lats_costal_r: 0.44,
+  lats_iliac_l: 0.40,  lats_iliac_r: 0.40,
+  lats_vertebral_l: 0.42, lats_vertebral_r: 0.42,
 
-  // Teres major (if present in your schema)
-  teres_major_l: 0.52, teres_major_r: 0.52,
+  // Teres major (after ×0.8)
+  teres_major_l: 0.44, teres_major_r: 0.44,
 
-  // Scapular retractors/depressors (prime movers here)
-  rhomboids_l:   0.78, rhomboids_r:   0.78,
-  traps_mid_l:   0.68, traps_mid_r:   0.68,
-  traps_lower_l: 0.42, traps_lower_r: 0.42,
+  // Scapular retractors/depressors
+  rhomboids_l: 0.80, rhomboids_r: 0.80,
+  traps_mid_l: 0.70, traps_mid_r: 0.70,
+  traps_lower_l: 0.40, traps_lower_r: 0.40,
 
   // Posterior delts
-  rear_delt_l: 0.56, rear_delt_r: 0.56,
+  rear_delt_l: 0.60, rear_delt_r: 0.60,
 
-  // Elbow flexors (dynamic)
-  bicep_short_l: 0.50, bicep_short_r: 0.50,
-  bicep_long_l:  0.40, bicep_long_r:  0.40,
-  brachialis_l:  0.55, brachialis_r:  0.55,
+  // Elbow flexors
+  bicep_short_l: 0.48, bicep_short_r: 0.48,
+  bicep_long_l: 0.42,  bicep_long_r: 0.42,
+  brachialis_l: 0.52,  brachialis_r: 0.52,
 
-  // Grip (discounted isometric)
-  forearm_flex_l: 0.32, forearm_flex_r: 0.32,
+  // Grip (isometric ×0.20)
+  forearm_flex_l: 0.07, forearm_flex_r: 0.07,
 
-  // Spinal erectors (postural)
-  erectors_thor_l: 0.18, erectors_thor_r: 0.18,
-  erectors_lum_l:  0.12, erectors_lum_r:  0.12,
+  // Spinal erectors (isometric ×0.20)
+  erectors_thor_l: 0.04, erectors_thor_r: 0.04,
+  erectors_lum_l: 0.03, erectors_lum_r: 0.03
 },
   "Front Squat": {
-  // Quads (knee-dominant)
-  quads_rf_upper_l: 0.35, quads_rf_upper_r: 0.35,
-  quads_rf_lower_l: 0.45, quads_rf_lower_r: 0.45,
-  quads_vl_l: 0.75,       quads_vl_r: 0.75,
-  quads_vm_l: 0.80,       quads_vm_r: 0.80,
-  quads_vi_l: 0.65,       quads_vi_r: 0.65,
+   // Quads
+  quads_rf_upper_l: 0.42, quads_rf_upper_r: 0.42,
+  quads_rf_lower_l: 0.48, quads_rf_lower_r: 0.48,
+  quads_vl_l: 0.85,       quads_vl_r: 0.85,
+  quads_vm_l: 0.90,       quads_vm_r: 0.90,
+  quads_vi_l: 0.75,       quads_vi_r: 0.75,
 
   // Glutes / adductors
-  caudal_glute_max_l: 0.55,  caudal_glute_max_r: 0.55,
-  cranial_glute_max_l: 0.30, cranial_glute_max_r: 0.30,
-  glute_med_l: 0.35,         glute_med_r: 0.35,
-  glute_min_l: 0.20,         glute_min_r: 0.20,
-  adductor_mag_l: 0.68,      adductor_mag_r: 0.68,
+  caudal_glute_max_l: 0.62,  caudal_glute_max_r: 0.62,
+  cranial_glute_max_l: 0.35, cranial_glute_max_r: 0.35,
+  glute_med_l: 0.076,        glute_med_r: 0.076,
+  glute_min_l: 0.044,        glute_min_r: 0.044,
+  adductor_mag_l: 0.70,      adductor_mag_r: 0.70,
 
-  // Hamstrings (minimal net length change in squat)
-  ham_bf_long_l: 0.16, ham_bf_long_r: 0.16,
-  ham_semimem_l: 0.16, ham_semimem_r: 0.16,
-  ham_semitend_l: 0.15, ham_semitend_r: 0.15,
+  // Hamstrings
+  ham_bf_long_l: 0.03, ham_bf_long_r: 0.03,
+  ham_semimem_l: 0.03, ham_semimem_r: 0.03,
+  ham_semitend_l: 0.03, ham_semitend_r: 0.03,
 
-  // Spinal erectors (upright torso → thoracic > lumbar)
-  erectors_thor_l: 0.45, erectors_thor_r: 0.45,
-  erectors_lum_l: 0.35,  erectors_lum_r: 0.35,
+  // Spinal erectors
+  erectors_thor_l: 0.096, erectors_thor_r: 0.096,
+  erectors_lum_l:  0.064, erectors_lum_r:  0.064,
 
-  // Calves (stabilizers)
-  gastro_med_l: 0.18, gastro_med_r: 0.18,
-  gastro_lat_l: 0.18, gastro_lat_r: 0.18,
-  soleus_post_l: 0.10, soleus_post_r: 0.10,
+  // Calves
+  gastro_med_l: 0.04, gastro_med_r: 0.04,
+  gastro_lat_l: 0.04, gastro_lat_r: 0.04,
+  soleus_post_l: 0.024, soleus_post_r: 0.024
 }
     
 };

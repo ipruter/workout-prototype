@@ -2,7 +2,7 @@
 // Canonical workout names, matching CATALOG_BY_ID + WORKOUT_TARGETS
 export const WORKOUTS = [
   "Ab Wheel Rollout",
-  "Back Squat (High-Bar)",
+  "Back Squat",
   "Front Squat",
   "Goblet Squat",
   "Bulgarian Split Squat",
