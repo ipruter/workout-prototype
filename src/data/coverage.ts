@@ -301,7 +301,6 @@ const NAME_TO_ID = Object.fromEntries(
 const NAME_ALIASES = {
   "incline bench press": "incline bench press (barbell)",  // map to your incline_bb
   "overhead press": "overhead press (barbell)",            // prefer barbell by default
-  "back squat": "back squat (high-bar)",                   // prefer HB by default
   "donkey calf raises": "donkey calf raise",               // plural → singular
   "upright rows (wide)": "upright row (wide)",             // plural → singular
   " seated leg curl": "seated leg curl",                   // trim leading space
