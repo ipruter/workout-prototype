@@ -285,6 +285,21 @@ export const WORKOUT_TARGETS_BY_NAME = {
   gastro_med_l: 0.04, gastro_med_r: 0.04,
   gastro_lat_l: 0.04, gastro_lat_r: 0.04,
   soleus_post_l: 0.024, soleus_post_r: 0.024
+},
+"Seated French Press": {
+  // Triceps (×1.0)
+  triceps_long_l: 0.90, triceps_long_r: 0.90,
+  triceps_med_l:  0.66, triceps_med_r:  0.66,
+  triceps_lat_l:  0.60, triceps_lat_r:  0.60,
+
+  // Stabilizers (minimal ROM 0.5 × no stretch 0.8 × stabilizer 0.5 = ×0.20)
+  ant_delt_l: 0.044,  ant_delt_r: 0.044,
+  serratus_l: 0.044,  serratus_r: 0.044,
+  traps_upper_l: 0.048, traps_upper_r: 0.048,
+  traps_lower_l: 0.040, traps_lower_r: 0.040,
+  traps_mid_l:   0.028, traps_mid_r:   0.028,
+
+  forearm_flex_l: 0.06, forearm_flex_r: 0.06
 }
     
 };

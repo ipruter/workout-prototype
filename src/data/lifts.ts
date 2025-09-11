@@ -11,6 +11,7 @@ export const CATALOG_BY_ID = {
   incline_bb:   { name: "Incline Bench Press (Barbell)", C: 50, type: "barbell" },
   pushup:       { name: "Push-Up",                        C: 35, type: "bodyweight" },
   dip:          { name: "Dip",                            C: 55, type: "bodyweight" },
+  seated_french_press: { name: "Seated French Press", C: 8, type: "EZ curl" },
 
   // Shoulders / Delts
   ohp_bb:       { name: "Overhead Press (Barbell)",       C: 60, type: "barbell" },

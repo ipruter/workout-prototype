@@ -3,6 +3,7 @@
 export const WORKOUTS = [
   "Ab Wheel Rollout",
   "Back Squat",
+  "Seated French Press",
   "Front Squat",
   "Goblet Squat",
   "Bulgarian Split Squat",
