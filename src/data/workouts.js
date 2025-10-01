@@ -34,7 +34,7 @@ export const WORKOUTS = [
   "Lat Pulldown",
   "Chin-Up",
   "Face Pull",
-  "Rear Delt Fly",
+  "Reverse Fly",
   "Lateral Raise",
   "Front Raise",
   "Upright Row (Wide)",
@@ -47,5 +47,7 @@ export const WORKOUTS = [
   "Hanging Leg Raise",
   "Plank",
   "Russian Twist",
+  "Barbell Shrug",
+  
 ].sort((a, b) => a.localeCompare(b));
 

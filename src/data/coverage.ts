@@ -160,7 +160,14 @@ export const WORKOUT_TARGETS_BY_NAME = {
   "Rear Delt Fly":  { rear_delt_l: 1, rear_delt_r: 1 },
   "Biceps Curl (Dumbbell)": { bicep_short_l: 1, bicep_short_r: 1 },
   "Triceps Pushdown":       { triceps_lat_l: 1, triceps_lat_r: 1 },
-  "Leg Extension":          { quads_rf_upper_l: 0.7, quads_rf_upper_r: 0.7, quads_vi_l: 0.6, quads_vi_r: 0.6 },
+  "Leg Extension": {
+  // Quads (isolation focus)
+  quads_rf_upper_l: 0.28, quads_rf_upper_r: 0.28,   // RF contributes, reduced by hip flexion
+  quads_rf_lower_l: 0.32, quads_rf_lower_r: 0.32,
+  quads_vl_l: 0.90,       quads_vl_r: 0.90,
+  quads_vm_l: 0.95,       quads_vm_r: 0.95,
+  quads_vi_l: 0.85,       quads_vi_r: 0.85,
+ },
 
   // NOTE: leading space fixed below via sanitizer; leaving as-is here:
   "Seated Leg Curl": {
@@ -300,7 +307,97 @@ export const WORKOUT_TARGETS_BY_NAME = {
   traps_mid_l:   0.028, traps_mid_r:   0.028,
 
   forearm_flex_l: 0.06, forearm_flex_r: 0.06
-}
+},
+
+"Reverse Fly": {
+  // Lats (minimal)
+  lats_costal_l: 0.06, lats_costal_r: 0.06,
+  lats_iliac_l:  0.05, lats_iliac_r:  0.05,
+  lats_vertebral_l: 0.06, lats_vertebral_r: 0.06,
+
+  // Teres major (stabilizer)
+  teres_major_l: 0.25, teres_major_r: 0.25,
+
+  // Scapular retractors/depressors
+  rhomboids_l: 0.70, rhomboids_r: 0.70,
+  traps_mid_l: 0.60, traps_mid_r: 0.60,
+  traps_lower_l: 0.30, traps_lower_r: 0.30,
+
+  // Posterior delts (prime mover)
+  rear_delt_l: 0.85, rear_delt_r: 0.85,
+
+  // Elbow flexors (minimal, static)
+  bicep_short_l: 0.10, bicep_short_r: 0.10,
+  bicep_long_l:  0.10, bicep_long_r:  0.10,
+  brachialis_l:  0.10, brachialis_r:  0.10,
+
+  // Grip (isometric)
+  forearm_flex_l: 0.05, forearm_flex_r: 0.05,
+
+  // Spinal erectors (isometric)
+  erectors_thor_l: 0.03, erectors_thor_r: 0.03,
+  erectors_lum_l:  0.02, erectors_lum_r:  0.02
+},
+
+"Face Pull": {
+  // Lats (minimal)
+  lats_costal_l: 0.08, lats_costal_r: 0.08,
+  lats_iliac_l:  0.08, lats_iliac_r:  0.08,
+  lats_vertebral_l: 0.10, lats_vertebral_r: 0.10,
+
+  // Teres major (light)
+  teres_major_l: 0.20, teres_major_r: 0.20,
+
+  // Scapular retractors/depressors (big focus, incl. external rotation cue)
+  rhomboids_l: 0.75, rhomboids_r: 0.75,
+  traps_mid_l: 0.65, traps_mid_r: 0.65,
+  traps_lower_l: 0.55, traps_lower_r: 0.55,
+
+  // Posterior delts (major)
+  rear_delt_l: 0.80, rear_delt_r: 0.80,
+
+  // Elbow flexors (minor)
+  bicep_short_l: 0.12, bicep_short_r: 0.12,
+  bicep_long_l:  0.10, bicep_long_r:  0.10,
+  brachialis_l:  0.10, brachialis_r:  0.10,
+
+  // Grip (isometric)
+  forearm_flex_l: 0.06, forearm_flex_r: 0.06,
+
+  // Spinal erectors (isometric)
+  erectors_thor_l: 0.03, erectors_thor_r: 0.03,
+  erectors_lum_l:  0.02, erectors_lum_r:  0.02
+},
+
+"Barbell Shrug": {
+  // Upper traps (prime mover)
+  traps_upper_l: 0.95, traps_upper_r: 0.95,
+
+  // Scapular retractors (assist/stabilize)
+  traps_mid_l: 0.35,  traps_mid_r: 0.35,
+  rhomboids_l: 0.25,  rhomboids_r: 0.25,
+  traps_lower_l: 0.12, traps_lower_r: 0.12, // upward rotation/stability
+
+  // Posterior delts (minor stabilization)
+  rear_delt_l: 0.08, rear_delt_r: 0.08,
+
+  // Lats (negligible)
+  lats_costal_l: 0.03,  lats_costal_r: 0.03,
+  lats_iliac_l:  0.02,  lats_iliac_r:  0.02,
+  lats_vertebral_l: 0.03, lats_vertebral_r: 0.03,
+
+  // Elbow flexors (isometric carry)
+  bicep_short_l: 0.06, bicep_short_r: 0.06,
+  bicep_long_l:  0.06, bicep_long_r:  0.06,
+  brachialis_l:  0.06, brachialis_r:  0.06,
+
+  // Grip (isometric)
+  forearm_flex_l: 0.14, forearm_flex_r: 0.14,
+
+  // Spinal erectors (standing support)
+  erectors_thor_l: 0.06, erectors_thor_r: 0.06,
+  erectors_lum_l:  0.07, erectors_lum_r:  0.07
+},
     
 };
 

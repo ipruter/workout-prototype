@@ -19,8 +19,9 @@ export const CATALOG_BY_ID = {
   upright_row:  { name: "Upright Row (Wide)",             C: 25, type: "barbell" },
   lat_raise:    { name: "Lateral Raise",                  C: 3,  type: "dumbbell" },
   front_raise:  { name: "Front Raise",                    C: 3,  type: "dumbbell" },
-  rear_delt:    { name: "Rear Delt Fly",                  C: 3,  type: "dumbbell" },
+  rear_delt:    { name: "Reverse Fly",                  C: 3,  type: "dumbbell" },
   face_pull:    { name: "Face Pull",                      C: 3,  type: "cable" },
+  shrug: { name: "Barbell Shrug", C: 35, type: "barbell" },
 
   // Back / Pull
   row_bb:       { name: "Barbell Row",                    C: 50, type: "barbell" },

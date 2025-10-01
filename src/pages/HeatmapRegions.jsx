@@ -77,8 +77,88 @@ function flattenPlanToRows(plan) {
   return rows;
 }
 
+export function WeeklyPlannerPanel({ onPlanChange }) {
+  return (
+    <section>
+      <h1>Weekly Workout Builder</h1>
+      <p style={{ marginTop: 6, opacity: 0.8 }}>
+        Select a workout for each day. Weight = <em>Intensity&nbsp;% × 1RM</em> (rounded to 5).
+        Set a 1RM per lift once and it’s remembered.
+      </p>
+      <WeeklyPlanner onPlanChange={onPlanChange} />
+    </section>
+  );
+}
+
+export function MetricsHeatmap({
+  side, setSide,
+  layer, setLayer,
+  view,
+  heatData, maxInView,
+  groups, groupCounts,
+  weeklySets,
+  labelForGroup
+}) {
+  return (
+    <section>
+      <h1>Muscle Region Heatmaps</h1>
+
+      <div style={{ display:"flex", gap:8, marginBottom:12, flexWrap:"wrap" }}>
+        <button onClick={() => { setSide("front"); setLayer("front"); }}
+                disabled={side==="front" && layer==="front"}>Front (surface)</button>
+        <button onClick={() => { setSide("back"); setLayer("back"); }}
+                disabled={side==="back" && layer==="back"}>Back (surface)</button>
+        <button onClick={() => { setSide("front"); setLayer("deep"); }}
+                disabled={side==="front" && layer==="deep"}>Deep (front)</button>
+        <button onClick={() => { setSide("back"); setLayer("deep"); }}
+                disabled={side==="back" && layer==="deep"}>Deep (back)</button>
+      </div>
+
+      <div style={{ fontSize:12, opacity:.75, marginBottom:8 }}>
+        Coloring is normalized within the current view. Max in view: <strong>{maxInView}</strong> sets/week.
+      </div>
+
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:24, alignItems:"start" }}>
+        <MuscleHeatmapRegions
+          data={heatData}
+          view={view}
+          side={side}
+          onRegionClick={undefined}
+          showLegend={true}
+        />
+
+        <div>
+          <h3 style={{ marginTop: 0 }}>Modified sets/week — {view} regions</h3>
+          <div style={{ display:"grid", gridTemplateColumns:"auto auto", gap:8 }}>
+            {Array.from(groups.entries()).map(([k, ids]) => (
+              <React.Fragment key={k}>
+                <div style={{ fontSize:13, opacity:.85 }}>{labelForGroup(k, ids)}</div>
+                <div style={{ width:60, textAlign:"right", fontWeight:600 }}>
+                  {groupCounts[k] ?? 0}
+                </div>
+              </React.Fragment>
+            ))}
+          </div>
+
+          <div style={{ marginTop: 24 }}>
+            <ProgramMetrics
+              catalogById={CATALOG_BY_ID}
+              weeklySets={weeklySets}
+              coverageByLR={coverageByLR}
+              wEffort={wEffort}
+              wHyp={wHyp}
+              regionOrder={Array.from(groups.keys())}
+              regionLabel={(rid) => labelForGroup(rid, groups.get(rid) || [rid])}
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // --- page ----------------------------------------------------
-export default function HeatmapRegions() {
+export default function HeatmapRegions({ showPlanner = true, externalWeeklySets = null }) {
   // which photo / which layer
   const [side,  setSide]  = useState("front");   // 'front' | 'back'
   const [layer, setLayer] = useState("front");   // 'front' | 'back' | 'deep'
@@ -87,8 +167,16 @@ export default function HeatmapRegions() {
   // Raw planner rows (either via onPlanChange or legacy localStorage)
 const [weeklySetsRaw, setWeeklySetsRaw] = useState([]);
 
+const usingExternal = externalWeeklySets !== null;
+
+// If parent supplies DB-driven sets, use them as the only source
+useEffect(() => {
+  if (usingExternal) setWeeklySetsRaw(externalWeeklySets || []);
+}, [usingExternal, externalWeeklySets]);
+
 // If the planner isn't calling onPlanChange, pull from legacy storage + event
 useEffect(() => {
+  if (usingExternal || !showPlanner) return;
   const syncFromLS = () => {
     const plan = loadLegacyPlannerPlan();
     const rows = flattenPlanToRows(plan);
@@ -105,7 +193,7 @@ useEffect(() => {
     window.removeEventListener("planner-updated", syncFromLS);
     window.removeEventListener("storage", syncFromLS);
   };
-}, [weeklySetsRaw.length]);
+}, [weeklySetsRaw.length, usingExternal, showPlanner]);
 
 // Build name -> id map safely (once)
 const nameToId = useMemo(() => {
@@ -116,10 +204,15 @@ const nameToId = useMemo(() => {
 }, []);
 
 // Normalize rows to { liftId, sets, reps, RIR }
-const weeklySets = useMemo(
-  () => normalizeWeeklySets(weeklySetsRaw, nameToId),
-  [weeklySetsRaw, nameToId]
-);
+// Normalize rows to { liftId, sets, reps, RIR }.
+// If parent passes externalWeeklySets, use that instead of the planner.
+const weeklySets = useMemo(() => {
+  if (externalWeeklySets !== null) {
+    return externalWeeklySets;  // authoritative source for ThisWeeksWorkout
+  }
+  return normalizeWeeklySets(weeklySetsRaw, nameToId);
+}, [externalWeeklySets, weeklySetsRaw, nameToId]);
+
 
 // Optional: dev sanity logs
 useEffect(() => {
@@ -197,65 +290,25 @@ useEffect(() => {
   }, [groups]);
 
   return (
-    <div style={{ maxWidth: 1100, margin: "40px auto", padding: "0 16px" }}>
-      {/* ===== WEEKLY PLANNER ON TOP ===== */}
-      <WeeklyPlanner onPlanChange={setWeeklySetsRaw} />
-      <hr style={{ margin: "28px 0" }} />
+  <div style={{ maxWidth: 1100, margin: "40px auto", padding: "0 16px" }}>
+    {showPlanner && !usingExternal && (
+      <>
+        <WeeklyPlannerPanel onPlanChange={setWeeklySetsRaw} />
+        <hr style={{ margin: "28px 0" }} />
+      </>
+    )}
 
-      {/* ===== HEATMAP SECTION ===== */}
-      <h1>Muscle Region Heatmaps</h1>
-
-      <div style={{ display:"flex", gap:8, marginBottom:12, flexWrap:"wrap" }}>
-        <button onClick={() => { setSide("front"); setLayer("front"); }}
-                disabled={side==="front" && layer==="front"}>Front (surface)</button>
-        <button onClick={() => { setSide("back"); setLayer("back"); }}
-                disabled={side==="back" && layer==="back"}>Back (surface)</button>
-        <button onClick={() => { setSide("front"); setLayer("deep"); }}
-                disabled={side==="front" && layer==="deep"}>Deep (front)</button>
-        <button onClick={() => { setSide("back"); setLayer("deep"); }}
-                disabled={side==="back" && layer==="deep"}>Deep (back)</button>
-      </div>
-
-      <div style={{ fontSize:12, opacity:.75, marginBottom:8 }}>
-        Coloring is normalized within the current view. Max in view: <strong>{maxInView}</strong> sets/week.
-      </div>
-
-      {/* Two-column layout: heatmap (left) + group list (right) */}
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:24, alignItems:"start" }}>
-        <MuscleHeatmapRegions
-          data={heatData}     // normalized 0..1 from grouped modified sets
-          view={view}
-          side={side}
-          onRegionClick={undefined}
-          showLegend={true}
-        />
-
-        <div>
-          <h3 style={{ marginTop: 0 }}>Modified sets/week — {view} regions</h3>
-          <div style={{ display:"grid", gridTemplateColumns:"auto auto", gap:8 }}>
-            {Array.from(groups.entries()).map(([k, ids]) => (
-              <Fragment key={k}>
-                <div style={{ fontSize:13, opacity:.85 }}>{labelForGroup(k, ids)}</div>
-                <div style={{ width:60, textAlign:"right", fontWeight:600 }}>
-                  {groupCounts[k] ?? 0}
-                </div>
-              </Fragment>
-            ))}
-          </div>
-
-          <div style={{ marginTop: 24 }}>
-            <ProgramMetrics
-              catalogById={CATALOG_BY_ID}
-              weeklySets={weeklySets}
-              coverageByLR={coverageByLR}
-              wEffort={wEffort}
-              wHyp={wHyp}
-              regionOrder={Array.from(groups.keys())}
-              regionLabel={(rid) => labelForGroup(rid, groups.get(rid) || [rid])}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+    <MetricsHeatmap
+      side={side} setSide={setSide}
+      layer={layer} setLayer={setLayer}
+      view={view}
+      heatData={heatData}
+      maxInView={maxInView}
+      groups={groups}
+      groupCounts={groupCounts}
+      weeklySets={weeklySets}
+      labelForGroup={labelForGroup}
+    />
+  </div>
+);
 }

@@ -1,0 +1,13 @@
+// src/lib/supabaseClient.js
+import { createClient } from "@supabase/supabase-js";
+
+// Try Vite env first, then fall back to your values
+const url =
+  (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_SUPABASE_URL) ||
+  "https://qvipdxzyicexqyssghli.supabase.co";
+
+const anon =
+  (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_SUPABASE_ANON_KEY) ||
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2aXBkeHp5aWNleHF5c3NnaGxpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwNjQ5OTEsImV4cCI6MjA3MzY0MDk5MX0.-XNUn-xl2zFIKre3Tbu87Q57ARuu2fVAHRsG2cpdTec";
+
+export const supabase = createClient(url, anon);
