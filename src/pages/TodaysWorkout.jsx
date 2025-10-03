@@ -7,19 +7,68 @@ import { getWeekBounds } from "../utils/week";
 import {
   totalMinutes,
   estimateExerciseMinutes,
-  getKnown1RM,
+  getKnown1RM,            // still reads localStorage; we seed it from DB below
   estimate1RMFromWeight,
   weightFrom1RM,
-  bumpOneRMPercent,
-  setKnown1RM,
+  bumpOneRMPercent,       // keeps local copy in sync when we overload
+  setKnown1RM,            // for local mirror after DB upsert
 } from "../utils/timeBudget";
 
-// ---------- helpers ----------
+// ---------- small helpers ----------
 function nowLabel(min) {
   const d = new Date();
   const wd = d.toLocaleDateString(undefined, { weekday: "short" });
   const mo = d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
   return `Today ${wd}, ${mo} (${min}m)`;
+}
+
+// Merge incoming 1RM map into localStorage (key: "orm-v1")
+function seedLocalOrms(ormMap = {}) {
+  try {
+    const key = "orm-v1";
+    const current = JSON.parse(localStorage.getItem(key) || "{}");
+    const next = { ...current, ...ormMap };
+    localStorage.setItem(key, JSON.stringify(next));
+  } catch {}
+}
+
+// Fetch user's 1RMs from DB and seed localStorage so getKnown1RM works everywhere
+async function syncOrmsFromDb() {
+  const { data: auth } = await supabase.auth.getUser();
+  const userId = auth?.user?.id;
+  if (!userId) return;
+
+  const { data, error } = await supabase
+    .from("user_orms")
+    .select("lift_id, one_rm")
+    .eq("user_id", userId);
+
+  if (error || !data) return;
+
+  const map = {};
+  for (const row of data) {
+    if (row?.lift_id && Number.isFinite(+row.one_rm)) {
+      map[row.lift_id] = +row.one_rm;
+    }
+  }
+  seedLocalOrms(map);
+}
+
+// Upsert a single 1RM to Supabase and keep local mirror in sync
+async function upsertOrm(liftId, oneRM) {
+  if (!liftId || !Number.isFinite(oneRM)) return;
+  const { data: auth } = await supabase.auth.getUser();
+  const userId = auth?.user?.id;
+  if (!userId) return;
+
+  await supabase
+    .from("user_orms")
+    .upsert([{ user_id: userId, lift_id: liftId, one_rm: Math.round(oneRM) }], {
+      onConflict: "user_id,lift_id",
+    });
+
+  // Mirror to local so planner & metrics stay instant
+  setKnown1RM(liftId, Math.round(oneRM));
 }
 
 async function getConsumedIndexThisWeek({ supabase }) {
@@ -28,7 +77,6 @@ async function getConsumedIndexThisWeek({ supabase }) {
   const userId = auth?.user?.id;
   if (!userId) return 0;
 
-  // Get routines from this week created by “Today’s workout”
   const { data: routines, error: rErr } = await supabase
     .from("routines")
     .select("id")
@@ -41,7 +89,6 @@ async function getConsumedIndexThisWeek({ supabase }) {
 
   const routineIds = routines.map((r) => r.id);
 
-  // Count all routine_items in those routines
   const { data: items, error: iErr } = await supabase
     .from("routine_items")
     .select("id")
@@ -52,22 +99,20 @@ async function getConsumedIndexThisWeek({ supabase }) {
   return items?.length ?? 0;
 }
 
-// Build rows to fit into target minutes, starting at weekly index
 function generateFromMinutes(minutes, startIndex) {
   const rows = [];
   let used = 0;
   let i = startIndex;
 
   while (i < WEEKLY_SEQUENCE.length) {
-    const spec = WEEKLY_SEQUENCE[i]; // { liftId, sets, reps, intensityPct }
+    const spec = WEEKLY_SEQUENCE[i];
 
-    // Draft row; keep weight derived (null) and seed with known 1RM if we have it
     const draft = {
       liftId: spec.liftId,
       sets: spec.sets,
       reps: spec.reps,
       intensityPct: spec.intensityPct,
-      weight: null,
+      weight: null,                        // derived from 1RM for display
       orm: getKnown1RM(spec.liftId) ?? null,
     };
 
@@ -84,98 +129,6 @@ function generateFromMinutes(minutes, startIndex) {
 
   return { rows, nextIndex: i };
 }
-
-// ---------- modal ----------
-function PlanModal({
-  open,
-  minutes,
-  rows,
-  setRows,
-  successMarks,
-  setSuccessMarks,
-  onCancel,
-  onComplete,
-}) {
-  useEffect(() => {
-    if (open) setSuccessMarks(rows.map((_, i) => successMarks?.[i] || false));
-  }, [open, rows, setSuccessMarks, successMarks]);
-
-  if (!open) return null;
-
-  return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(0,0,0,0.45)",
-        display: "grid",
-        placeItems: "center",
-        zIndex: 50,
-      }}
-    >
-      <div
-        style={{
-          background: "#fff",
-          width: "min(840px, 94vw)",
-          borderRadius: 12,
-          padding: 16,
-          boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
-        }}
-      >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h3 style={{ margin: 0 }}>Today’s workout</h3>
-          <button onClick={onCancel} aria-label="close">✕</button>
-        </div>
-
-        <SessionPlanner
-          targetMinutes={minutes}
-          value={rows}
-          onChange={(next) => {
-            setRows(next);
-            setSuccessMarks((prev = []) => next.map((_, i) => prev[i] || false));
-          }}
-          hidePicker
-          successMarks={successMarks}
-          onToggleSuccess={(i, val) =>
-            setSuccessMarks((prev) => {
-              const arr = prev.slice();
-              arr[i] = val;
-              return arr;
-            })
-          }
-        />
-
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 12 }}>
-          <button
-  onMouseDown={() => document.activeElement?.blur()}
-  onClick={onCancel}
-  aria-label="close"
->
-  ✕
-</button>
-          <button
-  onMouseDown={() => {
-    // Ensure any focused weight input blurs *before* click
-    if (document.activeElement && document.activeElement.blur) {
-      document.activeElement.blur();
-    }
-  }}
-  onClick={() => {
-    // Let the onBlur commit update state first, then save
-    setTimeout(onComplete, 0);
-  }}
-  style={{ background: "#0a7", color: "#fff", border: "none", padding: "8px 12px", borderRadius: 8 }}
->
-  Complete workout
-</button>
-
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ---------- page ----------
 export default function TodaysWorkout() {
   const [minutes, setMinutes] = useState(60);
   const [rows, setRows] = useState([]);
@@ -188,6 +141,7 @@ export default function TodaysWorkout() {
 
   useEffect(() => {
     (async () => {
+      await syncOrmsFromDb();                        // ← seed planner with DB 1RMs
       const idx = await getConsumedIndexThisWeek({ supabase });
       setConsumedIdx(idx);
       setRemaining(Math.max(0, WEEKLY_SEQUENCE.length - idx));
@@ -209,14 +163,12 @@ export default function TodaysWorkout() {
     setSuccessMarks(planRows.map(() => false));
     setOpen(true);
 
-    // optimistic advance; confirmed after save
     setConsumedIdx(nextIndex);
     setRemaining(Math.max(0, WEEKLY_SEQUENCE.length - nextIndex));
   }
 
   async function saveToDb() {
     const name = nowLabel(minutes);
-
     const { data: auth } = await supabase.auth.getUser();
     const user = auth?.user;
     if (!user) {
@@ -233,11 +185,12 @@ export default function TodaysWorkout() {
     if (rErr) throw rErr;
 
     const items = rows.map((rw) => {
-      // If user typed weight, infer 1RM from it; otherwise use row.orm or stored 1RM
-      const typedOne = estimate1RMFromWeight({
-        weight: rw.weight,
+       const typedOne = estimate1RMFromWeight({
+        weight: rw.weight,                 // BAR weight if user typed one
         intensityPct: rw.intensityPct,
         sets: rw.sets,
+        liftId: rw.liftId,
+        bodyweight: getKnownBodyweight() ?? 0,
       });
 
       const oneRM = Number.isFinite(rw.orm)
@@ -246,14 +199,15 @@ export default function TodaysWorkout() {
         ? typedOne
         : getKnown1RM(rw.liftId) ?? null;
 
-      // Persist concrete working weight (typed or derived)
-      const target_weight = Number.isFinite(rw.weight)
-        ? rw.weight
-        : weightFrom1RM({
-            oneRM,
-            intensityPct: rw.intensityPct,
-            sets: rw.sets,
-          });
+      const target_weight =
+        rw.weight ??
+        weightFrom1RM({
+          oneRM,
+          intensityPct: rw.intensityPct,
+          sets: rw.sets,
+          liftId: rw.liftId,
+          bodyweight: getKnownBodyweight() ?? 0,
+        });
 
       return {
         routine_id: routine.id,
@@ -273,17 +227,12 @@ export default function TodaysWorkout() {
 
   async function handleComplete() {
     try {
-      // Save this session
       await saveToDb();
-      rows.forEach((rw) => {
-  if (Number.isFinite(rw.orm) && rw.orm > 0) {
-    setKnown1RM(rw.liftId, Math.round(rw.orm));
-  }
-});
 
-      // Apply overload to checked lifts
-      rows.forEach((rw, idx) => {
-        if (!successMarks[idx]) return;
+      // Progressive overload for each successful exercise
+      for (let idx = 0; idx < rows.length; idx++) {
+        if (!successMarks[idx]) continue;
+        const rw = rows[idx];
 
         const base =
           (Number.isFinite(rw.orm) ? rw.orm : null) ??
@@ -294,15 +243,18 @@ export default function TodaysWorkout() {
             sets: rw.sets,
           });
 
-        if (Number.isFinite(base)) bumpOneRMPercent(rw.liftId, base, 2.5);
-      });
+        if (Number.isFinite(base)) {
+          const bumped = bumpOneRMPercent(rw.liftId, base, 2.5); // local
+          if (Number.isFinite(bumped)) {
+            await upsertOrm(rw.liftId, bumped);                  // DB mirror
+          }
+        }
+      }
 
-      // Refresh position based on DB
       const newIdx = await getConsumedIndexThisWeek({ supabase });
       setConsumedIdx(newIdx);
       setRemaining(Math.max(0, WEEKLY_SEQUENCE.length - newIdx));
 
-      // Reset UI
       setOpen(false);
       setRows([]);
       setSuccessMarks([]);
@@ -337,16 +289,82 @@ export default function TodaysWorkout() {
         </div>
       </div>
 
-      <PlanModal
-        open={open}
-        minutes={minutes}
-        rows={rows}
-        setRows={setRows}
-        successMarks={successMarks}
-        setSuccessMarks={setSuccessMarks}
-        onCancel={() => setOpen(false)}
-        onComplete={handleComplete}
-      />
+      {/* Modal with scrollable body */}
+      {open && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.45)",
+            display: "grid",
+            placeItems: "center",
+            zIndex: 50,
+          }}
+        >
+          <div
+            style={{
+              background: "#fff",
+              width: "min(900px, 95vw)",
+              maxHeight: "85vh",
+              overflowY: "auto",
+              borderRadius: 12,
+              padding: 16,
+              boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <h3 style={{ margin: 0 }}>Today’s workout</h3>
+              <button
+                onMouseDown={() => document.activeElement?.blur()}
+                onClick={() => setOpen(false)}
+                aria-label="close"
+              >
+                ✕
+              </button>
+            </div>
+
+            <SessionPlanner
+              targetMinutes={minutes}
+              value={rows}
+              onChange={(next) => {
+                setRows(next);
+                setSuccessMarks((prev = []) => next.map((_, i) => prev[i] || false));
+              }}
+              hidePicker
+              successMarks={successMarks}
+              onToggleSuccess={(i, val) =>
+                setSuccessMarks((prev) => {
+                  const arr = prev.slice();
+                  arr[i] = val;
+                  return arr;
+                })
+              }
+            />
+
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 12 }}>
+              <button
+                onMouseDown={() => document.activeElement?.blur()}
+                onClick={() => setOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                onMouseDown={() => document.activeElement?.blur()}
+                onClick={() => setTimeout(handleComplete, 0)}
+                style={{
+                  background: "#0a7",
+                  color: "#fff",
+                  border: "none",
+                  padding: "8px 12px",
+                  borderRadius: 8,
+                }}
+              >
+                Complete workout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

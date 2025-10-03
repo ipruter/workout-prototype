@@ -32,7 +32,7 @@ export const CATALOG_BY_ID = {
   pullup:       { name: "Pull-Up",                         C: 55, type: "bodyweight" },
 
   // Squat / Hinge / Lower
-  squat_hb:     { name: "Back Squat",          C: 95, type: "barbell" },
+  squat_hb:     { name: "Back Squat",          C: 95, type: "barbell", bwPct: 0.70},
   squat_lb:     { name: "Back Squat (Low-Bar)",           C: 95, type: "barbell" },
   front_sqt:    { name: "Front Squat",                    C: 92, type: "barbell" },
   goblet_sqt:   { name: "Goblet Squat",                   C: 55, type: "dumbbell" },

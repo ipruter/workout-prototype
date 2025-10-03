@@ -1,26 +1,16 @@
 // --- Per-set intensity decay ---
 // Your table matches ~exp(-0.1*(n-1)) ≈ 0.905^(n-1)
 // n=1 → 1.000, n=2 → 0.905, n=3 → 0.819, n=4 → 0.741, n=5 → 0.670, n=6 → 0.607
+import { getKnownBodyweight, getLiftBodyweightPct } from "./bodyweight";
+
 export function setDecayFactor(n = 1) {
   const k = -0.1; // tweak if you want closer to 0.905 exactly
   return Math.exp(k * (Math.max(1, n) - 1));
 }
 
-// Estimate 1RM from a single session prescription
-// 1RM ≈ weight / ( intensity% * decay(sets) )
-export function estimate1RMFromWeight({
-  weight,
-  intensityPct = 75,
-  sets = 1,
-}) {
-  const w = Number(weight);
-  const ip = Number(intensityPct);
-  const s = Math.max(1, Number(sets) || 1);
-  if (!Number.isFinite(w) || w <= 0 || !Number.isFinite(ip) || ip <= 0) return null;
-  const decay = setDecayFactor(s);           // e.g., 3 sets → 0.819
-  const frac = (ip / 100) * decay;           // effective fraction of 1RM for this row
-  if (frac <= 0) return null;
-  return w / frac;
+export function roundTo(x, inc = 5) {
+  if (!Number.isFinite(x)) return null;
+  return Math.round(x / inc) * inc;
 }
 
 // Warm-up sets scale with **working weight** (not 1RM)
@@ -30,11 +20,61 @@ export function warmupSetsForWeight(W, { a = 0.5, b = 0.8, Smax = 7 } = {}) {
   return Math.max(1, Math.min(Smax, s));
 }
 
-export function roundTo(x, inc = 5) {
-  if (!Number.isFinite(x)) return null;
-  return Math.round(x / inc) * inc;
+/* ------------------------------ 1RM + Bodyweight ----------------------------- */
+
+function bodyweightContribution(liftId, overrideBW = null) {
+  const bw = Number.isFinite(overrideBW) ? overrideBW : getKnownBodyweight();
+  const pct = getLiftBodyweightPct(liftId);
+  if (!Number.isFinite(bw) || bw <= 0 || !Number.isFinite(pct) || pct <= 0) return 0;
+  return bw * pct;
 }
 
+/**
+ * Estimate 1RM from a single session prescription.
+ * BAR weight is what the user typed; we add BW% behind the scenes.
+ * 1RM ≈ (bar + bwPct*BW) / ( intensity% * decay(sets) )
+ */
+export function estimate1RMFromWeight({
+  weight,           // BAR weight user entered
+  intensityPct = 75,
+  sets = 1,
+  liftId = null,    // used for bw% lookup
+  bodyweight = null // optional override
+}) {
+  const bar = Number(weight);
+  const ip = Number(intensityPct);
+  const s  = Math.max(1, Number(sets) || 1);
+  if (!Number.isFinite(bar) || bar <= 0 || !Number.isFinite(ip) || ip <= 0) return null;
+
+  const decay = setDecayFactor(s);
+  const eff = bar + bodyweightContribution(liftId, bodyweight); // working weight moved
+  const frac = (ip / 100) * decay;
+  if (frac <= 0) return null;
+  return eff / frac;
+}
+
+/**
+ * Convert 1RM → BAR weight for a given sets/intensity, accounting for BW%.
+ * BAR ≈ (1RM * intensity% * decay(sets)) - (bwPct * BW)
+ */
+export function weightFrom1RM({
+  oneRM,
+  intensityPct,
+  sets,
+  liftId = null,
+  bodyweight = null
+}) {
+  if (!Number.isFinite(oneRM) || !Number.isFinite(intensityPct) || !Number.isFinite(sets)) {
+    return null;
+  }
+  const fatigue = setDecayFactor(sets); // same attenuation
+  const working = oneRM * (intensityPct / 100) * fatigue;  // total moved
+  const bar = working - bodyweightContribution(liftId, bodyweight);
+  const barPos = Math.max(0, bar);
+  return roundTo(barPos, 5);
+}
+
+/* ----------------------------- Catalog 1RM store ----------------------------- */
 // Try common stores for known 1RMs
 export function getKnown1RM(liftId) {
   const keys = ["orm-v1", "orms-v1", "one_rep_maxes", "1rm"];
@@ -45,36 +85,6 @@ export function getKnown1RM(liftId) {
     } catch {}
   }
   return null;
-}
-
-// Prefer explicit **weight**; fall back to 1RM→weight; else default 15 min.
-export function estimateExerciseMinutes({
-  liftId,
-  sets = 3,
-  intensityPct = 75,
-  // these may or may not exist on the row:
-  weight = null,
-  orm = null,
-}) {
-  let working = Number(weight);
-
-  if (!Number.isFinite(working) || working <= 0) {
-    const knownOrm = Number.isFinite(orm) ? orm : getKnown1RM(liftId);
-    if (Number.isFinite(knownOrm)) {
-      working = roundTo((knownOrm * (Number(intensityPct) || 0)) / 100, 5);
-    }
-  }
-
-  if (!Number.isFinite(working) || working <= 0) {
-    return 15; // fallback when weight is unknown
-  }
-
-  const wu = warmupSetsForWeight(working);
-  return wu * 1.5 + (Number(sets) || 0) * 3.0;
-}
-
-export function totalMinutes(rows = []) {
-  return rows.reduce((acc, r) => acc + estimateExerciseMinutes(r), 0);
 }
 
 // --- 1RM persistence & overload helpers ---
@@ -94,19 +104,45 @@ export function bumpOneRMPercent(liftId, baseOrm, pct = 2.5) {
   return bumped;
 }
 
-// 1 set: 1.00, 2: 0.905, 3: 0.819, 4: 0.741, 5: 0.670, 6: 0.607 ...
+/* ----------------------------- Time budgeting ------------------------------- */
+/**
+ * Prefer explicit BAR weight; fall back to 1RM→BAR; else default 15 min.
+ * Warmups are computed from **working** (bar + bw%) weight.
+ */
+export function estimateExerciseMinutes({
+  liftId,
+  sets = 3,
+  intensityPct = 75,
+  weight = null, // BAR (typed) if present
+  orm = null,
+}) {
+  const s = Math.max(1, Number(sets) || 1);
+  const ip = Number(intensityPct);
+
+  // 1) Try explicit BAR weight
+  let bar = Number(weight);
+  if (!Number.isFinite(bar) || bar <= 0) {
+    // 2) Derive BAR weight from 1RM if we have one
+    const knownOrm = Number.isFinite(orm) ? orm : getKnown1RM(liftId);
+    if (Number.isFinite(knownOrm) && Number.isFinite(ip)) {
+      const maybeBar = weightFrom1RM({ oneRM: knownOrm, intensityPct: ip, sets: s, liftId });
+      if (Number.isFinite(maybeBar)) bar = maybeBar;
+    }
+  }
+  if (!Number.isFinite(bar) || bar <= 0) return 15; // fallback when unknown
+
+  // Warmups depend on **working** weight (bar + BW%)
+  const working = bar + bodyweightContribution(liftId);
+  const wu = warmupSetsForWeight(working);
+  return wu * 1.5 + s * 3.0;
+}
+
+export function totalMinutes(rows = []) {
+  return rows.reduce((acc, r) => acc + estimateExerciseMinutes(r), 0);
+}
+
+/* ------------------------------ Legacy helpers ------------------------------ */
 export function setAttenuation(sets) {
   const n = Math.max(1, Number(sets) || 1);
   return Math.exp(-0.1 * (n - 1));
 }
-
-export function weightFrom1RM({ oneRM, intensityPct, sets }) {
-  if (!Number.isFinite(oneRM) || !Number.isFinite(intensityPct) || !Number.isFinite(sets)) {
-    return null;
-  }
-  // per-set fatigue: ~exp(-0.1*(sets-1)) like we discussed
-  const fatigue = Math.exp(-0.1 * (sets - 1));   // Set1=1.00, Set3≈0.82, Set6≈0.61
-  const raw = oneRM * (intensityPct / 100) * fatigue;
-  return Math.round(raw / 5) * 5;                // round to nearest 5
-}
-

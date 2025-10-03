@@ -7,11 +7,19 @@ import {
   getKnown1RM,
   estimate1RMFromWeight,
   weightFrom1RM,
-  setKnown1RM,
-  
 } from "../utils/timeBudget";
+import { getBodyweight, setBodyweight } from "../utils/bodyweight";
 
-// ---------- one exercise row card ----------
+
+
+
+// ---------- helpers ----------
+const toNumOrNull = (v) => {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+};
+
+// ---------- one exercise row ----------
 function ExerciseCard({
   row,
   onChange,
@@ -22,78 +30,95 @@ function ExerciseCard({
 }) {
   const lift = CATALOG_BY_ID[row.liftId];
   const localOrm = getKnown1RM(row.liftId);
+  const baseOneRM = Number.isFinite(row.orm) ? row.orm : localOrm;
+  const bodyweight = (typeof getKnownBodyweight === "function" ? getKnownBodyweight() : 0) ?? 0;
 
-  // quick e1RM readout from whatever is typed
-  const e1rm = estimate1RMFromWeight({
-    weight: row.weight,
-    intensityPct: row.intensityPct,
-    sets: row.sets,
-  });
-
-  // base 1RM we use to derive a working weight
-  const baseOneRM = Number.isFinite(row.orm) ? row.orm : getKnown1RM(row.liftId);
-
-  // derived working weight from (1RM, intensity, sets) — rounds to /5
+  // Derived BAR weight from 1RM (display whenever row.weight is null)
   const derivedWeight = useMemo(() => {
+    if (!Number.isFinite(baseOneRM)) return null;
     return weightFrom1RM({
       oneRM: baseOneRM,
-      intensityPct: row.intensityPct,
-      sets: row.sets,
+      intensityPct: row.intensityPct ?? 75,
+      sets: row.sets ?? 1,
+      liftId: row.liftId,
+      bodyweight,
     });
-  }, [baseOneRM, row.intensityPct, row.sets]);
+  }, [baseOneRM, row.intensityPct, row.sets, row.liftId, bodyweight]);
 
-  // --- Weight input "draft" so typing isn't overridden by derivation ---
-  const [isEditingWeight, setIsEditingWeight] = useState(false);
-  const [weightDraft, setWeightDraft] = useState("");
+  // Local edit buffers to avoid the "always starts at 1" issue
+  const [setsText, setSetsText] = useState(row.sets != null ? String(row.sets) : "");
+  const [repsText, setRepsText] = useState(row.reps != null ? String(row.reps) : "");
+  const [intensityText, setIntensityText] = useState(
+    row.intensityPct != null ? String(row.intensityPct) : ""
+  );
 
-  // Keep the visible text in sync with derived value whenever we're NOT editing
+  useEffect(() => { setSetsText(row.sets != null ? String(row.sets) : ""); }, [row.sets]);
+  useEffect(() => { setRepsText(row.reps != null ? String(row.reps) : ""); }, [row.reps]);
   useEffect(() => {
-    if (!isEditingWeight) {
-      const current = row.weight ?? derivedWeight ?? "";
-      setWeightDraft(current === "" ? "" : String(current));
-    }
-  }, [row.weight, derivedWeight, isEditingWeight]);
+    setIntensityText(row.intensityPct != null ? String(row.intensityPct) : "");
+  }, [row.intensityPct]);
 
-  // Commit draft to state: infer 1RM from typed weight, keep weight derived (null)
-  function commitWeightDraft() {
-  setIsEditingWeight(false);
+  // Weight editing (BAR weight). While typing we show the raw string; onBlur we infer 1RM.
+  const [editingW, setEditingW] = useState(false);
+  const [weightText, setWeightText] = useState("");
 
-  const txt = weightDraft.trim();
-  if (txt === "") {
-    // cleared -> go back to derived
-    onChange({ ...row, weight: null });
-    return;
-  }
+  // Keep the weight text in sync when NOT editing
+  useEffect(() => {
+    if (editingW) return;
+    const shown = row.weight ?? derivedWeight;
+    setWeightText(shown == null ? "" : String(shown));
+  }, [editingW, row.weight, derivedWeight]);
 
-  const w = Number(txt);
-  if (Number.isFinite(w) && w > 0) {
-    const inferred = estimate1RMFromWeight({
-      weight: w,
-      intensityPct: row.intensityPct,
-      sets: row.sets,
-    });
-    if (Number.isFinite(inferred)) {
-      // ⬅️ persist to global store so all contexts see the updated 1RM
-      setKnown1RM(row.liftId, Math.round(inferred));
-    }
-    // keep weight derived (null), but carry the new 1RM in-row too
-    onChange({ ...row, orm: inferred ?? row.orm ?? null, weight: null });
-  }
-}
+  // Quick helpers
+  const toNum = (v) => {
+    const n = Number(v);
+    return Number.isFinite(n) ? n : null;
+  };
 
-
-  // Any change that should make weight re-derive uses this helper
-  function applyRecalcWeight(patch = {}) {
-    onChange({ ...row, ...patch, weight: null });
-  }
+  // Display helpers
+  const e1rm = estimate1RMFromWeight({
+    weight: row.weight ?? derivedWeight, // BAR
+    intensityPct: row.intensityPct,
+    sets: row.sets,
+    liftId: row.liftId,
+    bodyweight,
+  });
 
   const minutes = estimateExerciseMinutes({
     liftId: row.liftId,
     sets: row.sets,
     intensityPct: row.intensityPct,
-    weight: row.weight,
+    weight: row.weight, // BAR if explicitly set
     orm: row.orm ?? localOrm,
   });
+
+  // Keep weight “derived” whenever set/intensity/1RM change
+  function applyRecalcWeight(patch = {}) {
+    onChange({ ...row, ...patch, weight: null });
+  }
+
+  function commitWeightFromText() {
+    setEditingW(false);
+    const w = Number(weightText);
+    if (!Number.isFinite(w) || w <= 0) {
+      // invalid/cleared → go back to derived
+      onChange({ ...row, weight: null });
+      return;
+    }
+    // infer 1RM from typed BAR weight using bodyweight-aware math
+    const inferred = estimate1RMFromWeight({
+      weight: w, // BAR
+      intensityPct: row.intensityPct,
+      sets: row.sets,
+      liftId: row.liftId,
+      bodyweight,
+    });
+    onChange({
+      ...row,
+      orm: inferred ? Math.round(inferred) : (row.orm ?? null),
+      weight: null, // keep derived going forward
+    });
+  }
 
   return (
     <div style={{ border: "1px solid #e3e3e3", borderRadius: 12, padding: 12, marginTop: 10 }}>
@@ -104,6 +129,8 @@ function ExerciseCard({
               type="checkbox"
               checked={!!checked}
               onChange={(e) => onToggleCheck?.(e.target.checked)}
+              style={{ width: 18, height: 18, accentColor: "#0a7" }}
+              aria-label="Mark this exercise successful"
             />
           )}
           <div style={{ fontWeight: 600 }}>{lift?.name || row.liftId}</div>
@@ -111,24 +138,24 @@ function ExerciseCard({
         <button onClick={onRemove} aria-label="remove">✕</button>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(6, minmax(0, 1fr))",
-          gap: 8,
-          marginTop: 10,
-        }}
-      >
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(6, minmax(0, 1fr))", gap: 8, marginTop: 10 }}>
         {/* Sets */}
         <label style={{ fontSize: 12 }}>
           <div>Sets</div>
           <input
             type="number"
-            min="1"
-            value={row.sets ?? 1}
+            inputMode="numeric"
+            value={setsText}
             onChange={(e) => {
-              const sets = Number(e.target.value) || 1;
-              applyRecalcWeight({ sets });
+              const txt = e.target.value;
+              setSetsText(txt);
+              const n = toNum(txt);
+              if (Number.isFinite(n) && n > 0) applyRecalcWeight({ sets: n });
+            }}
+            onBlur={() => {
+              if (setsText === "") {
+                setSetsText(String(row.sets ?? 1));
+              }
             }}
           />
         </label>
@@ -138,9 +165,19 @@ function ExerciseCard({
           <div>Reps</div>
           <input
             type="number"
-            min="1"
-            value={row.reps ?? 1}
-            onChange={(e) => onChange({ ...row, reps: +e.target.value })}
+            inputMode="numeric"
+            value={repsText}
+            onChange={(e) => {
+              const txt = e.target.value;
+              setRepsText(txt);
+              const n = toNum(txt);
+              if (Number.isFinite(n) && n > 0) onChange({ ...row, reps: n });
+            }}
+            onBlur={() => {
+              if (repsText === "") {
+                setRepsText(String(row.reps ?? 1));
+              }
+            }}
           />
         </label>
 
@@ -149,36 +186,43 @@ function ExerciseCard({
           <div>Intensity %</div>
           <input
             type="number"
-            step="1"
-            value={row.intensityPct ?? ""}
+            inputMode="decimal"
+            value={intensityText}
             onChange={(e) => {
-              const intensityPct = Number.isFinite(+e.target.value) ? +e.target.value : null;
-              applyRecalcWeight({ intensityPct });
+              const txt = e.target.value;
+              setIntensityText(txt);
+              const n = toNum(txt);
+              // Apply live so weight re-derives as you type valid numbers
+              if (Number.isFinite(n) && n >= 0) applyRecalcWeight({ intensityPct: n });
+            }}
+            onBlur={() => {
+              if (intensityText === "") {
+                setIntensityText(String(row.intensityPct ?? 75));
+              }
             }}
             style={{ width: 100 }}
           />
         </label>
 
-        {/* Weight — uses local draft while editing */}
+        {/* Weight (BAR) */}
         <label style={{ fontSize: 12 }}>
           <div>Weight</div>
           <input
             type="number"
             step="5"
             placeholder="e.g. 225"
-            value={weightDraft}
+            value={weightText}
             onFocus={() => {
-              setIsEditingWeight(true);
-              setWeightDraft(String(row.weight ?? derivedWeight ?? ""));
+              setEditingW(true);
+              const shown = row.weight ?? derivedWeight;
+              setWeightText(shown == null ? "" : String(shown));
             }}
-            onChange={(e) => setWeightDraft(e.target.value)}
-            onBlur={commitWeightDraft}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") e.currentTarget.blur(); // triggers onBlur -> commit
-            }}
+            onChange={(e) => setWeightText(e.target.value)}
+            onBlur={commitWeightFromText}
           />
         </label>
-        {/* 1RM (manual) */}
+
+        {/* 1RM manual */}
         <label style={{ fontSize: 12 }}>
           <div>1RM (manual)</div>
           <input
@@ -187,15 +231,13 @@ function ExerciseCard({
             value={row.orm ?? ""}
             onChange={(e) => {
               const nextOrm = e.target.value === "" ? null : +e.target.value;
+              // Setting 1RM should keep weight derived from it
               applyRecalcWeight({ orm: nextOrm });
-                 if (Number.isFinite(nextOrm) && nextOrm > 0) {
-               setKnown1RM(row.liftId, Math.round(nextOrm));
-                 }
             }}
           />
         </label>
 
-        {/* Time & e1RM readouts */}
+        {/* Readouts */}
         <div style={{ alignSelf: "end", fontSize: 12, textAlign: "right" }}>
           ≈ {minutes.toFixed(1)} min
           <div style={{ opacity: 0.75 }}>
@@ -206,6 +248,7 @@ function ExerciseCard({
     </div>
   );
 }
+
 
 // ---------- planner ----------
 export default function SessionPlanner({
@@ -219,9 +262,7 @@ export default function SessionPlanner({
   const [rows, setRows] = useState(value);
   const [selectId, setSelectId] = useState("");
 
-  useEffect(() => {
-    setRows(value || []);
-  }, [value]);
+  useEffect(() => { setRows(value || []); }, [value]);
 
   const opts = useMemo(
     () =>
@@ -244,7 +285,7 @@ export default function SessionPlanner({
       sets: 3,
       reps: 6,
       intensityPct: 75,
-      weight: knownOrm ? Math.round((knownOrm * 0.75) / 5) * 5 : null,
+      weight: null,         // derive from 1RM for display
       orm: knownOrm ?? null,
     };
     commit([...rows, defaultRow]);
@@ -284,6 +325,13 @@ export default function SessionPlanner({
         </div>
       </div>
 
+      {Array.isArray(successMarks) && (
+        <div style={{ fontSize: 12, opacity: 0.8, marginTop: 6, textAlign: "left" }}>
+          <strong>Success?</strong> Check only if you completed <em>all sets & all reps</em>.
+          Checked items will increase 1RM by 2.5% after saving.
+        </div>
+      )}
+
       {rows.map((r, i) => (
         <ExerciseCard
           key={i}
@@ -295,7 +343,7 @@ export default function SessionPlanner({
           }}
           onRemove={() => removeAt(i)}
           withCheckbox={Array.isArray(successMarks)}
-          checked={successMarks?.[i] || false}
+          checked={!!successMarks?.[i]}
           onToggleCheck={(val) => onToggleSuccess?.(i, val)}
         />
       ))}
