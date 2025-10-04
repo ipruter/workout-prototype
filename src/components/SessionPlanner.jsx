@@ -8,7 +8,7 @@ import {
   estimate1RMFromWeight,
   weightFrom1RM,
 } from "../utils/timeBudget";
-import { getBodyweight, setBodyweight } from "../utils/bodyweight";
+import { getBodyweight } from "../utils/bodyweight";
 
 
 
@@ -31,7 +31,7 @@ function ExerciseCard({
   const lift = CATALOG_BY_ID[row.liftId];
   const localOrm = getKnown1RM(row.liftId);
   const baseOneRM = Number.isFinite(row.orm) ? row.orm : localOrm;
-  const bodyweight = (typeof getKnownBodyweight === "function" ? getKnownBodyweight() : 0) ?? 0;
+  const bodyweight = getBodyweight() ?? 0;
 
   // Derived BAR weight from 1RM (display whenever row.weight is null)
   const derivedWeight = useMemo(() => {
@@ -100,7 +100,7 @@ function ExerciseCard({
   function commitWeightFromText() {
     setEditingW(false);
     const w = Number(weightText);
-    if (!Number.isFinite(w) || w <= 0) {
+    if (!Number.isFinite(w)) {
       // invalid/cleared → go back to derived
       onChange({ ...row, weight: null });
       return;
@@ -111,7 +111,6 @@ function ExerciseCard({
       intensityPct: row.intensityPct,
       sets: row.sets,
       liftId: row.liftId,
-      bodyweight,
     });
     onChange({
       ...row,

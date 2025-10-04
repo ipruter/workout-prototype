@@ -3,46 +3,47 @@ import { CATALOG_BY_ID } from "../data/lifts";
 
 const KEY = "bw-v1";
 
-/**
- * Read the user's bodyweight (lbs) from localStorage.
- * Returns a positive number, or null if unknown.
- */
-export function getKnownBodyweight() {
+/** Read bodyweight (lbs) or null if not set/invalid */
+export function getBodyweight() {
   try {
-    const v = localStorage.getItem(KEY);
-    const n = Number(v);
+    const raw = localStorage.getItem(KEY);
+    if (raw == null) return null;
+    const n = parseFloat(raw);
     return Number.isFinite(n) && n > 0 ? n : null;
   } catch {
     return null;
   }
 }
 
-/**
- * Persist the user's bodyweight (lbs) to localStorage.
- * Pass null/empty/invalid to clear it.
- */
-export function setKnownBodyweight(v) {
+/** Save bodyweight (lbs). Silently ignores invalid values. */
+export function setBodyweight(value) {
   try {
-    const n = Number(v);
-    if (Number.isFinite(n) && n > 0) {
-      localStorage.setItem(KEY, String(n));
-    } else {
-      localStorage.removeItem(KEY);
-    }
+    const n = parseFloat(value);
+    if (!Number.isFinite(n) || n <= 0) return;
+    localStorage.setItem(KEY, String(n));
   } catch {}
 }
 
-/**
- * Per-lift bodyweight percentage (0..1) from your catalog.
- * Falls back to 0 if not present.
- */
-export function getLiftBodyweightPct(liftId) {
-  try {
-    const pct = CATALOG_BY_ID?.[liftId]?.bwPct;
-    const n = Number(pct);
-    return Number.isFinite(n) && n > 0 ? n : 0;
-  } catch {
-    return 0;
-  }
+/** Optional helpers */
+export function clearBodyweight() {
+  try { localStorage.removeItem(KEY); } catch {}
+}
+export function hasBodyweight() {
+  return getBodyweight() != null;
 }
 
+/**
+ * Per-lift bodyweight percentage (0..1).
+ * Reads `bwPct` off your lift catalog entry; defaults to 0 if missing.
+ */
+export function getLiftBodyweightPct(liftId) {
+  const pct = CATALOG_BY_ID?.[liftId]?.bwPct;
+  return Number.isFinite(pct) && pct > 0 ? pct : 0;
+}
+
+/* Back-compat alias if any old code referenced this name */
+export const getKnownBodyweight = getBodyweight;
+
+if (typeof window !== "undefined" && !window.getKnownBodyweight) {
+  window.getKnownBodyweight = getBodyweight;
+}

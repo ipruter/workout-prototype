@@ -229,6 +229,39 @@ export default function TodaysWorkout() {
     try {
       await saveToDb();
 
+      // 1) Persist a baseline 1RM for every row we generated (new lifts will now get saved)
+rows.forEach((rw) => {
+  const baseline =
+    (Number.isFinite(rw.orm) ? rw.orm : null) ??
+    estimate1RMFromWeight({
+      weight: rw.weight,
+      intensityPct: rw.intensityPct,
+      sets: rw.sets,
+      liftId: rw.liftId,       // if your estimator uses liftId/bodyweight
+    });
+
+  if (Number.isFinite(baseline) && baseline > 0) {
+    setKnown1RM(rw.liftId, Math.round(baseline));  // local + DB upsert
+  }
+});
+
+// 2) Apply progressive overload for checked rows (this also calls setKnown1RM under the hood)
+rows.forEach((rw, idx) => {
+  if (!successMarks[idx]) return;
+  const base =
+    (Number.isFinite(rw.orm) ? rw.orm : null) ??
+    getKnown1RM(rw.liftId) ??
+    estimate1RMFromWeight({
+      weight: rw.weight,
+      intensityPct: rw.intensityPct,
+      sets: rw.sets,
+      liftId: rw.liftId,
+    });
+
+  if (Number.isFinite(base)) bumpOneRMPercent(rw.liftId, base, 2.5); // saves to DB via setKnown1RM
+});
+
+
       // Progressive overload for each successful exercise
       for (let idx = 0; idx < rows.length; idx++) {
         if (!successMarks[idx]) continue;

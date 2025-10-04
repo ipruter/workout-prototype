@@ -10,7 +10,7 @@ export const CATALOG_BY_ID = {
   db_bench:     { name: "Bench Press (Dumbbell)",        C: 60, type: "dumbbell" },
   incline_bb:   { name: "Incline Bench Press (Barbell)", C: 50, type: "barbell" },
   pushup:       { name: "Push-Up",                        C: 35, type: "bodyweight" },
-  dip:          { name: "Dip",                            C: 55, type: "bodyweight" },
+  dip:          { name: "Dip",                            C: 55, type: "bodyweight", bwPct: 1 },
   seated_french_press: { name: "Seated French Press", C: 8, type: "EZ curl" },
 
   // Shoulders / Delts
@@ -28,16 +28,16 @@ export const CATALOG_BY_ID = {
   row_db:       { name: "Dumbbell Row",                   C: 45, type: "dumbbell" },
   row_cable:    { name: "Seated Cable Row",               C: 40, type: "machine" },
   pulldown:     { name: "Lat Pulldown",                   C: 45, type: "machine" },
-  chinup:       { name: "Chin-Up",                        C: 55, type: "bodyweight" },
-  pullup:       { name: "Pull-Up",                         C: 55, type: "bodyweight" },
+  chinup:       { name: "Chin-Up",                        C: 55, type: "bodyweight", bwPct: 1  },
+  pullup:       { name: "Pull-Up",                         C: 55, type: "bodyweight", bwPct: 1  },
 
   // Squat / Hinge / Lower
-  squat_hb:     { name: "Back Squat",          C: 95, type: "barbell", bwPct: 0.70},
+  squat_hb:     { name: "Back Squat",          C: 95, type: "barbell", bwPct: 0.823},
   squat_lb:     { name: "Back Squat (Low-Bar)",           C: 95, type: "barbell" },
   front_sqt:    { name: "Front Squat",                    C: 92, type: "barbell" },
   goblet_sqt:   { name: "Goblet Squat",                   C: 55, type: "dumbbell" },
   dl_conv:      { name: "Conventional Deadlift",          C: 100,type: "barbell" },
-  dl_rdl:       { name: "Romanian Deadlift",              C: 80, type: "barbell" },
+  dl_rdl:       { name: "Romanian Deadlift",              C: 80, type: "barbell", bwPct: 0.8242 },
   hip_thrust:   { name: "Hip Thrust",                     C: 75, type: "barbell" },
   leg_press:    { name: "Leg Press",                      C: 40, type: "machine" },
   split_sqt:    { name: "Bulgarian Split Squat",          C: 55, type: "dumbbell" },
