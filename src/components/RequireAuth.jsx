@@ -5,17 +5,22 @@ import { supabase } from "../lib/supabaseClient";
 
 export default function RequireAuth() {
   const nav = useNavigate();
-  const [checked, setChecked] = useState(false);
+  const [checking, setChecking] = useState(true);
 
   useEffect(() => {
     let unsub;
+
     (async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) nav("/signin");
-      else setChecked(true);
+      if (!session) {
+        nav("/signin", { replace: true });
+        setChecking(false);
+      } else {
+        setChecking(false);
+      }
 
-      const { data: sub } = supabase.auth.onAuthStateChange((_evt, s) => {
-        if (!s) nav("/signin");
+      const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+        if (!s) nav("/signin", { replace: true });
       });
       unsub = () => sub.subscription.unsubscribe();
     })();
@@ -23,6 +28,7 @@ export default function RequireAuth() {
     return () => { if (unsub) unsub(); };
   }, [nav]);
 
-  // Optionally show a tiny loader here
-  return checked ? <Outlet /> : null;
+  // render nothing (or a spinner) while deciding
+  if (checking) return null;
+  return <Outlet />;
 }

@@ -1,10 +1,15 @@
+// src/App.jsx
 import { Routes, Route, Link, Outlet } from "react-router-dom";
+
+// pages
 import Home from "./pages/Home.jsx";
 import Heatmap from "./pages/HeatmapRegions.jsx";
 import ThisWeeksWorkout from "./pages/ThisWeeksWorkout.jsx";
 import TodaysWorkout from "./pages/TodaysWorkout.jsx";
 import SignIn from "./pages/SignIn.jsx";
 import SignUp from "./pages/SignUp.jsx";
+
+// auth guard
 import RequireAuth from "./components/RequireAuth.jsx";
 
 function AppLayout() {

@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 import { getBodyweight, setBodyweight } from "../utils/bodyweight";
+import { supabase } from "../lib/supabaseClient";
+
+
+
 
 export default function Home() {
   const [bwText, setBwText] = useState("");
@@ -44,6 +48,7 @@ export default function Home() {
           bodyweight component (e.g., Squat, Pull-Up). We still display
           <em> bar weight</em> in the planner.
         </div>
+        <button onClick={() => supabase.auth.signOut()}>Sign out</button>
       </div>
     </div>
   );
