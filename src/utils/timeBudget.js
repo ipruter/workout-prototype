@@ -1,3 +1,5 @@
+// src/lib/timeBudget.js  (or wherever your file currently lives)
+
 // --- Per-set intensity decay ---
 // ~exp(-0.1*(n-1)) ≈ 0.905^(n-1)
 export function setDecayFactor(n = 1) {
@@ -6,14 +8,15 @@ export function setDecayFactor(n = 1) {
 }
 
 import { getBodyweight, getLiftBodyweightPct } from "../utils/bodyweight";
-import { CATALOG_BY_ID } from "../data/lifts";
+import { CATALOG_BY_ID } from "../data/lifts"; // kept for compatibility if you reference ids elsewhere
 import { supabase } from "../lib/supabaseClient";
+import { PROGRAMS } from "../data/program-registry";
 
 // ---------- bodyweight helpers ----------
 function bwComponentForLift(liftId) {
   const bw = getBodyweight() ?? 0;
   const pct = getLiftBodyweightPct(liftId) || 0;
-  return bw * pct; // lbs that come from bodyweight for this lift
+  return bw * pct; // lbs contributed by bodyweight for this lift
 }
 
 // convert the bar load the user types/sees → total system load moved
@@ -114,8 +117,6 @@ export function getKnown1RM(liftId) {
   }
   return null;
 }
-// ADD near top:
-
 
 /** Load all 1RMs for the signed-in user into localStorage ("orm-v1"). Call once on app start. */
 export async function preloadDb1RMs() {
@@ -198,3 +199,91 @@ export function weightFrom1RM({ liftId, oneRM, intensityPct, sets }) {
 
 /* Back-compat alias if some old code imported this name */
 export const getKnownBodyweight = getBodyweight;
+
+/* =========================
+   Program-aware helpers
+   ========================= */
+
+// Read the user’s selected program from profiles; default to 'default'
+async function getActiveProgramKey() {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return "default";
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("selected_program")
+    .eq("id", user.id)
+    .single();
+  if (error) return "default";
+  return data?.selected_program || "default";
+}
+
+// Read pointer for (user, program); create row at 0 if missing
+async function getProgramPointer(programKey) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return 0;
+
+  const { data, error } = await supabase
+    .from("user_program_state")
+    .select("pointer")
+    .eq("user_id", user.id)
+    .eq("program_key", programKey)
+    .single();
+
+  if (error || !data) {
+    await supabase.from("user_program_state").upsert(
+      { user_id: user.id, program_key: programKey, pointer: 0 },
+      { onConflict: "user_id,program_key" }
+    );
+    return 0;
+  }
+
+  return Number(data.pointer) || 0;
+}
+
+/**
+ * Get the next prescription item for Time Budget based on the
+ * user's selected program and that program's pointer.
+ * Returns { programKey, pointer, item }.
+ */
+export async function getNextTimeBudgetItem() {
+  const programKey = await getActiveProgramKey();
+  const pointer = await getProgramPointer(programKey);
+  const list = PROGRAMS[programKey]?.list || [];
+  if (!list.length) return { programKey, pointer, item: null };
+  const item = list[pointer % list.length];
+  return { programKey, pointer, item };
+}
+
+/**
+ * After a session completes, advance the program pointer by `steps` (default 1).
+ * Returns the new pointer value.
+ */
+export async function advanceProgramPointer(steps = 1) {
+  const programKey = await getActiveProgramKey();
+  const listLen = (PROGRAMS[programKey]?.list || []).length || 1;
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return 0;
+
+  const { data } = await supabase
+    .from("user_program_state")
+    .select("pointer")
+    .eq("user_id", user.id)
+    .eq("program_key", programKey)
+    .single();
+
+  const current = Number(data?.pointer) || 0;
+  const next = (current + steps) % listLen;
+
+  await supabase.from("user_program_state").upsert(
+    {
+      user_id: user.id,
+      program_key: programKey,
+      pointer: next,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "user_id,program_key" }
+  );
+
+  return next;
+}

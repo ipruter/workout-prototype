@@ -9,10 +9,10 @@ import {
   estimateExerciseMinutes,
   getKnown1RM,            // still reads localStorage; we seed it from DB below
   estimate1RMFromWeight,
-  weightFrom1RM,
-  bumpOneRMPercent,       // keeps local copy in sync when we overload
+  weightFrom1RM,     // keeps local copy in sync when we overload
   setKnown1RM,            // for local mirror after DB upsert
 } from "../utils/timeBudget";
+import { bumpWithPropagation } from "../lib/overload-propagation";
 
 // ---------- small helpers ----------
 function nowLabel(min) {
@@ -258,7 +258,10 @@ rows.forEach((rw, idx) => {
       liftId: rw.liftId,
     });
 
-  if (Number.isFinite(base)) bumpOneRMPercent(rw.liftId, base, 2.5); // saves to DB via setKnown1RM
+  if (Number.isFinite(base)) {
+  // primary gets +2.5%, related lifts get propagated bump
+  bumpWithPropagation(rw.liftId);
+} // saves to DB via setKnown1RM
 });
 
 
@@ -277,11 +280,13 @@ rows.forEach((rw, idx) => {
           });
 
         if (Number.isFinite(base)) {
-          const bumped = bumpOneRMPercent(rw.liftId, base, 2.5); // local
-          if (Number.isFinite(bumped)) {
-            await upsertOrm(rw.liftId, bumped);                  // DB mirror
-          }
-        }
+  // self + related
+  bumpWithPropagation(rw.liftId);
+
+  // keep your max_lifts log consistent with prior behavior for the primary lift
+  const bumped = Math.round(base * 1.025);
+  await upsertOrm(rw.liftId, bumped);
+}
       }
 
       const newIdx = await getConsumedIndexThisWeek({ supabase });
