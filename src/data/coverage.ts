@@ -34,7 +34,14 @@ export const WORKOUT_TARGETS_BY_NAME = {
   triceps_med_l: 0.344, triceps_med_r: 0.344,
   triceps_lat_l: 0.384, triceps_lat_r: 0.384,
 
-  serratus_l: 0.04, serratus_r: 0.04
+  serratus_l: 0.04, serratus_r: 0.04,
+
+  rectus_abdominis_upper_l: 0.04, rectus_abdominis_upper_r: 0.04,
+rectus_abdominis_lower_l: 0.04, rectus_abdominis_lower_r: 0.04,
+oblique_ex_l: 0.04, oblique_ex_r: 0.04,
+oblique_int_l: 0.04, oblique_int_r: 0.04,
+transverse_abs_l: 0.05, transverse_abs_r: 0.05,
+
 },
   "Incline Bench Press": {
   clavicular_l: 0.78, clavicular_r: 0.78,
@@ -48,7 +55,13 @@ export const WORKOUT_TARGETS_BY_NAME = {
   triceps_med_l: 0.44, triceps_med_r: 0.44,
   triceps_lat_l: 0.40, triceps_lat_r: 0.40,
 
-  serratus_l: 0.04, serratus_r: 0.04
+  serratus_l: 0.04, serratus_r: 0.04,
+  rectus_abdominis_upper_l: 0.05, rectus_abdominis_upper_r: 0.05,
+rectus_abdominis_lower_l: 0.04, rectus_abdominis_lower_r: 0.04,
+oblique_ex_l: 0.05, oblique_ex_r: 0.05,
+oblique_int_l: 0.05, oblique_int_r: 0.05,
+transverse_abs_l: 0.06, transverse_abs_r: 0.06,
+
 },
   "Overhead Press": {
     ant_delt_l: 0.7, ant_delt_r: 0.7,
@@ -88,7 +101,14 @@ export const WORKOUT_TARGETS_BY_NAME = {
   rear_delt_l: 0.20, rear_delt_r: 0.20,
 
   // Serratus (stabilizer penalty ×0.20)
-  serratus_l: 0.05, serratus_r: 0.05
+  serratus_l: 0.05, serratus_r: 0.05,
+
+  rectus_abdominis_upper_l: 0.05, rectus_abdominis_upper_r: 0.05,
+rectus_abdominis_lower_l: 0.06, rectus_abdominis_lower_r: 0.06,
+oblique_ex_l: 0.06, oblique_ex_r: 0.06,
+oblique_int_l: 0.06, oblique_int_r: 0.06,
+transverse_abs_l: 0.07, transverse_abs_r: 0.07,
+
 },
   "Back Squat": {
    // Quads (×1.0)
@@ -116,7 +136,34 @@ export const WORKOUT_TARGETS_BY_NAME = {
   // Calves (×0.20)
   gastro_med_l: 0.044, gastro_med_r: 0.044,
   gastro_lat_l: 0.044, gastro_lat_r: 0.044,
-  soleus_post_l: 0.036, soleus_post_r: 0.036
+  soleus_post_l: 0.036, soleus_post_r: 0.036,
+
+  rectus_abdominis_upper_l: 0.08, rectus_abdominis_upper_r: 0.08,
+rectus_abdominis_lower_l: 0.10, rectus_abdominis_lower_r: 0.10,
+oblique_ex_l: 0.06, oblique_ex_r: 0.06,
+oblique_int_l: 0.06, oblique_int_r: 0.06,
+transverse_abs_l: 0.08, transverse_abs_r: 0.08,
+
+// Back Squat
+glute_min_l: 0.05, glute_min_r: 0.05,
+tensor_fascia_lata_l: 0.06, tensor_fascia_lata_r: 0.06,
+add_longus_l: 0.22, add_longus_r: 0.22,
+add_brevis_l: 0.18, add_brevis_r: 0.18,
+pectineus_l: 0.12, pectineus_r: 0.12,
+gracilis_l: 0.10, gracilis_r: 0.10,
+iliopsoas_l: 0.06, iliopsoas_r: 0.06,
+psoas_major_l: 0.06, psoas_major_r: 0.06,
+sartorius_l: 0.08, sartorius_r: 0.08,
+
+// Back Squat — erectors (detailed)
+spinalis_thor_l: 0.020, spinalis_thor_r: 0.020,
+longissimus_thor_l: 0.035, longissimus_thor_r: 0.035,
+iliocostalis_thor_l: 0.015, iliocostalis_thor_r: 0.015,
+
+spinalis_lumb_l: 0.020, spinalis_lumb_r: 0.020,
+longissimus_lumb_l: 0.050, longissimus_lumb_r: 0.050,
+iliocostalis_lumb_l: 0.021, iliocostalis_lumb_r: 0.021,
+
 },
   "Romanian Deadlift": {
    // Hamstrings (×1.0)
@@ -148,7 +195,33 @@ export const WORKOUT_TARGETS_BY_NAME = {
   forearm_flex_l: 0.164, forearm_flex_r: 0.164,
   gastro_med_l: 0.024,   gastro_med_r: 0.024,
   gastro_lat_l: 0.024,   gastro_lat_r: 0.024,
-  soleus_post_l: 0.028,  soleus_post_r: 0.028
+  soleus_post_l: 0.028,  soleus_post_r: 0.028,
+
+  rectus_abdominis_upper_l: 0.05, rectus_abdominis_upper_r: 0.05,
+rectus_abdominis_lower_l: 0.06, rectus_abdominis_lower_r: 0.06,
+oblique_ex_l: 0.08, oblique_ex_r: 0.08,
+oblique_int_l: 0.07, oblique_int_r: 0.07,
+transverse_abs_l: 0.09, transverse_abs_r: 0.09,
+
+// Romanian Deadlift
+tensor_fascia_lata_l: 0.04, tensor_fascia_lata_r: 0.04,
+add_longus_l: 0.22, add_longus_r: 0.22,
+add_brevis_l: 0.18, add_brevis_r: 0.18,
+pectineus_l: 0.12, pectineus_r: 0.12,
+gracilis_l: 0.10, gracilis_r: 0.10,
+iliopsoas_l: 0.04, iliopsoas_r: 0.04,
+psoas_major_l: 0.04, psoas_major_r: 0.04,
+sartorius_l: 0.06, sartorius_r: 0.06,
+
+// Romanian Deadlift — erectors (detailed)
+spinalis_thor_l: 0.024, spinalis_thor_r: 0.024,
+longissimus_thor_l: 0.042, longissimus_thor_r: 0.042,
+iliocostalis_thor_l: 0.018, iliocostalis_thor_r: 0.018,
+
+spinalis_lumb_l: 0.026, spinalis_lumb_r: 0.026,
+longissimus_lumb_l: 0.066, longissimus_lumb_r: 0.066,
+iliocostalis_lumb_l: 0.028, iliocostalis_lumb_r: 0.028,
+
 },
 
   "Leg Extension": {
@@ -174,12 +247,22 @@ export const WORKOUT_TARGETS_BY_NAME = {
   soleus_post_l: 0.016, soleus_post_r: 0.016 // 0.08 × 0.20
 },
 
-  "Calf Raise (Standing)":  {
-    gastro_med_l: 0.7, gastro_med_r: 0.7,
-    gastro_lat_l: 0.7, gastro_lat_r: 0.7,
-    soleus_post_l: 0.4, soleus_post_r: 0.4,
-  },
-  "Plank":                  { transverse_abs: 1 },
+  "Calf Raise (Standing)": {
+  // Gastroc (standing bias; knee extended)
+  gastro_med_l: 0.88, gastro_med_r: 0.88,
+  gastro_lat_l: 0.88, gastro_lat_r: 0.88,
+
+  // Soleus (secondary with straight knee)
+  soleus_post_l: 0.30, soleus_post_r: 0.30
+},
+  "Calf Raise (Seated)": {
+  // Soleus (knee flexed → prime mover)
+  soleus_post_l: 0.92, soleus_post_r: 0.92,
+
+  // Gastrocnemius (reduced with knee flexion)
+  gastro_med_l: 0.38, gastro_med_r: 0.38,
+  gastro_lat_l: 0.38, gastro_lat_r: 0.38
+},
 
   // plurals/variants handled by alias map below:
   "Donkey Calf Raises": {
@@ -191,7 +274,11 @@ export const WORKOUT_TARGETS_BY_NAME = {
   glute_med_l: 0.704, glute_med_r: 0.704,       // 0.88 × 0.8
   glute_min_l: 0.592, glute_min_r: 0.592,       // 0.74 × 0.8
   tensor_fasciae_l: 0.528, tensor_fasciae_r: 0.528, // 0.66 × 0.8
-  cranial_glute_max_l: 0.20, cranial_glute_max_r: 0.20 // 0.25 × 0.8
+  cranial_glute_max_l: 0.20, cranial_glute_max_r: 0.20, // 0.25 × 0.8
+  // Abduction Machine
+tensor_fascia_lata_l: 0.66, tensor_fascia_lata_r: 0.66,  // mirrors your TFL intent
+sartorius_l: 0.12, sartorius_r: 0.12,                     // minor hip abduction assist
+
 },
   "Upright Rows (wide)": {
   lat_delt_l: 0.80, lat_delt_r: 0.80,
@@ -253,7 +340,23 @@ export const WORKOUT_TARGETS_BY_NAME = {
 
   // Spinal erectors (isometric ×0.20)
   erectors_thor_l: 0.04, erectors_thor_r: 0.04,
-  erectors_lum_l: 0.03, erectors_lum_r: 0.03
+  erectors_lum_l: 0.03, erectors_lum_r: 0.03,
+
+  rectus_abdominis_upper_l: 0.03, rectus_abdominis_upper_r: 0.03,
+rectus_abdominis_lower_l: 0.03, rectus_abdominis_lower_r: 0.03,
+oblique_ex_l: 0.03, oblique_ex_r: 0.03,
+oblique_int_l: 0.03, oblique_int_r: 0.03,
+transverse_abs_l: 0.05, transverse_abs_r: 0.05,
+
+// Seated Cable Row — erectors (detailed)
+spinalis_thor_l: 0.011, spinalis_thor_r: 0.011,
+longissimus_thor_l: 0.020, longissimus_thor_r: 0.020,
+iliocostalis_thor_l: 0.009, iliocostalis_thor_r: 0.009,
+
+spinalis_lumb_l: 0.007, spinalis_lumb_r: 0.007,
+longissimus_lumb_l: 0.017, longissimus_lumb_r: 0.017,
+iliocostalis_lumb_l: 0.007, iliocostalis_lumb_r: 0.007,
+
 },
   "Front Squat": {
    // Quads
@@ -282,7 +385,34 @@ export const WORKOUT_TARGETS_BY_NAME = {
   // Calves
   gastro_med_l: 0.04, gastro_med_r: 0.04,
   gastro_lat_l: 0.04, gastro_lat_r: 0.04,
-  soleus_post_l: 0.024, soleus_post_r: 0.024
+  soleus_post_l: 0.024, soleus_post_r: 0.024,
+
+  rectus_abdominis_upper_l: 0.10, rectus_abdominis_upper_r: 0.10,
+rectus_abdominis_lower_l: 0.08, rectus_abdominis_lower_r: 0.08,
+oblique_ex_l: 0.06, oblique_ex_r: 0.06,
+oblique_int_l: 0.06, oblique_int_r: 0.06,
+transverse_abs_l: 0.08, transverse_abs_r: 0.08,
+
+// Front Squat
+
+tensor_fascia_lata_l: 0.06, tensor_fascia_lata_r: 0.06,
+add_longus_l: 0.20, add_longus_r: 0.20,
+add_brevis_l: 0.18, add_brevis_r: 0.18,
+pectineus_l: 0.12, pectineus_r: 0.12,
+gracilis_l: 0.10, gracilis_r: 0.10,
+iliopsoas_l: 0.06, iliopsoas_r: 0.06,
+psoas_major_l: 0.06, psoas_major_r: 0.06,
+sartorius_l: 0.08, sartorius_r: 0.08,
+
+// Front Squat — erectors (detailed)
+spinalis_thor_l: 0.027, spinalis_thor_r: 0.027,
+longissimus_thor_l: 0.048, longissimus_thor_r: 0.048,
+iliocostalis_thor_l: 0.021, iliocostalis_thor_r: 0.021,
+
+spinalis_lumb_l: 0.014, spinalis_lumb_r: 0.014,
+longissimus_lumb_l: 0.035, longissimus_lumb_r: 0.035,
+iliocostalis_lumb_l: 0.015, iliocostalis_lumb_r: 0.015,
+
 },
 "Seated French Press": {
   // Triceps (×1.0)
@@ -417,7 +547,34 @@ export const WORKOUT_TARGETS_BY_NAME = {
   // Calves (isometric assist through footplate)
   gastro_med_l: 0.04, gastro_med_r: 0.04,
   gastro_lat_l: 0.04, gastro_lat_r: 0.04,
-  soleus_post_l: 0.03, soleus_post_r: 0.03
+  soleus_post_l: 0.03, soleus_post_r: 0.03,
+
+  rectus_abdominis_upper_l: 0.02, rectus_abdominis_upper_r: 0.02,
+rectus_abdominis_lower_l: 0.02, rectus_abdominis_lower_r: 0.02,
+oblique_ex_l: 0.02, oblique_ex_r: 0.02,
+oblique_int_l: 0.02, oblique_int_r: 0.02,
+transverse_abs_l: 0.03, transverse_abs_r: 0.03,
+
+// Leg Press
+
+tensor_fascia_lata_l: 0.05, tensor_fascia_lata_r: 0.05,
+add_longus_l: 0.18, add_longus_r: 0.18,
+add_brevis_l: 0.16, add_brevis_r: 0.16,
+pectineus_l: 0.10, pectineus_r: 0.10,
+gracilis_l: 0.08, gracilis_r: 0.08,
+iliopsoas_l: 0.04, iliopsoas_r: 0.04,
+psoas_major_l: 0.04, psoas_major_r: 0.04,
+sartorius_l: 0.06, sartorius_r: 0.06,
+
+// Leg Press — erectors (detailed)
+spinalis_thor_l: 0.006, spinalis_thor_r: 0.006,
+longissimus_thor_l: 0.010, longissimus_thor_r: 0.010,
+iliocostalis_thor_l: 0.004, iliocostalis_thor_r: 0.004,
+
+spinalis_lumb_l: 0.004, spinalis_lumb_r: 0.004,
+longissimus_lumb_l: 0.011, longissimus_lumb_r: 0.011,
+iliocostalis_lumb_l: 0.005, iliocostalis_lumb_r: 0.005,
+
 },
 
 "Lunge (Walking)": {
@@ -446,7 +603,34 @@ export const WORKOUT_TARGETS_BY_NAME = {
   // Calves (foot stabilization)
   gastro_med_l: 0.05, gastro_med_r: 0.05,
   gastro_lat_l: 0.05, gastro_lat_r: 0.05,
-  soleus_post_l: 0.04, soleus_post_r: 0.04
+  soleus_post_l: 0.04, soleus_post_r: 0.04,
+
+  rectus_abdominis_upper_l: 0.06, rectus_abdominis_upper_r: 0.06,
+rectus_abdominis_lower_l: 0.06, rectus_abdominis_lower_r: 0.06,
+oblique_ex_l: 0.10, oblique_ex_r: 0.10,
+oblique_int_l: 0.10, oblique_int_r: 0.10,
+transverse_abs_l: 0.08, transverse_abs_r: 0.08,
+
+// Lunge (Walking)
+glute_min_l: 0.06, glute_min_r: 0.06,
+tensor_fascia_lata_l: 0.08, tensor_fascia_lata_r: 0.08,
+add_longus_l: 0.20, add_longus_r: 0.20,
+add_brevis_l: 0.18, add_brevis_r: 0.18,
+pectineus_l: 0.12, pectineus_r: 0.12,
+gracilis_l: 0.10, gracilis_r: 0.10,
+iliopsoas_l: 0.10, iliopsoas_r: 0.10,
+psoas_major_l: 0.10, psoas_major_r: 0.10,
+sartorius_l: 0.12, sartorius_r: 0.12,
+
+// Lunge (Walking) — erectors (detailed)
+spinalis_thor_l: 0.011, spinalis_thor_r: 0.011,
+longissimus_thor_l: 0.020, longissimus_thor_r: 0.020,
+iliocostalis_thor_l: 0.009, iliocostalis_thor_r: 0.009,
+
+spinalis_lumb_l: 0.011, spinalis_lumb_r: 0.011,
+longissimus_lumb_l: 0.028, longissimus_lumb_r: 0.028,
+iliocostalis_lumb_l: 0.012, iliocostalis_lumb_r: 0.012,
+
 },
 
 "Hack Squat": {
@@ -476,7 +660,33 @@ export const WORKOUT_TARGETS_BY_NAME = {
   // Calves (footplate isometric)
   gastro_med_l: 0.04, gastro_med_r: 0.04,
   gastro_lat_l: 0.04, gastro_lat_r: 0.04,
-  soleus_post_l: 0.03, soleus_post_r: 0.03
+  soleus_post_l: 0.03, soleus_post_r: 0.03,
+
+  rectus_abdominis_upper_l: 0.02, rectus_abdominis_upper_r: 0.02,
+rectus_abdominis_lower_l: 0.02, rectus_abdominis_lower_r: 0.02,
+oblique_ex_l: 0.02, oblique_ex_r: 0.02,
+oblique_int_l: 0.02, oblique_int_r: 0.02,
+transverse_abs_l: 0.03, transverse_abs_r: 0.03,
+
+// Hack Squat
+tensor_fascia_lata_l: 0.05, tensor_fascia_lata_r: 0.05,
+add_longus_l: 0.20, add_longus_r: 0.20,
+add_brevis_l: 0.16, add_brevis_r: 0.16,
+pectineus_l: 0.10, pectineus_r: 0.10,
+gracilis_l: 0.08, gracilis_r: 0.08,
+iliopsoas_l: 0.04, iliopsoas_r: 0.04,
+psoas_major_l: 0.04, psoas_major_r: 0.04,
+sartorius_l: 0.06, sartorius_r: 0.06,
+
+// Hack Squat — erectors (detailed)
+spinalis_thor_l: 0.006, spinalis_thor_r: 0.006,
+longissimus_thor_l: 0.010, longissimus_thor_r: 0.010,
+iliocostalis_thor_l: 0.004, iliocostalis_thor_r: 0.004,
+
+spinalis_lumb_l: 0.004, spinalis_lumb_r: 0.004,
+longissimus_lumb_l: 0.011, longissimus_lumb_r: 0.011,
+iliocostalis_lumb_l: 0.005, iliocostalis_lumb_r: 0.005,
+
 },
 
 "Conventional Deadlift": {
@@ -517,7 +727,34 @@ export const WORKOUT_TARGETS_BY_NAME = {
   // Calves (minimal isometric)
   gastro_med_l: 0.03, gastro_med_r: 0.03,
   gastro_lat_l: 0.03, gastro_lat_r: 0.03,
-  soleus_post_l: 0.03, soleus_post_r: 0.03
+  soleus_post_l: 0.03, soleus_post_r: 0.03,
+
+  rectus_abdominis_upper_l: 0.06, rectus_abdominis_upper_r: 0.06,
+rectus_abdominis_lower_l: 0.08, rectus_abdominis_lower_r: 0.08,
+oblique_ex_l: 0.10, oblique_ex_r: 0.10,
+oblique_int_l: 0.08, oblique_int_r: 0.08,
+transverse_abs_l: 0.10, transverse_abs_r: 0.10,
+
+// Conventional Deadlift
+glute_min_l: 0.05, glute_min_r: 0.05,
+tensor_fascia_lata_l: 0.05, tensor_fascia_lata_r: 0.05,
+add_longus_l: 0.22, add_longus_r: 0.22,
+add_brevis_l: 0.18, add_brevis_r: 0.18,
+pectineus_l: 0.12, pectineus_r: 0.12,
+gracilis_l: 0.10, gracilis_r: 0.10,
+iliopsoas_l: 0.04, iliopsoas_r: 0.04,
+psoas_major_l: 0.04, psoas_major_r: 0.04,
+sartorius_l: 0.06, sartorius_r: 0.06,
+
+// Conventional Deadlift — erectors (detailed)
+spinalis_thor_l: 0.045, spinalis_thor_r: 0.045,
+longissimus_thor_l: 0.080, longissimus_thor_r: 0.080,
+iliocostalis_thor_l: 0.035, iliocostalis_thor_r: 0.035,
+
+spinalis_lumb_l: 0.048, spinalis_lumb_r: 0.048,
+longissimus_lumb_l: 0.121, longissimus_lumb_r: 0.121,
+iliocostalis_lumb_l: 0.051, iliocostalis_lumb_r: 0.051,
+
 },
 
 "Stiff-Legged Deadlift": {
@@ -555,7 +792,35 @@ export const WORKOUT_TARGETS_BY_NAME = {
   forearm_flex_l: 0.16, forearm_flex_r: 0.16,
   gastro_med_l: 0.02,  gastro_med_r: 0.02,
   gastro_lat_l: 0.02,  gastro_lat_r: 0.02,
-  soleus_post_l: 0.024, soleus_post_r: 0.024
+  soleus_post_l: 0.024, soleus_post_r: 0.024,
+
+  rectus_abdominis_upper_l: 0.06, rectus_abdominis_upper_r: 0.06,
+rectus_abdominis_lower_l: 0.06, rectus_abdominis_lower_r: 0.06,
+oblique_ex_l: 0.09, oblique_ex_r: 0.09,
+oblique_int_l: 0.08, oblique_int_r: 0.08,
+transverse_abs_l: 0.10, transverse_abs_r: 0.10,
+
+// Stiff-Legged Deadlift
+glute_min_l: 0.04, glute_min_r: 0.04,
+tensor_fascia_lata_l: 0.04, tensor_fascia_lata_r: 0.04,
+add_longus_l: 0.20, add_longus_r: 0.20,
+add_brevis_l: 0.16, add_brevis_r: 0.16,
+pectineus_l: 0.10, pectineus_r: 0.10,
+gracilis_l: 0.08, gracilis_r: 0.08,
+iliopsoas_l: 0.04, iliopsoas_r: 0.04,
+psoas_major_l: 0.04, psoas_major_r: 0.04,
+sartorius_l: 0.06, sartorius_r: 0.06,
+
+// Stiff-Legged Deadlift — erectors (detailed)
+spinalis_thor_l: 0.034, spinalis_thor_r: 0.034,
+longissimus_thor_l: 0.060, longissimus_thor_r: 0.060,
+iliocostalis_thor_l: 0.026, iliocostalis_thor_r: 0.026,
+
+spinalis_lumb_l: 0.035, spinalis_lumb_r: 0.035,
+longissimus_lumb_l: 0.088, longissimus_lumb_r: 0.088,
+iliocostalis_lumb_l: 0.037, iliocostalis_lumb_r: 0.037,
+
+
 },
 
 "Good Morning": {
@@ -593,7 +858,34 @@ export const WORKOUT_TARGETS_BY_NAME = {
   forearm_flex_l: 0.02, forearm_flex_r: 0.02,
   gastro_med_l: 0.02,  gastro_med_r: 0.02,
   gastro_lat_l: 0.02,  gastro_lat_r: 0.02,
-  soleus_post_l: 0.02, soleus_post_r: 0.02
+  soleus_post_l: 0.02, soleus_post_r: 0.02,
+
+  rectus_abdominis_upper_l: 0.06, rectus_abdominis_upper_r: 0.06,
+rectus_abdominis_lower_l: 0.07, rectus_abdominis_lower_r: 0.07,
+oblique_ex_l: 0.08, oblique_ex_r: 0.08,
+oblique_int_l: 0.08, oblique_int_r: 0.08,
+transverse_abs_l: 0.10, transverse_abs_r: 0.10,
+
+// Good Morning
+glute_min_l: 0.04, glute_min_r: 0.04,
+tensor_fascia_lata_l: 0.04, tensor_fascia_lata_r: 0.04,
+add_longus_l: 0.18, add_longus_r: 0.18,
+add_brevis_l: 0.16, add_brevis_r: 0.16,
+pectineus_l: 0.10, pectineus_r: 0.10,
+gracilis_l: 0.08, gracilis_r: 0.08,
+iliopsoas_l: 0.04, iliopsoas_r: 0.04,
+psoas_major_l: 0.04, psoas_major_r: 0.04,
+sartorius_l: 0.06, sartorius_r: 0.06,
+
+// Good Morning — erectors (detailed)
+spinalis_thor_l: 0.039, spinalis_thor_r: 0.039,
+longissimus_thor_l: 0.070, longissimus_thor_r: 0.070,
+iliocostalis_thor_l: 0.031, iliocostalis_thor_r: 0.031,
+
+spinalis_lumb_l: 0.044, spinalis_lumb_r: 0.044,
+longissimus_lumb_l: 0.110, longissimus_lumb_r: 0.110,
+iliocostalis_lumb_l: 0.046, iliocostalis_lumb_r: 0.046,
+
 },
 
 "Lying Leg Curl": {
@@ -632,7 +924,14 @@ export const WORKOUT_TARGETS_BY_NAME = {
   triceps_lat_l:  0.36, triceps_lat_r:  0.36,
 
   // Scapular stabilizers
-  serratus_l: 0.05, serratus_r: 0.05
+  serratus_l: 0.05, serratus_r: 0.05,
+
+rectus_abdominis_upper_l: 0.05, rectus_abdominis_upper_r: 0.05,
+rectus_abdominis_lower_l: 0.05, rectus_abdominis_lower_r: 0.05,
+oblique_ex_l: 0.05, oblique_ex_r: 0.05,
+oblique_int_l: 0.05, oblique_int_r: 0.05,
+transverse_abs_l: 0.06, transverse_abs_r: 0.06,
+
 },
 
 "Incline Bench Press (Dumbbell)": {
@@ -651,7 +950,14 @@ export const WORKOUT_TARGETS_BY_NAME = {
   triceps_lat_l:  0.36, triceps_lat_r:  0.36,
 
   // Scapular stabilizer
-  serratus_l: 0.05, serratus_r: 0.05
+  serratus_l: 0.05, serratus_r: 0.05,
+
+  rectus_abdominis_upper_l: 0.06, rectus_abdominis_upper_r: 0.06,
+rectus_abdominis_lower_l: 0.05, rectus_abdominis_lower_r: 0.05,
+oblique_ex_l: 0.06, oblique_ex_r: 0.06,
+oblique_int_l: 0.06, oblique_int_r: 0.06,
+transverse_abs_l: 0.07, transverse_abs_r: 0.07,
+
 },
 
 "Chest Press (Hammer Strength)": {
@@ -669,7 +975,14 @@ export const WORKOUT_TARGETS_BY_NAME = {
   triceps_lat_l:  0.36, triceps_lat_r:  0.36,
 
   // Scapular stabilizer (minimal on machine)
-  serratus_l: 0.04, serratus_r: 0.04
+  serratus_l: 0.04, serratus_r: 0.04,
+
+  rectus_abdominis_upper_l: 0.03, rectus_abdominis_upper_r: 0.03,
+rectus_abdominis_lower_l: 0.03, rectus_abdominis_lower_r: 0.03,
+oblique_ex_l: 0.03, oblique_ex_r: 0.03,
+oblique_int_l: 0.03, oblique_int_r: 0.03,
+transverse_abs_l: 0.04, transverse_abs_r: 0.04,
+
 },
 
 "Chest Press (Hammer Strength, Incline)": {
@@ -688,7 +1001,14 @@ export const WORKOUT_TARGETS_BY_NAME = {
   triceps_lat_l:  0.38, triceps_lat_r:  0.38,       // between DB 0.36 and BB 0.40
 
   // Scapular stabilizer (machine support)
-  serratus_l: 0.04, serratus_r: 0.04
+  serratus_l: 0.04, serratus_r: 0.04,
+
+  rectus_abdominis_upper_l: 0.04, rectus_abdominis_upper_r: 0.04,
+rectus_abdominis_lower_l: 0.03, rectus_abdominis_lower_r: 0.03,
+oblique_ex_l: 0.04, oblique_ex_r: 0.04,
+oblique_int_l: 0.04, oblique_int_r: 0.04,
+transverse_abs_l: 0.05, transverse_abs_r: 0.05,
+
 },
 
 "Barbell Row (Bent-Over)": {
@@ -724,7 +1044,23 @@ export const WORKOUT_TARGETS_BY_NAME = {
   forearm_flex_l: 0.10, forearm_flex_r: 0.10,
 
   // Serratus (minor stabilization)
-  serratus_l: 0.04, serratus_r: 0.04
+  serratus_l: 0.04, serratus_r: 0.04,
+
+  rectus_abdominis_upper_l: 0.05, rectus_abdominis_upper_r: 0.05,
+rectus_abdominis_lower_l: 0.06, rectus_abdominis_lower_r: 0.06,
+oblique_ex_l: 0.06, oblique_ex_r: 0.06,
+oblique_int_l: 0.06, oblique_int_r: 0.06,
+transverse_abs_l: 0.08, transverse_abs_r: 0.08,
+
+// Barbell Row (Bent-Over) — erectors (detailed)
+spinalis_thor_l: 0.039, spinalis_thor_r: 0.039,
+longissimus_thor_l: 0.070, longissimus_thor_r: 0.070,
+iliocostalis_thor_l: 0.031, iliocostalis_thor_r: 0.031,
+
+spinalis_lumb_l: 0.040, spinalis_lumb_r: 0.040,
+longissimus_lumb_l: 0.099, longissimus_lumb_r: 0.099,
+iliocostalis_lumb_l: 0.041, iliocostalis_lumb_r: 0.041,
+
 },
 
 "T-Bar Row": {
@@ -760,7 +1096,23 @@ export const WORKOUT_TARGETS_BY_NAME = {
   forearm_flex_l: 0.10, forearm_flex_r: 0.10,
 
   // Serratus (minor stabilization)
-  serratus_l: 0.04, serratus_r: 0.04
+  serratus_l: 0.04, serratus_r: 0.04,
+
+  rectus_abdominis_upper_l: 0.04, rectus_abdominis_upper_r: 0.04,
+rectus_abdominis_lower_l: 0.05, rectus_abdominis_lower_r: 0.05,
+oblique_ex_l: 0.05, oblique_ex_r: 0.05,
+oblique_int_l: 0.05, oblique_int_r: 0.05,
+transverse_abs_l: 0.07, transverse_abs_r: 0.07,
+
+// T-Bar Row — erectors (detailed)
+spinalis_thor_l: 0.034, spinalis_thor_r: 0.034,
+longissimus_thor_l: 0.060, longissimus_thor_r: 0.060,
+iliocostalis_thor_l: 0.026, iliocostalis_thor_r: 0.026,
+
+spinalis_lumb_l: 0.035, spinalis_lumb_r: 0.035,
+longissimus_lumb_l: 0.088, longissimus_lumb_r: 0.088,
+iliocostalis_lumb_l: 0.037, iliocostalis_lumb_r: 0.037,
+
 },
 
 "Pull-Up": {
@@ -789,7 +1141,14 @@ export const WORKOUT_TARGETS_BY_NAME = {
   serratus_l: 0.05, serratus_r: 0.05,
 
   // Grip (isometric)
-  forearm_flex_l: 0.08, forearm_flex_r: 0.08
+  forearm_flex_l: 0.08, forearm_flex_r: 0.08,
+
+  rectus_abdominis_upper_l: 0.05, rectus_abdominis_upper_r: 0.05,
+rectus_abdominis_lower_l: 0.06, rectus_abdominis_lower_r: 0.06,
+oblique_ex_l: 0.06, oblique_ex_r: 0.06,
+oblique_int_l: 0.06, oblique_int_r: 0.06,
+transverse_abs_l: 0.07, transverse_abs_r: 0.07,
+
 },
 
 "Hip Thrust": {
@@ -822,7 +1181,33 @@ export const WORKOUT_TARGETS_BY_NAME = {
   // Calves (foot pressure on floorplate)
   gastro_med_l: 0.03, gastro_med_r: 0.03,
   gastro_lat_l: 0.03, gastro_lat_r: 0.03,
-  soleus_post_l: 0.02, soleus_post_r: 0.02
+  soleus_post_l: 0.02, soleus_post_r: 0.02,
+
+  rectus_abdominis_upper_l: 0.03, rectus_abdominis_upper_r: 0.03,
+rectus_abdominis_lower_l: 0.03, rectus_abdominis_lower_r: 0.03,
+oblique_ex_l: 0.03, oblique_ex_r: 0.03,
+oblique_int_l: 0.03, oblique_int_r: 0.03,
+transverse_abs_l: 0.04, transverse_abs_r: 0.04,
+
+// Hip Thrust
+tensor_fascia_lata_l: 0.08, tensor_fascia_lata_r: 0.08,
+add_longus_l: 0.16, add_longus_r: 0.16,
+add_brevis_l: 0.14, add_brevis_r: 0.14,
+pectineus_l: 0.12, pectineus_r: 0.12,
+gracilis_l: 0.10, gracilis_r: 0.10,
+iliopsoas_l: 0.04, iliopsoas_r: 0.04,
+psoas_major_l: 0.04, psoas_major_r: 0.04,
+sartorius_l: 0.06, sartorius_r: 0.06,
+
+// Hip Thrust — erectors (detailed)
+spinalis_thor_l: 0.014, spinalis_thor_r: 0.014,
+longissimus_thor_l: 0.025, longissimus_thor_r: 0.025,
+iliocostalis_thor_l: 0.011, iliocostalis_thor_r: 0.011,
+
+spinalis_lumb_l: 0.013, spinalis_lumb_r: 0.013,
+longissimus_lumb_l: 0.033, longissimus_lumb_r: 0.033,
+iliocostalis_lumb_l: 0.014, iliocostalis_lumb_r: 0.014,
+
 },
 
 "Dumbbell Fly (Flat)": {
@@ -905,7 +1290,14 @@ export const WORKOUT_TARGETS_BY_NAME = {
   brachialis_l:  0.06, brachialis_r:  0.06,
 
   // Grip (isometric)
-  forearm_flex_l: 0.05, forearm_flex_r: 0.05
+  forearm_flex_l: 0.05, forearm_flex_r: 0.05,
+
+  rectus_abdominis_upper_l: 0.04, rectus_abdominis_upper_r: 0.04,
+rectus_abdominis_lower_l: 0.04, rectus_abdominis_lower_r: 0.04,
+oblique_ex_l: 0.05, oblique_ex_r: 0.05,
+oblique_int_l: 0.05, oblique_int_r: 0.05,
+transverse_abs_l: 0.06, transverse_abs_r: 0.06,
+
 },
 
 "Seated Overhead Press (Barbell)": {
@@ -931,7 +1323,14 @@ export const WORKOUT_TARGETS_BY_NAME = {
 
   // Spinal erectors (seated support → low)
   erectors_thor_l: 0.04, erectors_thor_r: 0.04,
-  erectors_lum_l:  0.05, erectors_lum_r:  0.05
+  erectors_lum_l:  0.05, erectors_lum_r:  0.05,
+
+  rectus_abdominis_upper_l: 0.03, rectus_abdominis_upper_r: 0.03,
+rectus_abdominis_lower_l: 0.03, rectus_abdominis_lower_r: 0.03,
+oblique_ex_l: 0.03, oblique_ex_r: 0.03,
+oblique_int_l: 0.03, oblique_int_r: 0.03,
+transverse_abs_l: 0.04, transverse_abs_r: 0.04,
+
 },
 
 "Seated Overhead Press (Dumbbell)": {
@@ -957,7 +1356,16 @@ export const WORKOUT_TARGETS_BY_NAME = {
 
   // Spinal erectors (seat/back support → low)
   erectors_thor_l: 0.03, erectors_thor_r: 0.03,
-  erectors_lum_l:  0.04, erectors_lum_r:  0.04
+  erectors_lum_l:  0.04, erectors_lum_r:  0.04,
+
+  rectus_abdominis_upper_l: 0.03, rectus_abdominis_upper_r: 0.03,
+rectus_abdominis_lower_l: 0.03, rectus_abdominis_lower_r: 0.03,
+oblique_ex_l: 0.03, oblique_ex_r: 0.03,
+oblique_int_l: 0.03, oblique_int_r: 0.03,
+transverse_abs_l: 0.04, transverse_abs_r: 0.04,
+
+
+
 },
 
 "Triceps Pushdown (Cable)": {
@@ -979,6 +1387,76 @@ export const WORKOUT_TARGETS_BY_NAME = {
   forearm_flex_l: 0.10, forearm_flex_r: 0.10
 },
 
+"Upright Row (Narrow)": {
+  // Delts (narrow → less lateral, a bit more anterior vs wide)
+  lat_delt_l: 0.60, lat_delt_r: 0.60,
+  ant_delt_l: 0.36, ant_delt_r: 0.36,
+  post_delt_l: 0.24, post_delt_r: 0.24,
+
+  // Traps & scapular upward rotation (↑ vs wide)
+  traps_upper_l: 0.72, traps_upper_r: 0.72,
+  traps_mid_l:   0.28, traps_mid_r:   0.28,
+  traps_lower_l: 0.22, traps_lower_r: 0.22,
+  rhomboids_l:   0.22, rhomboids_r:  0.22,
+
+  // Elbow flexors (slightly ↑ with narrow path; still isometric)
+  bicep_short_l: 0.06, bicep_short_r: 0.06
+},
+
+"Lateral Raise (Dumbbell)": {
+  // Prime
+  lat_delt_l: 0.96, lat_delt_r: 0.96,
+
+  // Synergists / posture control
+  ant_delt_l: 0.12, ant_delt_r: 0.12,
+  post_delt_l: 0.10, post_delt_r: 0.10,
+
+  // Scapular elevators & upward rotators (keep moderate to avoid shrug bias)
+  traps_upper_l: 0.22, traps_upper_r: 0.22,
+  traps_mid_l:   0.08, traps_mid_r:   0.08,
+  traps_lower_l: 0.06, traps_lower_r: 0.06,
+  rhomboids_l:   0.06, rhomboids_r:  0.06,
+
+  // Scapular protraction control
+  serratus_l: 0.04, serratus_r: 0.04
+},
+
+"Lateral Raise (Cable)": {
+  // Constant tension + slight behind-the-body setup → very delt-focused
+  lat_delt_l: 0.98, lat_delt_r: 0.98,
+
+  // Synergists (similar, sometimes a touch more posterior delt)
+  ant_delt_l: 0.10, ant_delt_r: 0.10,
+  post_delt_l: 0.12, post_delt_r: 0.12,
+
+  // Less shrugging than DB for many lifters
+  traps_upper_l: 0.18, traps_upper_r: 0.18,
+  traps_mid_l:   0.08, traps_mid_r:   0.08,
+  traps_lower_l: 0.06, traps_lower_r: 0.06,
+  rhomboids_l:   0.06, rhomboids_r:  0.06,
+  serratus_l:    0.04, serratus_r:    0.04
+},
+
+"Cable Hip Abduction (Standing)": {
+  // Primary abductors
+  glute_med_l: 0.70, glute_med_r: 0.70,
+  glute_min_l: 0.60, glute_min_r: 0.60,
+  tensor_fasciae_l: 0.60, tensor_fasciae_r: 0.60,
+
+  // Upper glute max fibers contribute to abduction from neutral
+  cranial_glute_max_l: 0.22, cranial_glute_max_r: 0.22,
+
+  // Light trunk/hip stabilization (standing, unilateral)
+  erectors_thor_l: 0.03, erectors_thor_r: 0.03,
+  erectors_lum_l:  0.03, erectors_lum_r:  0.03,
+
+  // Cable Hip Abduction (Standing)
+tensor_fascia_lata_l: 0.60, tensor_fascia_lata_r: 0.60,  // matches your note
+sartorius_l: 0.12, sartorius_r: 0.12,
+
+},
+
+
 "French Press (Seated, EZ-Bar)": {
   // Triceps (overhead position biases long head)
   triceps_long_l: 0.90, triceps_long_r: 0.90,
@@ -996,6 +1474,80 @@ export const WORKOUT_TARGETS_BY_NAME = {
   forearm_flex_l: 0.06, forearm_flex_r: 0.06
 },
 
+"Farmer's Carry": {
+  // Grip / wrist & finger flexors (dominant driver)
+  forearm_flex_l: 0.90, forearm_flex_r: 0.90,
+
+  // Traps & scapular stabilizers (heavy anti-depression/anti-tilt)
+  traps_upper_l: 0.92, traps_upper_r: 0.92,
+  traps_mid_l:   0.36, traps_mid_r:   0.36,
+  traps_lower_l: 0.26, traps_lower_r: 0.26,
+  rhomboids_l:   0.42, rhomboids_r:  0.42,
+
+  // Spinal erectors (anti-flexion/anti-side-bend during gait)
+  erectors_thor_l: 0.22, erectors_thor_r: 0.22,
+  erectors_lum_l:  0.28, erectors_lum_r:  0.28,
+
+  // Core wall (brace + anti-rotation)
+  rectus_abdominis_upper_l: 0.10, rectus_abdominis_upper_r: 0.10,
+  rectus_abdominis_lower_l: 0.12, rectus_abdominis_lower_r: 0.12,
+  oblique_ex_l: 0.16, oblique_ex_r: 0.16,
+  oblique_int_l: 0.16, oblique_int_r: 0.16,
+  transverse_abs_l: 0.18, transverse_abs_r: 0.18,
+
+  // Delts (posture/arm position stabilization)
+  ant_delt_l: 0.10, ant_delt_r: 0.10,
+  lat_delt_l: 0.12, lat_delt_r: 0.12,
+  post_delt_l: 0.06, post_delt_r: 0.06,
+
+  // Lats (isometric depression/brace)
+  lats_vertebral_l: 0.08, lats_vertebral_r: 0.08,
+
+  // Lower-body isometric support during steps
+  caudal_glute_max_l: 0.06, caudal_glute_max_r: 0.06,
+  ham_bf_long_l: 0.05, ham_bf_long_r: 0.05,
+  quads_vl_l: 0.05, quads_vl_r: 0.05,
+
+  // Calves (stance stiffness)
+  gastro_med_l: 0.08, gastro_med_r: 0.08,
+  gastro_lat_l: 0.08, gastro_lat_r: 0.08,
+  soleus_post_l: 0.06, soleus_post_r: 0.06,
+
+  // Farmer's Carry — erectors (detailed)
+spinalis_thor_l: 0.062, spinalis_thor_r: 0.062,
+longissimus_thor_l: 0.110, longissimus_thor_r: 0.110,
+iliocostalis_thor_l: 0.048, iliocostalis_thor_r: 0.048,
+
+spinalis_lumb_l: 0.062, spinalis_lumb_r: 0.062,
+longissimus_lumb_l: 0.154, longissimus_lumb_r: 0.154,
+iliocostalis_lumb_l: 0.064, iliocostalis_lumb_r: 0.064,
+
+},
+
+"Wrist Curl (Behind-the-Back, Barbell)": {
+  // Primary movers — wrist/finger flexors (big stretch at bottom)
+  forearm_flex_l: 0.96, forearm_flex_r: 0.96,
+
+  // Posture/bracing (tiny, standing)
+  erectors_thor_l: 0.02, erectors_thor_r: 0.02,
+  erectors_lum_l:  0.02, erectors_lum_r:  0.02
+},
+
+"Crunch": {
+  // Rectus abdominis (upper-biased but both sections work)
+  rectus_abdominis_upper_l: 0.86, rectus_abdominis_upper_r: 0.86,
+  rectus_abdominis_lower_l: 0.72, rectus_abdominis_lower_r: 0.72,
+
+  // Obliques (stabilize ribcage/pelvis; no big rotation)
+  oblique_ex_l: 0.18, oblique_ex_r: 0.18,
+  oblique_int_l: 0.16, oblique_int_r: 0.16,
+
+  // Deep core bracing
+  transverse_abs_l: 0.12, transverse_abs_r: 0.12
+},
+
+
+
 "Biceps Curl (EZ-Bar)": {
   // Elbow flexors
   bicep_short_l: 0.96, bicep_short_r: 0.96,
@@ -1007,6 +1559,19 @@ export const WORKOUT_TARGETS_BY_NAME = {
 
   // Stabilizers (minimal)
   ant_delt_l: 0.04, ant_delt_r: 0.04
+},
+
+"Reverse Crunch": {
+  // Rectus abdominis (pelvic tuck → lower bias)
+  rectus_abdominis_lower_l: 0.88, rectus_abdominis_lower_r: 0.88,
+  rectus_abdominis_upper_l: 0.68, rectus_abdominis_upper_r: 0.68,
+
+  // Obliques (stabilize; minimal rotation)
+  oblique_ex_l: 0.14, oblique_ex_r: 0.14,
+  oblique_int_l: 0.12, oblique_int_r: 0.12,
+
+  // Deep core (posterior pelvic tilt control)
+  transverse_abs_l: 0.16, transverse_abs_r: 0.16
 },
 
 "Yates Row (Underhand Barbell Row)": {
@@ -1032,7 +1597,22 @@ export const WORKOUT_TARGETS_BY_NAME = {
   // Stabilizers / posture
   erectors_thor_l: 0.08, erectors_thor_r: 0.08,
   erectors_lum_l:  0.10, erectors_lum_r:  0.10,
-  forearm_flex_l:  0.10, forearm_flex_r:  0.10
+  forearm_flex_l:  0.10, forearm_flex_r:  0.10,
+  rectus_abdominis_upper_l: 0.04, rectus_abdominis_upper_r: 0.04,
+rectus_abdominis_lower_l: 0.05, rectus_abdominis_lower_r: 0.05,
+oblique_ex_l: 0.05, oblique_ex_r: 0.05,
+oblique_int_l: 0.05, oblique_int_r: 0.05,
+transverse_abs_l: 0.07, transverse_abs_r: 0.07,
+
+// --- Spine muscles (detail) ---
+spinalis_thor_l: 0.022, spinalis_thor_r: 0.022,
+longissimus_thor_l: 0.040, longissimus_thor_r: 0.040,
+iliocostalis_thor_l: 0.018, iliocostalis_thor_r: 0.018,
+
+spinalis_lumb_l: 0.022, spinalis_lumb_r: 0.022,
+longissimus_lumb_l: 0.055, longissimus_lumb_r: 0.055,
+iliocostalis_lumb_l: 0.023, iliocostalis_lumb_r: 0.023,
+
 },
 
 "Underhand Barbell Row": {
@@ -1058,7 +1638,14 @@ export const WORKOUT_TARGETS_BY_NAME = {
   // Stabilizers
   erectors_thor_l: 0.08, erectors_thor_r: 0.08,
   erectors_lum_l:  0.10, erectors_lum_r:  0.10,
-  forearm_flex_l:  0.10, forearm_flex_r:  0.10
+  forearm_flex_l:  0.10, forearm_flex_r:  0.10,
+
+  rectus_abdominis_upper_l: 0.04, rectus_abdominis_upper_r: 0.04,
+rectus_abdominis_lower_l: 0.05, rectus_abdominis_lower_r: 0.05,
+oblique_ex_l: 0.05, oblique_ex_r: 0.05,
+oblique_int_l: 0.05, oblique_int_r: 0.05,
+transverse_abs_l: 0.07, transverse_abs_r: 0.07,
+
 },
 
 

@@ -32,6 +32,10 @@ export const CATALOG_BY_ID = {
   shrug: { name: "Barbell Shrug", C: 35, type: "barbell" },
   ohp_bb_seated: { name: "Seated Overhead Press (Barbell)", C: 50, type: "barbell" },
   ohp_db_seated: { name: "Seated Overhead Press (Dumbbell)", C: 48, type: "dumbbell" },
+  upright_row_narrow: { name: "Upright Row (Narrow)", C: 25, type: "barbell" },
+  lat_raise_db:    { name: "Lateral Raise (Dumbbell)", C: 3, type: "dumbbell" },
+lat_raise_cable: { name: "Lateral Raise (Cable)",    C: 3, type: "cable" },
+
 
 
   // Back / Pull
@@ -47,20 +51,22 @@ export const CATALOG_BY_ID = {
   row_bb_underhand: { name: "Underhand Barbell Row", C: 50, type: "barbell" },
 
   // Squat / Hinge / Lower
-  squat_hb:     { name: "Back Squat",          C: 95, type: "barbell", bwPct: 0.823},
+  squat_hb:     { name: "Back Squat",          C: 95, type: "barbell", bwPct: 0.82},
   squat_lb:     { name: "Back Squat (Low-Bar)",           C: 95, type: "barbell" },
-  front_sqt:    { name: "Front Squat",                    C: 92, type: "barbell" },
+  front_sqt:    { name: "Front Squat",                    C: 92, type: "barbell", bwPct: 0.82 },
   goblet_sqt:   { name: "Goblet Squat",                   C: 55, type: "dumbbell" },
-  dl_conv:      { name: "Conventional Deadlift",          C: 100,type: "barbell" },
-  dl_rdl:       { name: "Romanian Deadlift",              C: 80, type: "barbell", bwPct: 0.8242 },
+  dl_conv:      { name: "Conventional Deadlift",          C: 100,type: "barbell", bwPct: 0.82 },
+  dl_rdl:       { name: "Romanian Deadlift",              C: 80, type: "barbell", bwPct: 0.82},
   hip_thrust:   { name: "Hip Thrust",                     C: 75, type: "barbell" },
   leg_press:    { name: "Leg Press",                      C: 40, type: "machine" },
   split_sqt:    { name: "Bulgarian Split Squat",          C: 55, type: "dumbbell" },
-  lunge_wlk:    { name: "Lunge (Walking)",                C: 45, type: "dumbbell" },
+  lunge_wlk:    { name: "Lunge (Walking)",                C: 45, type: "dumbbell", bwPct: 0.82 },
   step_up:      { name: "Step-Up",                         C: 45, type: "dumbbell" },
   hack_sqt:   { name: "Hack Squat", C: 60, type: "machine" },
-  dl_sldl:   { name: "Stiff-Legged Deadlift", C: 82, type: "barbell" },
-  gm_bb:      { name: "Good Morning", C: 65, type: "barbell" },
+  dl_sldl:   { name: "Stiff-Legged Deadlift", C: 82, type: "barbell", bwPct: 0.82 },
+  gm_bb:      { name: "Good Morning", C: 65, type: "barbell", bwPct: 0.82 },
+  farmers_carry: { name: "Farmer's Carry", C: 65, type: "dumbbell" },
+
 
 
 
@@ -71,13 +77,18 @@ export const CATALOG_BY_ID = {
   tri_pushdn_cable: { name: "Triceps Pushdown (Cable)", C: 5, type: "machine" },
   french_press_seated: { name: "French Press (Seated, EZ-Bar)", C: 8, type: "EZ curl" },
   curl_ez: { name: "Biceps Curl (EZ-Bar)", C: 5, type: "EZ curl" },
+  bb_wrist_curl_btb: { name: "Wrist Curl (Behind-the-Back, Barbell)", C: 4, type: "barbell" },
+
 
 
   // Legs (isolations)
   leg_curl:     { name: "Seated Leg Curl",                C: 10, type: "machine" },
   leg_ext:      { name: "Leg Extension",                  C: 8,  type: "machine" },
   leg_curl_prone: { name: "Lying Leg Curl", C: 10, type: "machine" },
+  hip_abduction_cable_stand: { name: "Cable Hip Abduction (Standing)", C: 6, type: "cable" },
 
+
+  
   // Calves
   calf_stand:   { name: "Calf Raise (Standing)",          C: 8,  type: "barbell" },
   calf_seat:    { name: "Calf Raise (Seated)",            C: 8,  type: "machine" },
@@ -92,6 +103,10 @@ export const CATALOG_BY_ID = {
 
   // Hips/Glutes adjunct
   abd_machine:  { name: "Abduction Machine",              C: 5,  type: "machine" },
+  crunch: { name: "Crunch", C: 6, type: "bodyweight", bwPct: 0.35 },
+  rev_crunch: { name: "Reverse Crunch", C: 6, type: "bodyweight", bwPct: 0.28 },
+
+
 };
 
 
