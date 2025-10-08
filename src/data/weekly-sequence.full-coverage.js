@@ -53,28 +53,27 @@ export const WEEKLY_SEQUENCE = [
   { liftId: "chinup", sets: 3, reps: 5, intensityPct: 86 },
   { liftId: "chest_press_hs_incline", sets: 3, reps: 5, intensityPct: 86 },
   { liftId: "leg_ext", sets: 3, reps: 13, intensityPct: 65},
-  { liftId: "upright_row", sets: 3, reps: 8, intensityPct: 75 },
-  { liftId: "upright_row_narrow", sets: 3, reps: 13, intensityPct: 65 },
-
+  { liftId: "lat_raise_db", sets: 3, reps: 13, intensityPct: 65 },
   { liftId: "calf_donkey", sets: 3, reps: 10, intensityPct: 71 },
+
   { liftId: "calf_seat", sets: 3, reps: 10, intensityPct: 71 },
   { liftId: "abd_machine", sets: 3, reps: 10, intensityPct: 71 },
   { liftId: "hip_abduction_cable_stand", sets: 3, reps: 10, intensityPct: 71 },
   { liftId: "lat_raise_db", sets: 3, reps: 8, intensityPct: 75 },
-
   { liftId: "calf_seat", sets: 3, reps: 10, intensityPct: 71 },
+
   { liftId: "Sit-Up", sets: 3, reps: 10, intensityPct: 71 },
   { liftId: "crunch", sets: 3, reps: 10, intensityPct: 71 },
   { liftId: "bb_wrist_curl_btb", sets: 3, reps: 10, intensityPct: 71 },
   { liftId: "wrist_roller", sets: 3, reps: 10, intensityPct: 71 },
-
   { liftId: "calf_seat", sets: 3, reps: 10, intensityPct: 71 },
+
   { liftId: "Sit-Up", sets: 3, reps: 10, intensityPct: 71 },
   { liftId: "crunch", sets: 3, reps: 10, intensityPct: 71 },
   { liftId: "bb_wrist_curl_btb", sets: 3, reps: 10, intensityPct: 71 },
   { liftId: "wrist_roller", sets: 3, reps: 10, intensityPct: 71 },
-
   { liftId: "calf_seat", sets: 3, reps: 10, intensityPct: 71 },
+
   { liftId: "Sit-Up", sets: 3, reps: 10, intensityPct: 71 },
   
   // add more… repeat squat/bench/etc anywhere you want,
