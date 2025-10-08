@@ -78,6 +78,7 @@ lat_raise_cable: { name: "Lateral Raise (Cable)",    C: 3, type: "cable" },
   french_press_seated: { name: "French Press (Seated, EZ-Bar)", C: 8, type: "EZ curl" },
   curl_ez: { name: "Biceps Curl (EZ-Bar)", C: 5, type: "EZ curl" },
   bb_wrist_curl_btb: { name: "Wrist Curl (Behind-the-Back, Barbell)", C: 4, type: "barbell" },
+  wrist_roller: { name: "Wrist Roller", C: 6, type: "device", bwPct: 0.00 },
 
 
 
@@ -100,11 +101,17 @@ lat_raise_cable: { name: "Lateral Raise (Cable)",    C: 3, type: "cable" },
   plank:        { name: "Plank",                          C: 5,  type: "bodyweight" },
   hang_leg:     { name: "Hanging Leg Raise",              C: 5,  type: "bodyweight" },
   russian_tw:   { name: "Russian Twist",                  C: 5,  type: "bodyweight" },
+  sit_up: { name: "Sit-Up", C: 5, type: "bodyweight", bwPct: 0.45 },
+
 
   // Hips/Glutes adjunct
   abd_machine:  { name: "Abduction Machine",              C: 5,  type: "machine" },
   crunch: { name: "Crunch", C: 6, type: "bodyweight", bwPct: 0.35 },
   rev_crunch: { name: "Reverse Crunch", C: 6, type: "bodyweight", bwPct: 0.28 },
+  add_machine: { name: "Adduction Machine", C: 6, type: "machine" },
+  hang_leg_straight: { name: "Hanging Leg Raise (Straight-Leg)", C: 8, type: "bodyweight", bwPct: 0.38 },
+
+
 
 
 };

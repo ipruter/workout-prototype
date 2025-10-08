@@ -129,10 +129,6 @@ transverse_abs_l: 0.07, transverse_abs_r: 0.07,
   ham_semimem_l: 0.04, ham_semimem_r: 0.04,
   ham_semitend_l: 0.04, ham_semitend_r: 0.04,
 
-  // Spinal erectors (×0.20)
-  erectors_thor_l: 0.07, erectors_thor_r: 0.07,
-  erectors_lum_l:  0.09, erectors_lum_r:  0.09,
-
   // Calves (×0.20)
   gastro_med_l: 0.044, gastro_med_r: 0.044,
   gastro_lat_l: 0.044, gastro_lat_r: 0.044,
@@ -155,14 +151,18 @@ iliopsoas_l: 0.06, iliopsoas_r: 0.06,
 psoas_major_l: 0.06, psoas_major_r: 0.06,
 sartorius_l: 0.08, sartorius_r: 0.08,
 
-// Back Squat — erectors (detailed)
-spinalis_thor_l: 0.020, spinalis_thor_r: 0.020,
-longissimus_thor_l: 0.035, longissimus_thor_r: 0.035,
-iliocostalis_thor_l: 0.015, iliocostalis_thor_r: 0.015,
+// Back Squat — erectors (detailed, corrected)
+spinalis_thor_l: 0.07, spinalis_thor_r: 0.07,
+longissimus_thor_l: 0.07, longissimus_thor_r: 0.07,
+iliocostalis_thor_l: 0.07, iliocostalis_thor_r: 0.07,
 
-spinalis_lumb_l: 0.020, spinalis_lumb_r: 0.020,
-longissimus_lumb_l: 0.050, longissimus_lumb_r: 0.050,
-iliocostalis_lumb_l: 0.021, iliocostalis_lumb_r: 0.021,
+spinalis_lumb_l: 0.09, spinalis_lumb_r: 0.09,
+longissimus_lumb_l: 0.09, longissimus_lumb_r: 0.09,
+iliocostalis_lumb_l: 0.09, iliocostalis_lumb_r: 0.09,
+
+
+// Adductors
+
 
 },
   "Romanian Deadlift": {
@@ -178,10 +178,6 @@ iliocostalis_lumb_l: 0.021, iliocostalis_lumb_r: 0.021,
   glute_med_l: 0.056,       glute_med_r: 0.056,   // 0.28 × 0.20
   glute_min_l: 0.040,       glute_min_r: 0.040,   // 0.20 × 0.20
   adductor_mag_l: 0.62,     adductor_mag_r: 0.62,
-
-  // Spinal erectors (×0.20)
-  erectors_lum_l: 0.12,  erectors_lum_r: 0.12,
-  erectors_thor_l: 0.084, erectors_thor_r: 0.084,
 
   // Upper back / lats / traps (×0.20)
   traps_mid_l: 0.052,   traps_mid_r: 0.052,
@@ -213,14 +209,14 @@ iliopsoas_l: 0.04, iliopsoas_r: 0.04,
 psoas_major_l: 0.04, psoas_major_r: 0.04,
 sartorius_l: 0.06, sartorius_r: 0.06,
 
-// Romanian Deadlift — erectors (detailed)
-spinalis_thor_l: 0.024, spinalis_thor_r: 0.024,
-longissimus_thor_l: 0.042, longissimus_thor_r: 0.042,
-iliocostalis_thor_l: 0.018, iliocostalis_thor_r: 0.018,
+// Romanian Deadlift — erectors (detailed, corrected)
+spinalis_thor_l: 0.084, spinalis_thor_r: 0.084,
+longissimus_thor_l: 0.084, longissimus_thor_r: 0.084,
+iliocostalis_thor_l: 0.084, iliocostalis_thor_r: 0.084,
 
-spinalis_lumb_l: 0.026, spinalis_lumb_r: 0.026,
-longissimus_lumb_l: 0.066, longissimus_lumb_r: 0.066,
-iliocostalis_lumb_l: 0.028, iliocostalis_lumb_r: 0.028,
+spinalis_lumb_l: 0.12, spinalis_lumb_r: 0.12,
+longissimus_lumb_l: 0.12, longissimus_lumb_r: 0.12,
+iliocostalis_lumb_l: 0.12, iliocostalis_lumb_r: 0.12,
 
 },
 
@@ -244,7 +240,18 @@ iliocostalis_lumb_l: 0.028, iliocostalis_lumb_r: 0.028,
   // Calves
   gastro_med_l: 0.12, gastro_med_r: 0.12,   // 0.20 × 0.60
   gastro_lat_l: 0.12, gastro_lat_r: 0.12,   // 0.20 × 0.60
-  soleus_post_l: 0.016, soleus_post_r: 0.016 // 0.08 × 0.20
+  soleus_post_l: 0.016, soleus_post_r: 0.016, // 0.08 × 0.20
+
+  // Seated Leg Curl — erectors (detailed)
+// (was: erectors_thor_*: 0.02, erectors_lum_*: 0.02 per side)
+spinalis_thor_l: 0.006, spinalis_thor_r: 0.006,
+longissimus_thor_l: 0.010, longissimus_thor_r: 0.010,
+iliocostalis_thor_l: 0.005, iliocostalis_thor_r: 0.005,
+
+spinalis_lumb_l: 0.005, spinalis_lumb_r: 0.005,
+longissimus_lumb_l: 0.011, longissimus_lumb_r: 0.011,
+iliocostalis_lumb_l: 0.005, iliocostalis_lumb_r: 0.005,
+
 },
 
   "Calf Raise (Standing)": {
@@ -338,9 +345,6 @@ sartorius_l: 0.12, sartorius_r: 0.12,                     // minor hip abduction
   // Grip (isometric ×0.20)
   forearm_flex_l: 0.07, forearm_flex_r: 0.07,
 
-  // Spinal erectors (isometric ×0.20)
-  erectors_thor_l: 0.04, erectors_thor_r: 0.04,
-  erectors_lum_l: 0.03, erectors_lum_r: 0.03,
 
   rectus_abdominis_upper_l: 0.03, rectus_abdominis_upper_r: 0.03,
 rectus_abdominis_lower_l: 0.03, rectus_abdominis_lower_r: 0.03,
@@ -348,14 +352,15 @@ oblique_ex_l: 0.03, oblique_ex_r: 0.03,
 oblique_int_l: 0.03, oblique_int_r: 0.03,
 transverse_abs_l: 0.05, transverse_abs_r: 0.05,
 
-// Seated Cable Row — erectors (detailed)
-spinalis_thor_l: 0.011, spinalis_thor_r: 0.011,
-longissimus_thor_l: 0.020, longissimus_thor_r: 0.020,
-iliocostalis_thor_l: 0.009, iliocostalis_thor_r: 0.009,
+// Seated Cable Row — erectors (detailed, corrected)
+spinalis_thor_l: 0.04, spinalis_thor_r: 0.04,
+longissimus_thor_l: 0.04, longissimus_thor_r: 0.04,
+iliocostalis_thor_l: 0.04, iliocostalis_thor_r: 0.04,
 
-spinalis_lumb_l: 0.007, spinalis_lumb_r: 0.007,
-longissimus_lumb_l: 0.017, longissimus_lumb_r: 0.017,
-iliocostalis_lumb_l: 0.007, iliocostalis_lumb_r: 0.007,
+spinalis_lumb_l: 0.03, spinalis_lumb_r: 0.03,
+longissimus_lumb_l: 0.03, longissimus_lumb_r: 0.03,
+iliocostalis_lumb_l: 0.03, iliocostalis_lumb_r: 0.03,
+
 
 },
   "Front Squat": {
@@ -377,10 +382,6 @@ iliocostalis_lumb_l: 0.007, iliocostalis_lumb_r: 0.007,
   ham_bf_long_l: 0.03, ham_bf_long_r: 0.03,
   ham_semimem_l: 0.03, ham_semimem_r: 0.03,
   ham_semitend_l: 0.03, ham_semitend_r: 0.03,
-
-  // Spinal erectors
-  erectors_thor_l: 0.096, erectors_thor_r: 0.096,
-  erectors_lum_l:  0.064, erectors_lum_r:  0.064,
 
   // Calves
   gastro_med_l: 0.04, gastro_med_r: 0.04,
@@ -404,14 +405,14 @@ iliopsoas_l: 0.06, iliopsoas_r: 0.06,
 psoas_major_l: 0.06, psoas_major_r: 0.06,
 sartorius_l: 0.08, sartorius_r: 0.08,
 
-// Front Squat — erectors (detailed)
-spinalis_thor_l: 0.027, spinalis_thor_r: 0.027,
-longissimus_thor_l: 0.048, longissimus_thor_r: 0.048,
-iliocostalis_thor_l: 0.021, iliocostalis_thor_r: 0.021,
+// Front Squat — erectors (detailed, corrected)
+spinalis_thor_l: 0.096, spinalis_thor_r: 0.096,
+longissimus_thor_l: 0.096, longissimus_thor_r: 0.096,
+iliocostalis_thor_l: 0.096, iliocostalis_thor_r: 0.096,
 
-spinalis_lumb_l: 0.014, spinalis_lumb_r: 0.014,
-longissimus_lumb_l: 0.035, longissimus_lumb_r: 0.035,
-iliocostalis_lumb_l: 0.015, iliocostalis_lumb_r: 0.015,
+spinalis_lumb_l: 0.064, spinalis_lumb_r: 0.064,
+longissimus_lumb_l: 0.064, longissimus_lumb_r: 0.064,
+iliocostalis_lumb_l: 0.064, iliocostalis_lumb_r: 0.064,
 
 },
 "Seated French Press": {
@@ -540,10 +541,6 @@ iliocostalis_lumb_l: 0.015, iliocostalis_lumb_r: 0.015,
   ham_semimem_l:  0.02, ham_semimem_r:  0.02,
   ham_semitend_l: 0.02, ham_semitend_r: 0.02,
 
-  // Spinal erectors (supported torso; isometric)
-  erectors_thor_l: 0.02, erectors_thor_r: 0.02,
-  erectors_lum_l:  0.02, erectors_lum_r:  0.02,
-
   // Calves (isometric assist through footplate)
   gastro_med_l: 0.04, gastro_med_r: 0.04,
   gastro_lat_l: 0.04, gastro_lat_r: 0.04,
@@ -566,14 +563,15 @@ iliopsoas_l: 0.04, iliopsoas_r: 0.04,
 psoas_major_l: 0.04, psoas_major_r: 0.04,
 sartorius_l: 0.06, sartorius_r: 0.06,
 
-// Leg Press — erectors (detailed)
-spinalis_thor_l: 0.006, spinalis_thor_r: 0.006,
-longissimus_thor_l: 0.010, longissimus_thor_r: 0.010,
-iliocostalis_thor_l: 0.004, iliocostalis_thor_r: 0.004,
+// Leg Press — erectors (detailed, corrected)
+spinalis_thor_l: 0.02, spinalis_thor_r: 0.02,
+longissimus_thor_l: 0.02, longissimus_thor_r: 0.02,
+iliocostalis_thor_l: 0.02, iliocostalis_thor_r: 0.02,
 
-spinalis_lumb_l: 0.004, spinalis_lumb_r: 0.004,
-longissimus_lumb_l: 0.011, longissimus_lumb_r: 0.011,
-iliocostalis_lumb_l: 0.005, iliocostalis_lumb_r: 0.005,
+spinalis_lumb_l: 0.02, spinalis_lumb_r: 0.02,
+longissimus_lumb_l: 0.02, longissimus_lumb_r: 0.02,
+iliocostalis_lumb_l: 0.02, iliocostalis_lumb_r: 0.02,
+
 
 },
 
@@ -595,10 +593,6 @@ iliocostalis_lumb_l: 0.005, iliocostalis_lumb_r: 0.005,
   ham_bf_long_l:  0.05, ham_bf_long_r:  0.05,
   ham_semimem_l:  0.05, ham_semimem_r:  0.05,
   ham_semitend_l: 0.05, ham_semitend_r: 0.05,
-
-  // Spinal erectors (upright torso; supported by stance)
-  erectors_thor_l: 0.04, erectors_thor_r: 0.04,
-  erectors_lum_l:  0.05, erectors_lum_r:  0.05,
 
   // Calves (foot stabilization)
   gastro_med_l: 0.05, gastro_med_r: 0.05,
@@ -622,14 +616,14 @@ iliopsoas_l: 0.10, iliopsoas_r: 0.10,
 psoas_major_l: 0.10, psoas_major_r: 0.10,
 sartorius_l: 0.12, sartorius_r: 0.12,
 
-// Lunge (Walking) — erectors (detailed)
-spinalis_thor_l: 0.011, spinalis_thor_r: 0.011,
-longissimus_thor_l: 0.020, longissimus_thor_r: 0.020,
-iliocostalis_thor_l: 0.009, iliocostalis_thor_r: 0.009,
+// Lunge (Walking) — erectors (detailed, corrected)
+spinalis_thor_l: 0.04, spinalis_thor_r: 0.04,
+longissimus_thor_l: 0.04, longissimus_thor_r: 0.04,
+iliocostalis_thor_l: 0.04, iliocostalis_thor_r: 0.04,
 
-spinalis_lumb_l: 0.011, spinalis_lumb_r: 0.011,
-longissimus_lumb_l: 0.028, longissimus_lumb_r: 0.028,
-iliocostalis_lumb_l: 0.012, iliocostalis_lumb_r: 0.012,
+spinalis_lumb_l: 0.05, spinalis_lumb_r: 0.05,
+longissimus_lumb_l: 0.05, longissimus_lumb_r: 0.05,
+iliocostalis_lumb_l: 0.05, iliocostalis_lumb_r: 0.05,
 
 },
 
@@ -653,11 +647,7 @@ iliocostalis_lumb_l: 0.012, iliocostalis_lumb_r: 0.012,
   ham_semimem_l:  0.02, ham_semimem_r:  0.02,
   ham_semitend_l: 0.02, ham_semitend_r: 0.02,
 
-  // Spinal erectors (machine support)
-  erectors_thor_l: 0.02, erectors_thor_r: 0.02,
-  erectors_lum_l:  0.02, erectors_lum_r:  0.02,
-
-  // Calves (footplate isometric)
+   // Calves (footplate isometric)
   gastro_med_l: 0.04, gastro_med_r: 0.04,
   gastro_lat_l: 0.04, gastro_lat_r: 0.04,
   soleus_post_l: 0.03, soleus_post_r: 0.03,
@@ -678,14 +668,14 @@ iliopsoas_l: 0.04, iliopsoas_r: 0.04,
 psoas_major_l: 0.04, psoas_major_r: 0.04,
 sartorius_l: 0.06, sartorius_r: 0.06,
 
-// Hack Squat — erectors (detailed)
-spinalis_thor_l: 0.006, spinalis_thor_r: 0.006,
-longissimus_thor_l: 0.010, longissimus_thor_r: 0.010,
-iliocostalis_thor_l: 0.004, iliocostalis_thor_r: 0.004,
+// Hack Squat — erectors (detailed, corrected)
+spinalis_thor_l: 0.02, spinalis_thor_r: 0.02,
+longissimus_thor_l: 0.02, longissimus_thor_r: 0.02,
+iliocostalis_thor_l: 0.02, iliocostalis_thor_r: 0.02,
 
-spinalis_lumb_l: 0.004, spinalis_lumb_r: 0.004,
-longissimus_lumb_l: 0.011, longissimus_lumb_r: 0.011,
-iliocostalis_lumb_l: 0.005, iliocostalis_lumb_r: 0.005,
+spinalis_lumb_l: 0.02, spinalis_lumb_r: 0.02,
+longissimus_lumb_l: 0.02, longissimus_lumb_r: 0.02,
+iliocostalis_lumb_l: 0.02, iliocostalis_lumb_r: 0.02,
 
 },
 
@@ -708,9 +698,15 @@ iliocostalis_lumb_l: 0.005, iliocostalis_lumb_r: 0.005,
   quads_vm_l:       0.30, quads_vm_r:       0.30,
   quads_vi_l:       0.22, quads_vi_r:       0.22,
 
-  // Spinal erectors (higher than RDL)
-  erectors_thor_l: 0.16, erectors_thor_r: 0.16,
-  erectors_lum_l:  0.22, erectors_lum_r:  0.22,
+ // Conventional Deadlift — erectors (detailed, corrected)
+spinalis_thor_l: 0.16, spinalis_thor_r: 0.16,
+longissimus_thor_l: 0.16, longissimus_thor_r: 0.16,
+iliocostalis_thor_l: 0.16, iliocostalis_thor_r: 0.16,
+
+spinalis_lumb_l: 0.22, spinalis_lumb_r: 0.22,
+longissimus_lumb_l: 0.22, longissimus_lumb_r: 0.22,
+iliocostalis_lumb_l: 0.22, iliocostalis_lumb_r: 0.22,
+
 
   // Lats / traps (isometric bracing and scapular depression)
   lats_vertebral_l: 0.08, lats_vertebral_r: 0.08,
@@ -745,16 +741,6 @@ gracilis_l: 0.10, gracilis_r: 0.10,
 iliopsoas_l: 0.04, iliopsoas_r: 0.04,
 psoas_major_l: 0.04, psoas_major_r: 0.04,
 sartorius_l: 0.06, sartorius_r: 0.06,
-
-// Conventional Deadlift — erectors (detailed)
-spinalis_thor_l: 0.045, spinalis_thor_r: 0.045,
-longissimus_thor_l: 0.080, longissimus_thor_r: 0.080,
-iliocostalis_thor_l: 0.035, iliocostalis_thor_r: 0.035,
-
-spinalis_lumb_l: 0.048, spinalis_lumb_r: 0.048,
-longissimus_lumb_l: 0.121, longissimus_lumb_r: 0.121,
-iliocostalis_lumb_l: 0.051, iliocostalis_lumb_r: 0.051,
-
 },
 
 "Stiff-Legged Deadlift": {
@@ -775,10 +761,6 @@ iliocostalis_lumb_l: 0.051, iliocostalis_lumb_r: 0.051,
   quads_vl_l:       0.06, quads_vl_r:       0.06,
   quads_vm_l:       0.06, quads_vm_r:       0.06,
   quads_vi_l:       0.05, quads_vi_r:       0.05,
-
-  // Spinal erectors (↑ vs RDL; greater hip hinge demand)
-  erectors_thor_l: 0.12, erectors_thor_r: 0.12,
-  erectors_lum_l:  0.16, erectors_lum_r:  0.16,
 
   // Upper back / lats (isometric bracing)
   traps_mid_l: 0.06,   traps_mid_r: 0.06,
@@ -811,15 +793,14 @@ iliopsoas_l: 0.04, iliopsoas_r: 0.04,
 psoas_major_l: 0.04, psoas_major_r: 0.04,
 sartorius_l: 0.06, sartorius_r: 0.06,
 
-// Stiff-Legged Deadlift — erectors (detailed)
-spinalis_thor_l: 0.034, spinalis_thor_r: 0.034,
-longissimus_thor_l: 0.060, longissimus_thor_r: 0.060,
-iliocostalis_thor_l: 0.026, iliocostalis_thor_r: 0.026,
+// Stiff-Legged Deadlift — erectors (detailed, corrected)
+spinalis_thor_l: 0.12, spinalis_thor_r: 0.12,
+longissimus_thor_l: 0.12, longissimus_thor_r: 0.12,
+iliocostalis_thor_l: 0.12, iliocostalis_thor_r: 0.12,
 
-spinalis_lumb_l: 0.035, spinalis_lumb_r: 0.035,
-longissimus_lumb_l: 0.088, longissimus_lumb_r: 0.088,
-iliocostalis_lumb_l: 0.037, iliocostalis_lumb_r: 0.037,
-
+spinalis_lumb_l: 0.16, spinalis_lumb_r: 0.16,
+longissimus_lumb_l: 0.16, longissimus_lumb_r: 0.16,
+iliocostalis_lumb_l: 0.16, iliocostalis_lumb_r: 0.16,
 
 },
 
@@ -841,10 +822,6 @@ iliocostalis_lumb_l: 0.037, iliocostalis_lumb_r: 0.037,
   quads_vl_l:       0.06, quads_vl_r:       0.06,
   quads_vm_l:       0.06, quads_vm_r:       0.06,
   quads_vi_l:       0.05, quads_vi_r:       0.05,
-
-  // Spinal erectors (higher than RDL; below conventional DL)
-  erectors_thor_l: 0.14, erectors_thor_r: 0.14,
-  erectors_lum_l:  0.20, erectors_lum_r:  0.20,
 
   // Upper back / lats / traps (isometric bracing with bar on back)
   traps_mid_l: 0.08,   traps_mid_r: 0.08,
@@ -877,14 +854,15 @@ iliopsoas_l: 0.04, iliopsoas_r: 0.04,
 psoas_major_l: 0.04, psoas_major_r: 0.04,
 sartorius_l: 0.06, sartorius_r: 0.06,
 
-// Good Morning — erectors (detailed)
-spinalis_thor_l: 0.039, spinalis_thor_r: 0.039,
-longissimus_thor_l: 0.070, longissimus_thor_r: 0.070,
-iliocostalis_thor_l: 0.031, iliocostalis_thor_r: 0.031,
+// Good Morning — erectors (detailed, corrected)
+spinalis_thor_l: 0.14, spinalis_thor_r: 0.14,
+longissimus_thor_l: 0.14, longissimus_thor_r: 0.14,
+iliocostalis_thor_l: 0.14, iliocostalis_thor_r: 0.14,
 
-spinalis_lumb_l: 0.044, spinalis_lumb_r: 0.044,
-longissimus_lumb_l: 0.110, longissimus_lumb_r: 0.110,
-iliocostalis_lumb_l: 0.046, iliocostalis_lumb_r: 0.046,
+spinalis_lumb_l: 0.20, spinalis_lumb_r: 0.20,
+longissimus_lumb_l: 0.20, longissimus_lumb_r: 0.20,
+iliocostalis_lumb_l: 0.20, iliocostalis_lumb_r: 0.20,
+
 
 },
 
@@ -904,9 +882,16 @@ iliocostalis_lumb_l: 0.046, iliocostalis_lumb_r: 0.046,
   quads_rf_upper_l: 0.01, quads_rf_upper_r: 0.01,
   quads_rf_lower_l: 0.01, quads_rf_lower_r: 0.01,
 
-  // Spinal erectors (supported torso)
-  erectors_thor_l: 0.02, erectors_thor_r: 0.02,
-  erectors_lum_l:  0.02, erectors_lum_r:  0.02
+  // Seated Leg Curl — erectors (detailed)
+// (was: erectors_thor_*: 0.02, erectors_lum_*: 0.02 per side)
+spinalis_thor_l: 0.006, spinalis_thor_r: 0.006,
+longissimus_thor_l: 0.010, longissimus_thor_r: 0.010,
+iliocostalis_thor_l: 0.005, iliocostalis_thor_r: 0.005,
+
+spinalis_lumb_l: 0.005, spinalis_lumb_r: 0.005,
+longissimus_lumb_l: 0.011, longissimus_lumb_r: 0.011,
+iliocostalis_lumb_l: 0.005, iliocostalis_lumb_r: 0.005,
+
 },
 
 "Bench Press (Dumbbell)": {
@@ -1011,6 +996,45 @@ transverse_abs_l: 0.05, transverse_abs_r: 0.05,
 
 },
 
+"Wrist Roller": {
+  // Primary movers — forearms (both directions in each set)
+  forearm_flex_l: 0.88, forearm_flex_r: 0.88,   // palms-up phase (concentric) + controlled eccentric
+  forearm_ext_l:  0.88, forearm_ext_r:  0.88,   // palms-down phase and the reverse eccentric
+
+  // Elbow/forearm stabilizers (minor dynamic assist)
+  // (If you track these, keep modest; if not in your model, you can omit)
+  // brachioradialis_l: 0.16, brachioradialis_r: 0.16,
+  // pronator_teres_l:  0.12, pronator_teres_r:  0.12,
+  // supinator_l:       0.12, supinator_r:       0.12,
+
+  // Scapular/shoulder posture (arms held at shoulder height)
+  traps_upper_l: 0.14, traps_upper_r: 0.14,
+  traps_mid_l:   0.08, traps_mid_r:   0.08,
+  traps_lower_l: 0.06, traps_lower_r: 0.06,
+  rhomboids_l:   0.06, rhomboids_r:  0.06,
+  serratus_l:    0.06, serratus_r:    0.06,
+
+  // Spinal erectors (anti-extension/anti-flexion while standing)
+  erectors_thor_l: 0.06, erectors_thor_r: 0.06,
+  erectors_lum_l:  0.08, erectors_lum_r:  0.08,
+
+  // Core wall (brace while resisting sway)
+  rectus_abdominis_upper_l: 0.05, rectus_abdominis_upper_r: 0.05,
+  rectus_abdominis_lower_l: 0.06, rectus_abdominis_lower_r: 0.06,
+  oblique_ex_l: 0.06, oblique_ex_r: 0.06,
+  oblique_int_l: 0.06, oblique_int_r: 0.06,
+  transverse_abs_l: 0.08, transverse_abs_r: 0.08,
+
+  // Wrist Roller — erectors (detailed)
+  spinalis_thor_l:      0.017, spinalis_thor_r:      0.017,
+  longissimus_thor_l:   0.030, longissimus_thor_r:   0.030,
+  iliocostalis_thor_l:  0.013, iliocostalis_thor_r:  0.013,
+
+  spinalis_lumb_l:      0.019, spinalis_lumb_r:      0.019,
+  longissimus_lumb_l:   0.041, longissimus_lumb_r:   0.041,
+  iliocostalis_lumb_l:  0.020, iliocostalis_lumb_r:  0.020,
+},
+
 "Barbell Row (Bent-Over)": {
   // Lats (moderate; less than Chin-Up, a touch around/below cable row bias)
   lats_costal_l:    0.36, lats_costal_r:    0.36,
@@ -1027,10 +1051,6 @@ transverse_abs_l: 0.05, transverse_abs_r: 0.05,
 
   // Posterior delts (free-weight row tends to be higher than cable)
   rear_delt_l: 0.50, rear_delt_r: 0.50,
-
-  // Spinal erectors (unsupported torso → clearly higher than seated cable row)
-  erectors_thor_l: 0.14, erectors_thor_r: 0.14,
-  erectors_lum_l:  0.18, erectors_lum_r:  0.18,
 
   // Upper traps (carry/anti-shear; modest)
   traps_upper_l: 0.10, traps_upper_r: 0.10,
@@ -1052,14 +1072,14 @@ oblique_ex_l: 0.06, oblique_ex_r: 0.06,
 oblique_int_l: 0.06, oblique_int_r: 0.06,
 transverse_abs_l: 0.08, transverse_abs_r: 0.08,
 
-// Barbell Row (Bent-Over) — erectors (detailed)
-spinalis_thor_l: 0.039, spinalis_thor_r: 0.039,
-longissimus_thor_l: 0.070, longissimus_thor_r: 0.070,
-iliocostalis_thor_l: 0.031, iliocostalis_thor_r: 0.031,
+// Barbell Row (Bent-Over) — erectors (detailed, corrected)
+spinalis_thor_l: 0.14, spinalis_thor_r: 0.14,
+longissimus_thor_l: 0.14, longissimus_thor_r: 0.14,
+iliocostalis_thor_l: 0.14, iliocostalis_thor_r: 0.14,
 
-spinalis_lumb_l: 0.040, spinalis_lumb_r: 0.040,
-longissimus_lumb_l: 0.099, longissimus_lumb_r: 0.099,
-iliocostalis_lumb_l: 0.041, iliocostalis_lumb_r: 0.041,
+spinalis_lumb_l: 0.18, spinalis_lumb_r: 0.18,
+longissimus_lumb_l: 0.18, longissimus_lumb_r: 0.18,
+iliocostalis_lumb_l: 0.18, iliocostalis_lumb_r: 0.18,
 
 },
 
@@ -1079,10 +1099,6 @@ iliocostalis_lumb_l: 0.041, iliocostalis_lumb_r: 0.041,
 
   // Posterior delts (free-weight row → higher than cable)
   rear_delt_l: 0.46, rear_delt_r: 0.46,
-
-  // Spinal erectors (unsupported torso but lever angle reduces demand vs BB row)
-  erectors_thor_l: 0.12, erectors_thor_r: 0.12,
-  erectors_lum_l:  0.16, erectors_lum_r:  0.16,
 
   // Upper traps (carry/anti-shear; modest)
   traps_upper_l: 0.10, traps_upper_r: 0.10,
@@ -1104,14 +1120,14 @@ oblique_ex_l: 0.05, oblique_ex_r: 0.05,
 oblique_int_l: 0.05, oblique_int_r: 0.05,
 transverse_abs_l: 0.07, transverse_abs_r: 0.07,
 
-// T-Bar Row — erectors (detailed)
-spinalis_thor_l: 0.034, spinalis_thor_r: 0.034,
-longissimus_thor_l: 0.060, longissimus_thor_r: 0.060,
-iliocostalis_thor_l: 0.026, iliocostalis_thor_r: 0.026,
+// T-Bar Row — erectors (detailed, corrected)
+spinalis_thor_l: 0.12, spinalis_thor_r: 0.12,
+longissimus_thor_l: 0.12, longissimus_thor_r: 0.12,
+iliocostalis_thor_l: 0.12, iliocostalis_thor_r: 0.12,
 
-spinalis_lumb_l: 0.035, spinalis_lumb_r: 0.035,
-longissimus_lumb_l: 0.088, longissimus_lumb_r: 0.088,
-iliocostalis_lumb_l: 0.037, iliocostalis_lumb_r: 0.037,
+spinalis_lumb_l: 0.16, spinalis_lumb_r: 0.16,
+longissimus_lumb_l: 0.16, longissimus_lumb_r: 0.16,
+iliocostalis_lumb_l: 0.16, iliocostalis_lumb_r: 0.16,
 
 },
 
@@ -1174,9 +1190,6 @@ transverse_abs_l: 0.07, transverse_abs_r: 0.07,
   quads_rf_upper_l: 0.04, quads_rf_upper_r: 0.04,
   quads_rf_lower_l: 0.04, quads_rf_lower_r: 0.04,
 
-  // Spinal erectors (bench support → low)
-  erectors_lum_l:  0.06, erectors_lum_r:  0.06,
-  erectors_thor_l: 0.05, erectors_thor_r: 0.05,
 
   // Calves (foot pressure on floorplate)
   gastro_med_l: 0.03, gastro_med_r: 0.03,
@@ -1200,13 +1213,14 @@ psoas_major_l: 0.04, psoas_major_r: 0.04,
 sartorius_l: 0.06, sartorius_r: 0.06,
 
 // Hip Thrust — erectors (detailed)
-spinalis_thor_l: 0.014, spinalis_thor_r: 0.014,
-longissimus_thor_l: 0.025, longissimus_thor_r: 0.025,
-iliocostalis_thor_l: 0.011, iliocostalis_thor_r: 0.011,
+// Hip Thrust — erectors (detailed, corrected)
+spinalis_thor_l: 0.05, spinalis_thor_r: 0.05,
+longissimus_thor_l: 0.05, longissimus_thor_r: 0.05,
+iliocostalis_thor_l: 0.05, iliocostalis_thor_r: 0.05,
 
-spinalis_lumb_l: 0.013, spinalis_lumb_r: 0.013,
-longissimus_lumb_l: 0.033, longissimus_lumb_r: 0.033,
-iliocostalis_lumb_l: 0.014, iliocostalis_lumb_r: 0.014,
+spinalis_lumb_l: 0.06, spinalis_lumb_r: 0.06,
+longissimus_lumb_l: 0.06, longissimus_lumb_r: 0.06,
+iliocostalis_lumb_l: 0.06, iliocostalis_lumb_r: 0.06,
 
 },
 
@@ -1321,9 +1335,16 @@ transverse_abs_l: 0.06, transverse_abs_r: 0.06,
   // Serratus (scapular upward rotation control)
   serratus_l: 0.05, serratus_r: 0.05,
 
-  // Spinal erectors (seated support → low)
-  erectors_thor_l: 0.04, erectors_thor_r: 0.04,
-  erectors_lum_l:  0.05, erectors_lum_r:  0.05,
+  // Seated Overhead Press (Barbell) — erectors (detailed)
+// (was: erectors_thor_*: 0.04, erectors_lum_*: 0.05)
+spinalis_thor_l: 0.011, spinalis_thor_r: 0.011,
+longissimus_thor_l: 0.020, longissimus_thor_r: 0.020,
+iliocostalis_thor_l: 0.009, iliocostalis_thor_r: 0.009,
+
+spinalis_lumb_l: 0.012, spinalis_lumb_r: 0.012,
+longissimus_lumb_l: 0.028, longissimus_lumb_r: 0.028,
+iliocostalis_lumb_l: 0.012, iliocostalis_lumb_r: 0.012,
+
 
   rectus_abdominis_upper_l: 0.03, rectus_abdominis_upper_r: 0.03,
 rectus_abdominis_lower_l: 0.03, rectus_abdominis_lower_r: 0.03,
@@ -1354,9 +1375,16 @@ transverse_abs_l: 0.04, transverse_abs_r: 0.04,
   // Serratus (upward rotation control)
   serratus_l: 0.05, serratus_r: 0.05,
 
-  // Spinal erectors (seat/back support → low)
-  erectors_thor_l: 0.03, erectors_thor_r: 0.03,
-  erectors_lum_l:  0.04, erectors_lum_r:  0.04,
+  // Seated Overhead Press (Dumbbell) — erectors (detailed)
+// (was: erectors_thor_*: 0.03, erectors_lum_*: 0.04)
+spinalis_thor_l: 0.008, spinalis_thor_r: 0.008,
+longissimus_thor_l: 0.015, longissimus_thor_r: 0.015,
+iliocostalis_thor_l: 0.007, iliocostalis_thor_r: 0.007,
+
+spinalis_lumb_l: 0.009, spinalis_lumb_r: 0.009,
+longissimus_lumb_l: 0.023, longissimus_lumb_r: 0.023,
+iliocostalis_lumb_l: 0.009, iliocostalis_lumb_r: 0.009,
+
 
   rectus_abdominis_upper_l: 0.03, rectus_abdominis_upper_r: 0.03,
 rectus_abdominis_lower_l: 0.03, rectus_abdominis_lower_r: 0.03,
@@ -1484,10 +1512,6 @@ sartorius_l: 0.12, sartorius_r: 0.12,
   traps_lower_l: 0.26, traps_lower_r: 0.26,
   rhomboids_l:   0.42, rhomboids_r:  0.42,
 
-  // Spinal erectors (anti-flexion/anti-side-bend during gait)
-  erectors_thor_l: 0.22, erectors_thor_r: 0.22,
-  erectors_lum_l:  0.28, erectors_lum_r:  0.28,
-
   // Core wall (brace + anti-rotation)
   rectus_abdominis_upper_l: 0.10, rectus_abdominis_upper_r: 0.10,
   rectus_abdominis_lower_l: 0.12, rectus_abdominis_lower_r: 0.12,
@@ -1513,14 +1537,15 @@ sartorius_l: 0.12, sartorius_r: 0.12,
   gastro_lat_l: 0.08, gastro_lat_r: 0.08,
   soleus_post_l: 0.06, soleus_post_r: 0.06,
 
-  // Farmer's Carry — erectors (detailed)
-spinalis_thor_l: 0.062, spinalis_thor_r: 0.062,
-longissimus_thor_l: 0.110, longissimus_thor_r: 0.110,
-iliocostalis_thor_l: 0.048, iliocostalis_thor_r: 0.048,
+// Farmer's Carry — erectors (detailed, corrected)
+spinalis_thor_l: 0.22, spinalis_thor_r: 0.22,
+longissimus_thor_l: 0.22, longissimus_thor_r: 0.22,
+iliocostalis_thor_l: 0.22, iliocostalis_thor_r: 0.22,
 
-spinalis_lumb_l: 0.062, spinalis_lumb_r: 0.062,
-longissimus_lumb_l: 0.154, longissimus_lumb_r: 0.154,
-iliocostalis_lumb_l: 0.064, iliocostalis_lumb_r: 0.064,
+spinalis_lumb_l: 0.28, spinalis_lumb_r: 0.28,
+longissimus_lumb_l: 0.28, longissimus_lumb_r: 0.28,
+iliocostalis_lumb_l: 0.28, iliocostalis_lumb_r: 0.28,
+
 
 },
 
@@ -1543,11 +1568,75 @@ iliocostalis_lumb_l: 0.064, iliocostalis_lumb_r: 0.064,
   oblique_int_l: 0.16, oblique_int_r: 0.16,
 
   // Deep core bracing
-  transverse_abs_l: 0.12, transverse_abs_r: 0.12
+  transverse_abs_l: 0.12, transverse_abs_r: 0.12,
+
+  iliopsoas_l: 0.06, iliopsoas_r: 0.06,
+psoas_major_l: 0.06, psoas_major_r: 0.06,
+sartorius_l: 0.03, sartorius_r: 0.03,
+
+},
+"Sit-Up": {
+  // Rectus abdominis (more whole-trunk ROM than a crunch)
+  rectus_abdominis_lower_l: 0.76, rectus_abdominis_lower_r: 0.76,
+  rectus_abdominis_upper_l: 0.70, rectus_abdominis_upper_r: 0.70,
+
+  // Obliques & deep core
+  oblique_ex_l: 0.18, oblique_ex_r: 0.18,
+  oblique_int_l: 0.16, oblique_int_r: 0.16,
+  transverse_abs_l: 0.14, transverse_abs_r: 0.14,
+
+  // Hip flexors (sit-up uses notable hip flexion vs. a crunch)
+  iliopsoas_l: 0.72, iliopsoas_r: 0.72,
+  psoas_major_l: 0.68, psoas_major_r: 0.68,
+  quads_rf_upper_l: 0.28, quads_rf_upper_r: 0.28,   // rectus femoris (proximal)
+  quads_rf_lower_l: 0.34, quads_rf_lower_r: 0.34,   // rectus femoris (distal)
+  sartorius_l: 0.24, sartorius_r: 0.24,
+  pectineus_l: 0.20, pectineus_r: 0.20
 },
 
 
+"Adduction Machine": {
+  // Primary adductors (strong, controlled ROM; big end-range tension)
+  adductor_mag_l: 0.82, adductor_mag_r: 0.82,   // magnus: primary engine
+  add_longus_l:   0.72, add_longus_r:   0.72,   // longus: very high
+  add_brevis_l:   0.64, add_brevis_r:   0.64,   // brevis: deep, strongly hit
 
+  // Hip-flexion adductor (more bias with seated/hip-flexed setup)
+  pectineus_l:    0.58, pectineus_r:    0.58,
+
+  // Biarticular adductor (reduced when knee is flexed; still contributes)
+  gracilis_l:     0.24, gracilis_r:     0.24
+},
+
+"Hanging Leg Raise (Straight-Leg)": {
+  // Abs (posterior pelvic tilt at top)
+  rectus_abdominis_lower_l: 0.78, rectus_abdominis_lower_r: 0.78,
+  rectus_abdominis_upper_l: 0.44, rectus_abdominis_upper_r: 0.44,
+  transverse_abs_l: 0.24,         transverse_abs_r: 0.24,
+
+  // Hip flexors
+  iliopsoas_l: 0.70, iliopsoas_r: 0.70,
+  psoas_major_l: 0.66, psoas_major_r: 0.66,
+  sartorius_l: 0.28, sartorius_r: 0.28,
+
+  // Rectus femoris contribution (knee extended lever)
+  quads_rf_upper_l: 0.28, quads_rf_upper_r: 0.28,
+  quads_rf_lower_l: 0.34, quads_rf_lower_r: 0.34,
+
+  // Scapular/lats/bracing (anti-swing, depression)
+  lats_vertebral_l: 0.12, lats_vertebral_r: 0.12,
+  traps_lower_l:    0.10, traps_lower_r:    0.10,
+  traps_mid_l:      0.08, traps_mid_r:      0.08,
+  rhomboids_l:      0.08, rhomboids_r:      0.08,
+  serratus_l:       0.10, serratus_r:       0.10,
+
+  // Grip
+  forearm_flex_l: 0.20, forearm_flex_r: 0.20,
+
+  // Low spinal support (anti-extension control)
+  erectors_thor_l: 0.06, erectors_thor_r: 0.06,
+  erectors_lum_l:  0.06, erectors_lum_r:  0.06
+},
 "Biceps Curl (EZ-Bar)": {
   // Elbow flexors
   bicep_short_l: 0.96, bicep_short_r: 0.96,
@@ -1571,7 +1660,12 @@ iliocostalis_lumb_l: 0.064, iliocostalis_lumb_r: 0.064,
   oblique_int_l: 0.12, oblique_int_r: 0.12,
 
   // Deep core (posterior pelvic tilt control)
-  transverse_abs_l: 0.16, transverse_abs_r: 0.16
+  transverse_abs_l: 0.16, transverse_abs_r: 0.16,
+
+  iliopsoas_l: 0.04, iliopsoas_r: 0.04,
+psoas_major_l: 0.04, psoas_major_r: 0.04,
+sartorius_l: 0.02, sartorius_r: 0.02,
+
 },
 
 "Yates Row (Underhand Barbell Row)": {
@@ -1594,9 +1688,6 @@ iliocostalis_lumb_l: 0.064, iliocostalis_lumb_r: 0.064,
   bicep_long_l:  0.46, bicep_long_r:  0.46,
   brachialis_l:  0.48, brachialis_r:  0.48,
 
-  // Stabilizers / posture
-  erectors_thor_l: 0.08, erectors_thor_r: 0.08,
-  erectors_lum_l:  0.10, erectors_lum_r:  0.10,
   forearm_flex_l:  0.10, forearm_flex_r:  0.10,
   rectus_abdominis_upper_l: 0.04, rectus_abdominis_upper_r: 0.04,
 rectus_abdominis_lower_l: 0.05, rectus_abdominis_lower_r: 0.05,
@@ -1605,13 +1696,14 @@ oblique_int_l: 0.05, oblique_int_r: 0.05,
 transverse_abs_l: 0.07, transverse_abs_r: 0.07,
 
 // --- Spine muscles (detail) ---
-spinalis_thor_l: 0.022, spinalis_thor_r: 0.022,
-longissimus_thor_l: 0.040, longissimus_thor_r: 0.040,
-iliocostalis_thor_l: 0.018, iliocostalis_thor_r: 0.018,
+// Yates Row (Underhand Barbell Row) — erectors (detailed, corrected)
+spinalis_thor_l: 0.08, spinalis_thor_r: 0.08,
+longissimus_thor_l: 0.08, longissimus_thor_r: 0.08,
+iliocostalis_thor_l: 0.08, iliocostalis_thor_r: 0.08,
 
-spinalis_lumb_l: 0.022, spinalis_lumb_r: 0.022,
-longissimus_lumb_l: 0.055, longissimus_lumb_r: 0.055,
-iliocostalis_lumb_l: 0.023, iliocostalis_lumb_r: 0.023,
+spinalis_lumb_l: 0.10, spinalis_lumb_r: 0.10,
+longissimus_lumb_l: 0.10, longissimus_lumb_r: 0.10,
+iliocostalis_lumb_l: 0.10, iliocostalis_lumb_r: 0.10,
 
 },
 

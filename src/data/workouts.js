@@ -44,8 +44,8 @@ export const WORKOUTS = [
   "Straight-Arm Pulldown (Half-Moon)",
 
   // Squat / Hinge / Lower
-  //"Back Squat",
-  "Back Squat (Low-Bar)",
+  "Back Squat",
+  //"Back Squat (Low-Bar)",
   "Front Squat",
   //"Goblet Squat",
   "Conventional Deadlift",
@@ -66,6 +66,7 @@ export const WORKOUTS = [
   "Overhead Triceps Extension",
   //"Triceps Pushdown (Cable)",
   "Wrist Curl (Behind-the-Back, Barbell)",
+  "Wrist Roller",
 
   // Legs (isolations)
   "Seated Leg Curl",
@@ -86,8 +87,11 @@ export const WORKOUTS = [
   //"Hanging Leg Raise",
   //"Russian Twist",
   "Crunch",
+  "Sit-Up",
 
   // Hips/Glutes adjunct
   "Abduction Machine",
-  "Reverse Crunch"
+  "Reverse Crunch",
+  "Adduction Machine",
+  "Hanging Leg Raise (Straight-Leg)",
 ].sort((a, b) => a.localeCompare(b));
