@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import SessionPlanner from "../components/SessionPlanner";
 import { WEEKLY_SEQUENCE } from "../data/weekly-sequence";
+import { resolveExercise } from "../utils/equipmentFallback";
 import { getWeekBounds } from "../utils/week";
 import {
   totalMinutes,
@@ -13,6 +14,9 @@ import {
   setKnown1RM,            // for local mirror after DB upsert
 } from "../utils/timeBudget";
 import { bumpWithPropagation } from "../lib/overload-propagation";
+import { CATALOG_BY_ID as LIFT_CATALOG } from "../data/lifts";
+
+const CATALOG_BY_ID = LIFT_CATALOG;
 
 // ---------- small helpers ----------
 function nowLabel(min) {
@@ -104,19 +108,55 @@ function generateFromMinutes(minutes, startIndex) {
   let used = 0;
   let i = startIndex;
 
+    // Read equipment prefs once per generation
+    // Read equipment prefs once per generation (supports old & new keys)
+  let blockedSet;
+  try {
+    // New format: array of strings (e.g., ["barbells","machines",...])
+    const rawNew = localStorage.getItem("equipment-unavailable");
+    // Legacy format: { barbells: true/false, ... }
+    const rawOld = localStorage.getItem("equipmentBlocked");
+
+    let arr = [];
+    if (rawNew) {
+      const maybe = JSON.parse(rawNew);
+      arr = Array.isArray(maybe) ? maybe : [];
+    } else if (rawOld) {
+      const obj = JSON.parse(rawOld) || {};
+      arr = Object.keys(obj).filter((k) => !!obj[k]); // keep the true ones only
+    }
+    blockedSet = new Set(arr);
+  } catch {
+    blockedSet = new Set();
+  }
+
   while (i < WEEKLY_SEQUENCE.length) {
     const spec = WEEKLY_SEQUENCE[i];
 
+      // Resolve the spec.liftId using class-aware fallback rules.
+    const resolved = resolveExercise(
+      { id: spec.liftId, type: CATALOG_BY_ID?.[spec.liftId]?.type },
+        blockedSet,
+        CATALOG_BY_ID
+    );
+    if (!resolved) { i += 1; continue; }
+    const resolvedId = resolved.id;
+
+
     const draft = {
-      liftId: spec.liftId,
+      liftId: resolvedId,           // use resolved id
       sets: spec.sets,
       reps: spec.reps,
       intensityPct: spec.intensityPct,
-      weight: null,                        // derived from 1RM for display
-      orm: getKnown1RM(spec.liftId) ?? null,
+      weight: null,
+      orm: getKnown1RM(resolvedId) ?? null,
     };
 
-    const cost = estimateExerciseMinutes(draft);
+
+
+        const rawCost = Number(estimateExerciseMinutes(draft));
+    const cost = Number.isFinite(rawCost) ? rawCost : 8; // default 8m if a catalog entry is incomplete
+
 
     if (rows.length === 0 || used + cost <= minutes) {
       rows.push(draft);

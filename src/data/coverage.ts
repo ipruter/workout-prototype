@@ -1754,6 +1754,392 @@ transverse_abs_l: 0.07, transverse_abs_r: 0.07,
   ant_delt_l: 0.04, ant_delt_r: 0.04
 },
 
+"Lat Pulldown (Pronated, Wide/Medium)": {
+  // Lats (very high; close to Pull-Up, a touch more stable/seated)
+  lats_costal_l:    0.76, lats_costal_r:    0.76,
+  lats_iliac_l:     0.70, lats_iliac_r:     0.70,
+  lats_vertebral_l: 0.62, lats_vertebral_r: 0.62,
+
+  // Teres major (strong shoulder extension synergist)
+  teres_major_l: 0.52, teres_major_r: 0.52,
+
+  // Scapular retractors/depressors
+  traps_lower_l: 0.52, traps_lower_r: 0.52,
+  traps_mid_l:   0.42, traps_mid_r:   0.42,
+  rhomboids_l:   0.42, rhomboids_r:   0.42,
+
+  // Posterior delts (minor–moderate on pronated path)
+  rear_delt_l: 0.20, rear_delt_r: 0.20,
+
+  // Elbow flexors (pronated ↓ vs chin-up; similar to pull-up)
+  bicep_short_l: 0.55, bicep_short_r: 0.55,
+  bicep_long_l:  0.50, bicep_long_r:  0.50,
+  brachialis_l:  0.60, brachialis_r:  0.60,
+
+  // Serratus (scap control) & grip
+  serratus_l: 0.06, serratus_r: 0.06,
+  forearm_flex_l: 0.07, forearm_flex_r: 0.07,
+
+  // Core (seated support → small)
+  rectus_abdominis_upper_l: 0.04, rectus_abdominis_upper_r: 0.04,
+  rectus_abdominis_lower_l: 0.04, rectus_abdominis_lower_r: 0.04,
+  oblique_ex_l: 0.04, oblique_ex_r: 0.04,
+  oblique_int_l: 0.04, oblique_int_r: 0.04,
+  transverse_abs_l: 0.05, transverse_abs_r: 0.05,
+
+  // Erectors (seated; low—values are absolute, not divided)
+  spinalis_thor_l: 0.010, spinalis_thor_r: 0.010,
+  longissimus_thor_l: 0.018, longissimus_thor_r: 0.018,
+  iliocostalis_thor_l: 0.008, iliocostalis_thor_r: 0.008,
+
+  spinalis_lumb_l: 0.010, spinalis_lumb_r: 0.010,
+  longissimus_lumb_l: 0.024, longissimus_lumb_r: 0.024,
+  iliocostalis_lumb_l: 0.010, iliocostalis_lumb_r: 0.010,
+},
+
+// WORKOUT_TARGETS_BY_NAME
+"Lat Pulldown (Underhand/Chin-Grip)": {
+  // Lats (slight ↑ vs pronated due to elbow path)
+  lats_costal_l:    0.78, lats_costal_r:    0.78,
+  lats_iliac_l:     0.72, lats_iliac_r:     0.72,
+  lats_vertebral_l: 0.66, lats_vertebral_r: 0.66,
+
+  // Teres major (strong synergist with shoulder extension)
+  teres_major_l: 0.54, teres_major_r: 0.54,
+
+  // Scapular retractors/depressors
+  traps_lower_l: 0.50, traps_lower_r: 0.50,
+  traps_mid_l:   0.42, traps_mid_r:   0.42,
+  rhomboids_l:   0.44, rhomboids_r:   0.44,
+
+  // Posterior delts (slightly ↓ vs rows)
+  rear_delt_l: 0.18, rear_delt_r: 0.18,
+
+  // Elbow flexors (↑ with supinated grip)
+  bicep_short_l: 0.68, bicep_short_r: 0.68,
+  bicep_long_l:  0.58, bicep_long_r:  0.58,
+  brachialis_l:  0.66, brachialis_r:  0.66,
+
+  // Serratus & grip
+  serratus_l: 0.06, serratus_r: 0.06,
+  forearm_flex_l: 0.07, forearm_flex_r: 0.07,
+
+  // Core (seated; light)
+  rectus_abdominis_upper_l: 0.04, rectus_abdominis_upper_r: 0.04,
+  rectus_abdominis_lower_l: 0.04, rectus_abdominis_lower_r: 0.04,
+  oblique_ex_l: 0.04, oblique_ex_r: 0.04,
+  oblique_int_l: 0.04, oblique_int_r: 0.04,
+  transverse_abs_l: 0.05, transverse_abs_r: 0.05,
+
+  // Erectors (seated; low — absolute values, not divided)
+  spinalis_thor_l: 0.010, spinalis_thor_r: 0.010,
+  longissimus_thor_l: 0.018, longissimus_thor_r: 0.018,
+  iliocostalis_thor_l: 0.008, iliocostalis_thor_r: 0.008,
+
+  spinalis_lumb_l: 0.010, spinalis_lumb_r: 0.010,
+  longissimus_lumb_l: 0.022, longissimus_lumb_r: 0.022,
+  iliocostalis_lumb_l: 0.010, iliocostalis_lumb_r: 0.010,
+},
+
+// WORKOUT_TARGETS_BY_NAME
+"Bent-Over Row (Dumbbell)": {
+  // Lats (BB-row–like; slight neutral-grip bias with DBs)
+  lats_costal_l:    0.38, lats_costal_r:    0.38,
+  lats_iliac_l:     0.36, lats_iliac_r:     0.36,
+  lats_vertebral_l: 0.48, lats_vertebral_r: 0.48,
+
+  // Teres major
+  teres_major_l: 0.46, teres_major_r: 0.46,
+
+  // Scapular retractors/depressors
+  rhomboids_l: 0.70, rhomboids_r: 0.70,
+  traps_mid_l: 0.60, traps_mid_r: 0.60,
+  traps_lower_l: 0.30, traps_lower_r: 0.30,
+
+  // Posterior delts
+  rear_delt_l: 0.48, rear_delt_r: 0.48,
+
+  // Elbow flexors (neutral handles → ↑ brachialis/short head vs BB row)
+  bicep_short_l: 0.46, bicep_short_r: 0.46,
+  bicep_long_l:  0.40, bicep_long_r:  0.40,
+  brachialis_l:  0.52, brachialis_r:  0.52,
+
+  // Grip (isometric)
+  forearm_flex_l: 0.10, forearm_flex_r: 0.10,
+
+  // Serratus (minor stabilization)
+  serratus_l: 0.04, serratus_r: 0.04,
+
+  // Core / bracing (unsupported torso)
+  rectus_abdominis_upper_l: 0.05, rectus_abdominis_upper_r: 0.05,
+  rectus_abdominis_lower_l: 0.06, rectus_abdominis_lower_r: 0.06,
+  oblique_ex_l: 0.06, oblique_ex_r: 0.06,
+  oblique_int_l: 0.06, oblique_int_r: 0.06,
+  transverse_abs_l: 0.08, transverse_abs_r: 0.08,
+
+  // Erectors — detailed (absolute values; not divided)
+  spinalis_thor_l: 0.039, spinalis_thor_r: 0.039,
+  longissimus_thor_l: 0.070, longissimus_thor_r: 0.070,
+  iliocostalis_thor_l: 0.031, iliocostalis_thor_r: 0.031,
+
+  spinalis_lumb_l: 0.040, spinalis_lumb_r: 0.040,
+  longissimus_lumb_l: 0.099, longissimus_lumb_r: 0.099,
+  iliocostalis_lumb_l: 0.041, iliocostalis_lumb_r: 0.041,
+},
+
+// WORKOUT_TARGETS_BY_NAME
+"Dumbbell Squat": {
+  // Quads
+  quads_rf_upper_l: 0.38, quads_rf_upper_r: 0.38,
+  quads_rf_lower_l: 0.44, quads_rf_lower_r: 0.44,
+  quads_vl_l:       0.76, quads_vl_r:       0.76,
+  quads_vm_l:       0.80, quads_vm_r:       0.80,
+  quads_vi_l:       0.68, quads_vi_r:       0.68,
+
+  // Glutes / abductors / adductors
+  caudal_glute_max_l: 0.60,  caudal_glute_max_r: 0.60,
+  cranial_glute_max_l: 0.34, cranial_glute_max_r: 0.34,
+  glute_med_l: 0.09,         glute_med_r: 0.09,
+  glute_min_l: 0.06,         glute_min_r: 0.06,
+  adductor_mag_l: 0.58,      adductor_mag_r: 0.58,
+
+  // Minor adductors / hip flexors
+  add_longus_l: 0.19, add_longus_r: 0.19,
+  add_brevis_l: 0.16, add_brevis_r: 0.16,
+  pectineus_l:  0.10, pectineus_r:  0.10,
+  gracilis_l:   0.08, gracilis_r:   0.08,
+  iliopsoas_l:  0.06, iliopsoas_r:  0.06,
+  psoas_major_l:0.06, psoas_major_r:0.06,
+  sartorius_l:  0.08, sartorius_r:  0.08,
+  tensor_fascia_lata_l: 0.06, tensor_fascia_lata_r: 0.06,
+
+  // Hamstrings (low)
+  ham_bf_long_l:  0.04, ham_bf_long_r:  0.04,
+  ham_semimem_l:  0.04, ham_semimem_r:  0.04,
+  ham_semitend_l: 0.04, ham_semitend_r: 0.04,
+
+  // Core (slightly less anterior loading than goblet; still solid brace)
+  rectus_abdominis_upper_l: 0.10, rectus_abdominis_upper_r: 0.10,
+  rectus_abdominis_lower_l: 0.09, rectus_abdominis_lower_r: 0.09,
+  oblique_ex_l: 0.09, oblique_ex_r: 0.09,
+  oblique_int_l: 0.09, oblique_int_r: 0.09,
+  transverse_abs_l: 0.11, transverse_abs_r: 0.11,
+
+  // Calves
+  gastro_med_l: 0.04, gastro_med_r: 0.04,
+  gastro_lat_l: 0.04, gastro_lat_r: 0.04,
+  soleus_post_l: 0.024, soleus_post_r: 0.024,
+
+  // Erectors — detailed (absolute; not divided/averaged)
+  spinalis_thor_l: 0.022, spinalis_thor_r: 0.022,
+  longissimus_thor_l: 0.038, longissimus_thor_r: 0.038,
+  iliocostalis_thor_l: 0.017, iliocostalis_thor_r: 0.017,
+
+  spinalis_lumb_l: 0.014, spinalis_lumb_r: 0.014,
+  longissimus_lumb_l: 0.034, longissimus_lumb_r: 0.034,
+  iliocostalis_lumb_l: 0.015, iliocostalis_lumb_r: 0.015,
+},
+
+// WORKOUT_TARGETS_BY_NAME
+"Smith Machine Deadlift": {
+  // Hamstrings (slightly ↓ vs barbell conventional due to guided path)
+  ham_bf_long_l: 0.60, ham_bf_long_r: 0.60,
+  ham_semimem_l: 0.56, ham_semimem_r: 0.56,
+  ham_semitend_l: 0.52, ham_semitend_r: 0.52,
+  ham_bf_short_l: 0.12, ham_bf_short_r: 0.12,
+
+  // Glutes / adductors (still very high hip extension demand)
+  caudal_glute_max_l: 0.74,  caudal_glute_max_r: 0.74,
+  cranial_glute_max_l: 0.48, cranial_glute_max_r: 0.48,
+  adductor_mag_l:      0.66, adductor_mag_r:      0.66,
+
+  // Quads (often a touch ↑ with Smith setup)
+  quads_rf_upper_l: 0.12, quads_rf_upper_r: 0.12,
+  quads_rf_lower_l: 0.14, quads_rf_lower_r: 0.14,
+  quads_vl_l:       0.30, quads_vl_r:       0.30,
+  quads_vm_l:       0.32, quads_vm_r:       0.32,
+  quads_vi_l:       0.24, quads_vi_r:       0.24,
+
+  // Lats / traps (isometric bracing ↓ vs free bar)
+  lats_vertebral_l: 0.06, lats_vertebral_r: 0.06,
+  lats_costal_l:    0.05, lats_costal_r:    0.05,
+  lats_iliac_l:     0.04, lats_iliac_r:     0.04,
+  traps_upper_l:    0.08, traps_upper_r:    0.08,
+  traps_mid_l:      0.10, traps_mid_r:      0.10,
+  traps_lower_l:    0.10, traps_lower_r:    0.10,
+  rhomboids_l:      0.08, rhomboids_r:      0.08,
+
+  // Grip
+  forearm_flex_l: 0.16, forearm_flex_r: 0.16,
+
+  // Calves (minimal isometric)
+  gastro_med_l: 0.03, gastro_med_r: 0.03,
+  gastro_lat_l: 0.03, gastro_lat_r: 0.03,
+  soleus_post_l: 0.03, soleus_post_r: 0.03,
+
+  // Core (slightly ↓ vs free bar)
+  rectus_abdominis_upper_l: 0.05, rectus_abdominis_upper_r: 0.05,
+  rectus_abdominis_lower_l: 0.06, rectus_abdominis_lower_r: 0.06,
+  oblique_ex_l: 0.08, oblique_ex_r: 0.08,
+  oblique_int_l: 0.07, oblique_int_r: 0.07,
+  transverse_abs_l: 0.09, transverse_abs_r: 0.09,
+
+  // Abductors / smaller adductors / hip flexors
+  glute_med_l: 0.05, glute_med_r: 0.05,
+  glute_min_l: 0.04, glute_min_r: 0.04,
+  tensor_fascia_lata_l: 0.05, tensor_fascia_lata_r: 0.05,
+  add_longus_l: 0.20, add_longus_r: 0.20,
+  add_brevis_l: 0.16, add_brevis_r: 0.16,
+  pectineus_l: 0.12, pectineus_r: 0.12,
+  gracilis_l: 0.10, gracilis_r: 0.10,
+  iliopsoas_l: 0.04, iliopsoas_r: 0.04,
+  psoas_major_l: 0.04, psoas_major_r: 0.04,
+  sartorius_l: 0.06, sartorius_r: 0.06,
+
+  // --- Erectors (detailed; not aggregated) ---
+  // Slightly ↓ vs barbell due to guided bar path
+  // Thoracic total ≈0.12 distributed by typical proportions
+  spinalis_thor_l: 0.034, spinalis_thor_r: 0.034,
+  longissimus_thor_l: 0.058, longissimus_thor_r: 0.058,
+  iliocostalis_thor_l: 0.026, iliocostalis_thor_r: 0.026,
+
+  // Lumbar total ≈0.16 distributed by typical proportions
+  spinalis_lumb_l: 0.036, spinalis_lumb_r: 0.036,
+  longissimus_lumb_l: 0.086, longissimus_lumb_r: 0.086,
+  iliocostalis_lumb_l: 0.038, iliocostalis_lumb_r: 0.038,
+},
+
+// WORKOUT_TARGETS_BY_NAME
+"Dumbbell Shrug": {
+  // Upper traps (prime mover)
+  traps_upper_l: 0.95, traps_upper_r: 0.95,
+
+  // Scapular retractors / upward rotators
+  traps_mid_l: 0.32,  traps_mid_r: 0.32,
+  rhomboids_l: 0.24,  rhomboids_r: 0.24,
+  traps_lower_l: 0.12, traps_lower_r: 0.12,
+
+  // Posterior delts (minor stabilization)
+  rear_delt_l: 0.10, rear_delt_r: 0.10,
+
+  // Lats (negligible; arm hangs)
+  lats_costal_l: 0.03,  lats_costal_r: 0.03,
+  lats_iliac_l:  0.02,  lats_iliac_r:  0.02,
+  lats_vertebral_l: 0.03, lats_vertebral_r: 0.03,
+
+  // Elbow/hand—grip demand higher with DBs vs barbell
+  forearm_flex_l: 0.18, forearm_flex_r: 0.18,
+
+  // Core / posture (small but present)
+  rectus_abdominis_upper_l: 0.03, rectus_abdominis_upper_r: 0.03,
+  rectus_abdominis_lower_l: 0.03, rectus_abdominis_lower_r: 0.03,
+  oblique_ex_l: 0.04, oblique_ex_r: 0.04,
+  oblique_int_l: 0.04, oblique_int_r: 0.04,
+  transverse_abs_l: 0.05, transverse_abs_r: 0.05,
+
+  // --- Erectors (detailed; no aggregated fields) ---
+  // Totals ≈ thor 0.06, lum 0.07; distributed by typical proportions
+  spinalis_thor_l: 0.017, spinalis_thor_r: 0.017,
+  longissimus_thor_l: 0.030, longissimus_thor_r: 0.030,
+  iliocostalis_thor_l: 0.013, iliocostalis_thor_r: 0.013,
+
+  spinalis_lumb_l: 0.018, spinalis_lumb_r: 0.018,
+  longissimus_lumb_l: 0.038, longissimus_lumb_r: 0.038,
+  iliocostalis_lumb_l: 0.014, iliocostalis_lumb_r: 0.014,
+},
+
+// WORKOUT_TARGETS_BY_NAME
+"Smith Machine Shrug": {
+  // Upper traps (prime mover; fixed path lets you overload)
+  traps_upper_l: 0.97, traps_upper_r: 0.97,
+
+  // Scapular retractors / upward rotators (slightly ↓ vs DB due to guidance)
+  traps_mid_l: 0.28,  traps_mid_r: 0.28,
+  rhomboids_l: 0.20,  rhomboids_r: 0.20,
+  traps_lower_l: 0.12, traps_lower_r: 0.12,
+
+  // Posterior delts (minor stabilization)
+  rear_delt_l: 0.08, rear_delt_r: 0.08,
+
+  // Lats (negligible)
+  lats_costal_l: 0.02,  lats_costal_r: 0.02,
+  lats_iliac_l:  0.02,  lats_iliac_r:  0.02,
+  lats_vertebral_l: 0.02, lats_vertebral_r: 0.02,
+
+  // Grip (less than DB; bar is fixed)
+  forearm_flex_l: 0.10, forearm_flex_r: 0.10,
+
+  // Core / posture (small)
+  rectus_abdominis_upper_l: 0.02, rectus_abdominis_upper_r: 0.02,
+  rectus_abdominis_lower_l: 0.02, rectus_abdominis_lower_r: 0.02,
+  oblique_ex_l: 0.03, oblique_ex_r: 0.03,
+  oblique_int_l: 0.03, oblique_int_r: 0.03,
+  transverse_abs_l: 0.04, transverse_abs_r: 0.04,
+
+  // --- Erectors (detailed; no aggregated fields) ---
+  // Totals ≈ thor 0.05, lum 0.06 with Smith support
+  spinalis_thor_l: 0.014, spinalis_thor_r: 0.014,
+  longissimus_thor_l: 0.024, longissimus_thor_r: 0.024,
+  iliocostalis_thor_l: 0.012, iliocostalis_thor_r: 0.012,
+
+  spinalis_lumb_l: 0.016, spinalis_lumb_r: 0.016,
+  longissimus_lumb_l: 0.032, longissimus_lumb_r: 0.032,
+  iliocostalis_lumb_l: 0.012, iliocostalis_lumb_r: 0.012,
+},
+
+// WORKOUT_TARGETS_BY_NAME
+"Goblet Squat": {
+  // Quads (upright, knee-dominant)
+  quads_rf_upper_l: 0.40, quads_rf_upper_r: 0.40,
+  quads_rf_lower_l: 0.46, quads_rf_lower_r: 0.46,
+  quads_vl_l:       0.78, quads_vl_r:       0.78,
+  quads_vm_l:       0.82, quads_vm_r:       0.82,
+  quads_vi_l:       0.70, quads_vi_r:       0.70,
+
+  // Glutes / abductors / adductors
+  caudal_glute_max_l: 0.58,  caudal_glute_max_r: 0.58,
+  cranial_glute_max_l: 0.32, cranial_glute_max_r: 0.32,
+  glute_med_l: 0.10,         glute_med_r: 0.10,
+  glute_min_l: 0.06,         glute_min_r: 0.06,
+  adductor_mag_l: 0.60,      adductor_mag_r: 0.60,
+
+  // Minor adductors/hip flexors
+  add_longus_l: 0.20, add_longus_r: 0.20,
+  add_brevis_l: 0.16, add_brevis_r: 0.16,
+  pectineus_l:  0.10, pectineus_r:  0.10,
+  gracilis_l:   0.08, gracilis_r:   0.08,
+  iliopsoas_l:  0.06, iliopsoas_r:  0.06,
+  psoas_major_l:0.06, psoas_major_r:0.06,
+  sartorius_l:  0.08, sartorius_r:  0.08,
+  tensor_fascia_lata_l: 0.06, tensor_fascia_lata_r: 0.06,
+
+  // Hamstrings (low in this pattern)
+  ham_bf_long_l:  0.04, ham_bf_long_r:  0.04,
+  ham_semimem_l:  0.04, ham_semimem_r:  0.04,
+  ham_semitend_l: 0.04, ham_semitend_r: 0.04,
+
+  // Core (anterior load → higher brace)
+  rectus_abdominis_upper_l: 0.12, rectus_abdominis_upper_r: 0.12,
+  rectus_abdominis_lower_l: 0.10, rectus_abdominis_lower_r: 0.10,
+  oblique_ex_l: 0.10, oblique_ex_r: 0.10,
+  oblique_int_l: 0.10, oblique_int_r: 0.10,
+  transverse_abs_l: 0.12, transverse_abs_r: 0.12,
+
+  // Calves (stance stiffness)
+  gastro_med_l: 0.04, gastro_med_r: 0.04,
+  gastro_lat_l: 0.04, gastro_lat_r: 0.04,
+  soleus_post_l: 0.024, soleus_post_r: 0.024,
+
+  // Erectors — detailed (absolute values; not divided by categories)
+  spinalis_thor_l: 0.020, spinalis_thor_r: 0.020,
+  longissimus_thor_l: 0.036, longissimus_thor_r: 0.036,
+  iliocostalis_thor_l: 0.016, iliocostalis_thor_r: 0.016,
+
+  spinalis_lumb_l: 0.012, spinalis_lumb_r: 0.012,
+  longissimus_lumb_l: 0.030, longissimus_lumb_r: 0.030,
+  iliocostalis_lumb_l: 0.013, iliocostalis_lumb_r: 0.013,
+}
+
 };
 
 // 2) Build coverageByLR keyed by lift IDs using your catalog.
@@ -1766,11 +2152,16 @@ const NAME_TO_ID = Object.fromEntries(
 
 // Fix common name variants → canonical catalog names:
 const NAME_ALIASES = {
-  "incline bench press": "incline bench press (barbell)",  // map to your incline_bb
-  "overhead press": "overhead press (barbell)",            // prefer barbell by default
-  "donkey calf raises": "donkey calf raise",               // plural → singular
-  "upright rows (wide)": "upright row (wide)",             // plural → singular
-  " seated leg curl": "seated leg curl",                   // trim leading space
+  // already present mappings (keep yours)
+  "incline bench press": "incline bench press (barbell)",
+  "overhead press": "overhead press (barbell)",
+  "donkey calf raises": "donkey calf raise",
+  "upright rows (wide)": "upright row (wide)",
+  "barbell row (bent-over)": "barbell row",
+  "lat pulldown (pronated, wide/medium)": "lat pulldown",
+
+  // keep any others you had:
+  "incline bench press (dumbbell)": "incline bench press (dumbbell)", // example passthrough
 };
 
 // If your catalog names differ, update the alias targets to match CATALOG_BY_ID values.

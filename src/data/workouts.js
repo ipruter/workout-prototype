@@ -30,24 +30,28 @@ export const WORKOUTS = [
   "Reverse Fly",
   "Face Pull",
   "Barbell Shrug",
+  "Dumbbell Shrug",
+  "Smith Machine Shrug",
 
   // Back / Pull
   "Barbell Row",
   "Underhand Barbell Row",
   "Yates Row (Underhand Barbell Row)",
-  //"Dumbbell Row",
+  "Bent-Over Row (Dumbbell)",
   "Seated Cable Row",
-  //"Lat Pulldown",
+  "Lat Pulldown",
   "Chin-Up",
   "Pull-Up",
   "T-Bar Row",
   "Straight-Arm Pulldown (Half-Moon)",
+  "Lat Pulldown (Underhand/Chin-Grip)",
 
   // Squat / Hinge / Lower
   "Back Squat",
+  "Dumbbell Squat",
   //"Back Squat (Low-Bar)",
   "Front Squat",
-  //"Goblet Squat",
+  "Goblet Squat",
   "Conventional Deadlift",
   "Romanian Deadlift",
   "Stiff-Legged Deadlift",
@@ -58,6 +62,8 @@ export const WORKOUTS = [
   "Lunge (Walking)",
   //"Step-Up",
   "Hack Squat",
+  "Dumbbell Deadlift",
+  "Smith Machine Deadlift",
 
   // Arms
   "Biceps Curl (Barbell)",

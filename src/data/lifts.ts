@@ -35,12 +35,18 @@ export const CATALOG_BY_ID = {
   upright_row_narrow: { name: "Upright Row (Narrow)", C: 25, type: "barbell" },
   lat_raise_db:    { name: "Lateral Raise (Dumbbell)", C: 3, type: "dumbbell" },
 lat_raise_cable: { name: "Lateral Raise (Cable)",    C: 3, type: "cable" },
+shrug_db: { name: "Dumbbell Shrug", C: 35, type: "dumbbell" },
+// lifts catalog
+shrug_smith: { name: "Smith Machine Shrug", C: 32, type: "machine" },
+
+
 
 
 
   // Back / Pull
   row_bb:     { name: "Barbell Row", C: 50, type: "barbell" },
-  row_db:       { name: "Dumbbell Row",                   C: 45, type: "dumbbell" },
+  // lifts catalog
+row_db_bent: { name: "Bent-Over Row (Dumbbell)", C: 48, type: "dumbbell" },
   row_cable:    { name: "Seated Cable Row",               C: 40, type: "machine" },
   pulldown:     { name: "Lat Pulldown",                   C: 45, type: "machine" },
   chinup:       { name: "Chin-Up",                        C: 55, type: "bodyweight", bwPct: 1  },
@@ -49,6 +55,10 @@ lat_raise_cable: { name: "Lateral Raise (Cable)",    C: 3, type: "cable" },
   sa_pulldown: { name: "Straight-Arm Pulldown (Half-Moon)", C: 8, type: "cable" },
   row_bb_yates: { name: "Yates Row (Underhand Barbell Row)", C: 50, type: "barbell" },
   row_bb_underhand: { name: "Underhand Barbell Row", C: 50, type: "barbell" },
+  // lifts catalog
+pulldown_sup: { name: "Lat Pulldown (Underhand/Chin-Grip)", C: 47, type: "machine" },
+
+
 
   // Squat / Hinge / Lower
   squat_hb:     { name: "Back Squat",          C: 95, type: "barbell", bwPct: 0.82},
@@ -66,6 +76,12 @@ lat_raise_cable: { name: "Lateral Raise (Cable)",    C: 3, type: "cable" },
   dl_sldl:   { name: "Stiff-Legged Deadlift", C: 82, type: "barbell", bwPct: 0.82 },
   gm_bb:      { name: "Good Morning", C: 65, type: "barbell", bwPct: 0.82 },
   farmers_carry: { name: "Farmer's Carry", C: 65, type: "dumbbell" },
+ db_squat: { name: "Dumbbell Squat", C: 40, type: "dumbbell" },
+ db_deadlift: { name: "Dumbbell Deadlift", C: 60, type: "dumbbell" },
+smith_deadlift: { name: "Smith Machine Deadlift", C: 70, type: "machine" },
+
+
+
 
 
 
@@ -110,9 +126,6 @@ lat_raise_cable: { name: "Lateral Raise (Cable)",    C: 3, type: "cable" },
   rev_crunch: { name: "Reverse Crunch", C: 6, type: "bodyweight", bwPct: 0.28 },
   add_machine: { name: "Adduction Machine", C: 6, type: "machine" },
   hang_leg_straight: { name: "Hanging Leg Raise (Straight-Leg)", C: 8, type: "bodyweight", bwPct: 0.38 },
-
-
-
 
 };
 

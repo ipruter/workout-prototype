@@ -62,7 +62,7 @@ export const WEEKLY_SEQUENCE = [
   { liftId: "lat_raise_db", sets: 3, reps: 8, intensityPct: 75 },
   { liftId: "calf_seat", sets: 3, reps: 10, intensityPct: 71 },
 
-  { liftId: "Sit-Up", sets: 3, reps: 10, intensityPct: 71 },
+  { liftId: "situp",  sets: 3, reps: 10, intensityPct: 71 },
   { liftId: "crunch", sets: 3, reps: 10, intensityPct: 71 },
   { liftId: "bb_wrist_curl_btb", sets: 3, reps: 10, intensityPct: 71 },
   { liftId: "wrist_roller", sets: 3, reps: 10, intensityPct: 71 },
