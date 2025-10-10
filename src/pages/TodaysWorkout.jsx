@@ -174,6 +174,8 @@ export default function TodaysWorkout() {
   const [rows, setRows] = useState([]);
   const [successMarks, setSuccessMarks] = useState([]);
   const [open, setOpen] = useState(false);
+  const [isCompleting, setIsCompleting] = useState(false);
+  const [hasCompleted, setHasCompleted] = useState(false);
 
   const used = useMemo(() => totalMinutes(rows), [rows]);
   const [consumedIdx, setConsumedIdx] = useState(0);
@@ -202,6 +204,8 @@ export default function TodaysWorkout() {
     setRows(planRows);
     setSuccessMarks(planRows.map(() => false));
     setOpen(true);
+    setIsCompleting(false);
+    setHasCompleted(false);
 
     setConsumedIdx(nextIndex);
     setRemaining(Math.max(0, WEEKLY_SEQUENCE.length - nextIndex));
@@ -265,7 +269,27 @@ export default function TodaysWorkout() {
     if (iErr) throw iErr;
   }
 
+  function startComplete() {
+  // Only allow one completion per opened modal
+  if (isCompleting || hasCompleted) return;
+  if (!rows.length) return;
+
+  setIsCompleting(true);
+  setHasCompleted(true);
+  setOpen(false); // close immediately so extra clicks can’t happen
+
+  (async () => {
+    try {
+      await handleComplete();
+    } finally {
+      // Keep hasCompleted=true so the same plan can't be re-saved
+      setIsCompleting(false);
+    }
+  })();
+}
+
   async function handleComplete() {
+    if (hasCompleted || isCompleting) return;
     try {
       await saveToDb();
 
@@ -394,7 +418,7 @@ rows.forEach((rw, idx) => {
               <h3 style={{ margin: 0 }}>Today’s workout</h3>
               <button
                 onMouseDown={() => document.activeElement?.blur()}
-                onClick={() => setOpen(false)}
+                onClick={() => { setOpen(false); setIsCompleting(false); setHasCompleted(false); }}
                 aria-label="close"
               >
                 ✕
@@ -427,18 +451,21 @@ rows.forEach((rw, idx) => {
                 Cancel
               </button>
               <button
-                onMouseDown={() => document.activeElement?.blur()}
-                onClick={() => setTimeout(handleComplete, 0)}
-                style={{
-                  background: "#0a7",
-                  color: "#fff",
-                  border: "none",
-                  padding: "8px 12px",
-                  borderRadius: 8,
-                }}
-              >
-                Complete workout
-              </button>
+  onMouseDown={() => document.activeElement?.blur()}
+   onClick={startComplete}
+  disabled={isCompleting || hasCompleted}
+  style={{
+    background: "#0a7",
+    color: "#fff",
+     border: "none",
+     padding: "8px 12px",
+    borderRadius: 8,
+     opacity: (isCompleting || hasCompleted) ? 0.6 : 1,
+     cursor: (isCompleting || hasCompleted) ? "not-allowed" : "pointer",
+   }}
+ >
+   {isCompleting ? "Saving…" : "Complete workout"}
+ </button>
             </div>
           </div>
         </div>
