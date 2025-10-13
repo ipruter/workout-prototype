@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import { getBodyweight, setBodyweight } from "../utils/bodyweight";
-import { supabase } from "../lib/supabaseClient";
-import ProgramSelector from "../components/ProgramSelector"; 
+import ProgramSelector from "../components/ProgramSelector";
 import EquipmentAvailability from "../components/EquipmentAvailability.jsx";
-
-
 
 export default function Home() {
   const [bwText, setBwText] = useState("");
@@ -27,10 +24,8 @@ export default function Home() {
 
   return (
     <div style={{ maxWidth: 900, margin: "40px auto", padding: "0 16px" }}>
-      {/* NEW: program selector */}
-      <ProgramSelector />
-
       <h2>Home</h2>
+
       <div style={{ display: "grid", gap: 12, maxWidth: 380 }}>
         <label style={{ fontSize: 14 }}>
           <div style={{ marginBottom: 4 }}>Bodyweight (lb)</div>
@@ -51,12 +46,11 @@ export default function Home() {
           We still display <em>bar weight</em> in the planner.
         </div>
       </div>
-      <div className="space-y-4">
+
+      <div className="space-y-4" style={{ marginTop: 16 }}>
         <ProgramSelector />
         <EquipmentAvailability onChange={setEquipBlockedSet} />
-      {/* ...rest of the home UI ... */}
-</div>
-
+      </div>
     </div>
   );
 }

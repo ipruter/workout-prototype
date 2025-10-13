@@ -4,7 +4,7 @@ import { WEEKLY_SEQUENCE as V_TAPER_MALE_SEQ } from "./weekly-sequence.v-taper-m
 import { WEEKLY_SEQUENCE as HOURGLASS_FEMALE_SEQ } from "./weekly-sequence.hourglass-female.js";
 
 export const PROGRAMS = {
-  default:          { label: "My Default",       list: DEFAULT_SEQ },
+  default:          { label: "Beginner",       list: DEFAULT_SEQ },
   full_coverage:    { label: "Full Coverage",    list: FULL_COVERAGE_SEQ },
   v_taper_male:     { label: "Male V-Taper",     list: V_TAPER_MALE_SEQ },
   hourglass_female: { label: "Female Hourglass", list: HOURGLASS_FEMALE_SEQ },

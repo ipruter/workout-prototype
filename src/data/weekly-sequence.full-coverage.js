@@ -6,17 +6,17 @@ export const WEEKLY_SEQUENCE = [
   { liftId: "dl_conv", sets: 3, reps: 4, intensityPct: 89 },
   { liftId: "chinup", sets: 3, reps: 4, intensityPct: 89 },
   { liftId: "bb_bench", sets: 3, reps: 4, intensityPct: 89 },
-  { liftId: "incline_bb", sets: 3, reps: 8, intensityPct: 75},
-
-  { liftId: "front_sqt",  sets: 3, reps: 13, intensityPct: 65},
-  { liftId: "leg_curl", sets: 3, reps: 13, intensityPct: 65},
   { liftId: "row_cable", sets: 3, reps: 13, intensityPct: 65},
+
+  { liftId: "incline_bb", sets: 3, reps: 8, intensityPct: 75},
+  { liftId: "leg_curl", sets: 3, reps: 13, intensityPct: 65},
+  { liftId: "hack_sqt",  sets: 3, reps: 13, intensityPct: 65},
   { liftId: "dip", sets: 3, reps: 13, intensityPct: 65},
-  { liftId: "tbar_row", sets: 3, reps: 8, intensityPct: 75},
+  { liftId: "row_cable", sets: 3, reps: 8, intensityPct: 75},
 
   { liftId: "upright_row", sets: 3, reps: 5, intensityPct: 86 },
   { liftId: "upright_row_narrow", sets: 3, reps: 13, intensityPct: 65 },
-  { liftId: "front_sqt",  sets: 3, reps: 8, intensityPct: 75},
+  { liftId: "hack_sqt",  sets: 3, reps: 8, intensityPct: 75},
   { liftId: "leg_curl", sets: 3, reps: 8, intensityPct: 75},
   { liftId: "incline_bb", sets: 3, reps: 5, intensityPct: 86},
 
@@ -45,12 +45,12 @@ export const WEEKLY_SEQUENCE = [
   { liftId: "abd_machine", sets: 3, reps: 10, intensityPct: 71 },
 
   { liftId: "calf_donkey", sets: 3, reps: 10, intensityPct: 71 },
-  { liftId: "front_sqt",  sets: 3, reps: 8, intensityPct: 75},
+  { liftId: "hack_sqt",  sets: 3, reps: 8, intensityPct: 75},
   { liftId: "leg_curl", sets: 3, reps: 13, intensityPct: 65},
-  { liftId: "tbar_row", sets: 3, reps: 8, intensityPct: 75},
+  { liftId: "chinup", sets: 3, reps: 8, intensityPct: 75},
   { liftId: "dip", sets: 3, reps: 8, intensityPct: 75},
 
-  { liftId: "chinup", sets: 3, reps: 5, intensityPct: 86 },
+  { liftId: "pullup", sets: 3, reps: 5, intensityPct: 86 },
   { liftId: "chest_press_hs_incline", sets: 3, reps: 5, intensityPct: 86 },
   { liftId: "leg_ext", sets: 3, reps: 13, intensityPct: 65},
   { liftId: "lat_raise_db", sets: 3, reps: 13, intensityPct: 65 },

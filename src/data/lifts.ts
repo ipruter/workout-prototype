@@ -72,7 +72,7 @@ pulldown_sup: { name: "Lat Pulldown (Underhand/Chin-Grip)", C: 47, type: "machin
   split_sqt:    { name: "Bulgarian Split Squat",          C: 55, type: "dumbbell" },
   lunge_wlk:    { name: "Lunge (Walking)",                C: 45, type: "dumbbell", bwPct: 0.82 },
   step_up:      { name: "Step-Up",                         C: 45, type: "dumbbell" },
-  hack_sqt:   { name: "Hack Squat", C: 60, type: "machine" },
+  hack_sqt:   { name: "Hack Squat", C: 75, type: "machine" },
   dl_sldl:   { name: "Stiff-Legged Deadlift", C: 82, type: "barbell", bwPct: 0.82 },
   gm_bb:      { name: "Good Morning", C: 65, type: "barbell", bwPct: 0.82 },
   farmers_carry: { name: "Farmer's Carry", C: 65, type: "dumbbell" },
