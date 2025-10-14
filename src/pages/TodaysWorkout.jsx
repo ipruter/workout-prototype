@@ -2,8 +2,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import SessionPlanner from "../components/SessionPlanner";
-import { WEEKLY_SEQUENCE } from "../data/weekly-sequence";
+import { PROGRAMS } from "../data/program-registry";
 import { resolveExercise } from "../utils/equipmentFallback";
+import { getBodyweight as getKnownBodyweight } from "../utils/bodyweight";
 import { getWeekBounds } from "../utils/week";
 import {
   totalMinutes,
@@ -16,7 +17,10 @@ import {
 import { bumpWithPropagation } from "../lib/overload-propagation";
 import { CATALOG_BY_ID as LIFT_CATALOG } from "../data/lifts";
 
+const LS_KEY = "selected-program";
 const CATALOG_BY_ID = LIFT_CATALOG;
+const LOCAL_PROGRAM_KEY = "selected-program";
+
 
 // ---------- small helpers ----------
 function nowLabel(min) {
@@ -103,48 +107,43 @@ async function getConsumedIndexThisWeek({ supabase }) {
   return items?.length ?? 0;
 }
 
-function generateFromMinutes(minutes, startIndex) {
+function generateFromMinutes(minutes, startIndex, sequence) {
   const rows = [];
   let used = 0;
   let i = startIndex;
 
-    // Read equipment prefs once per generation
-    // Read equipment prefs once per generation (supports old & new keys)
+  // Read equipment prefs once per generation (supports old & new keys)
   let blockedSet;
   try {
-    // New format: array of strings (e.g., ["barbells","machines",...])
     const rawNew = localStorage.getItem("equipment-unavailable");
-    // Legacy format: { barbells: true/false, ... }
     const rawOld = localStorage.getItem("equipmentBlocked");
-
     let arr = [];
     if (rawNew) {
       const maybe = JSON.parse(rawNew);
       arr = Array.isArray(maybe) ? maybe : [];
     } else if (rawOld) {
       const obj = JSON.parse(rawOld) || {};
-      arr = Object.keys(obj).filter((k) => !!obj[k]); // keep the true ones only
+      arr = Object.keys(obj).filter((k) => !!obj[k]);
     }
     blockedSet = new Set(arr);
   } catch {
     blockedSet = new Set();
   }
 
-  while (i < WEEKLY_SEQUENCE.length) {
-    const spec = WEEKLY_SEQUENCE[i];
+  while (i < sequence.length) {
+    const spec = sequence[i];
 
-      // Resolve the spec.liftId using class-aware fallback rules.
+    // Resolve the spec.liftId using class-aware fallback rules.
     const resolved = resolveExercise(
       { id: spec.liftId, type: CATALOG_BY_ID?.[spec.liftId]?.type },
-        blockedSet,
-        CATALOG_BY_ID
+      blockedSet,
+      CATALOG_BY_ID
     );
     if (!resolved) { i += 1; continue; }
     const resolvedId = resolved.id;
 
-
     const draft = {
-      liftId: resolvedId,           // use resolved id
+      liftId: resolvedId,
       sets: spec.sets,
       reps: spec.reps,
       intensityPct: spec.intensityPct,
@@ -152,11 +151,8 @@ function generateFromMinutes(minutes, startIndex) {
       orm: getKnown1RM(resolvedId) ?? null,
     };
 
-
-
-        const rawCost = Number(estimateExerciseMinutes(draft));
-    const cost = Number.isFinite(rawCost) ? rawCost : 8; // default 8m if a catalog entry is incomplete
-
+    const rawCost = Number(estimateExerciseMinutes(draft));
+    const cost = Number.isFinite(rawCost) ? rawCost : 8;
 
     if (rows.length === 0 || used + cost <= minutes) {
       rows.push(draft);
@@ -169,6 +165,7 @@ function generateFromMinutes(minutes, startIndex) {
 
   return { rows, nextIndex: i };
 }
+
 export default function TodaysWorkout() {
   const [minutes, setMinutes] = useState(60);
   const [rows, setRows] = useState([]);
@@ -177,26 +174,58 @@ export default function TodaysWorkout() {
   const [isCompleting, setIsCompleting] = useState(false);
   const [hasCompleted, setHasCompleted] = useState(false);
 
+  const [sequence, setSequence] = useState(PROGRAMS.default.list || []);
   const used = useMemo(() => totalMinutes(rows), [rows]);
   const [consumedIdx, setConsumedIdx] = useState(0);
-  const [remaining, setRemaining] = useState(WEEKLY_SEQUENCE.length);
+  const [remaining, setRemaining] = useState((PROGRAMS.default.list || []).length);
 
   useEffect(() => {
-    (async () => {
-      await syncOrmsFromDb();                        // ← seed planner with DB 1RMs
+  (async () => {
+    await syncOrmsFromDb();
+
+    try {
+      // 1) Start with whatever was last chosen locally
+      let key = localStorage.getItem(LOCAL_PROGRAM_KEY) || "default";
+
+      // 2) If user has a server-side selection, prefer that (and mirror to local)
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("selected_program")
+          .eq("id", user.id)
+          .maybeSingle();
+
+        if (!error && data?.selected_program && PROGRAMS[data.selected_program]) {
+          key = data.selected_program;
+          try { localStorage.setItem(LOCAL_PROGRAM_KEY, key); } catch {}
+        }
+      }
+
+      const chosenList = PROGRAMS[key]?.list || [];
+      setSequence(chosenList);
+
       const idx = await getConsumedIndexThisWeek({ supabase });
       setConsumedIdx(idx);
-      setRemaining(Math.max(0, WEEKLY_SEQUENCE.length - idx));
-    })();
-  }, []);
+      setRemaining(Math.max(0, chosenList.length - idx));
+    } catch (e) {
+      console.error(e);
+    }
+  })();
+}, []);
+
+
+useEffect(() => {
+  setRemaining(Math.max(0, sequence.length - consumedIdx));
+}, [sequence, consumedIdx]);
 
   function generateForMinutes() {
     const target = Math.max(10, Number(minutes) || 0);
-    if (consumedIdx >= WEEKLY_SEQUENCE.length) {
+    if (consumedIdx >= sequence.length) {
       alert("You’ve reached this week’s volume. Nice work!");
       return;
     }
-    const { rows: planRows, nextIndex } = generateFromMinutes(target, consumedIdx);
+    const { rows: planRows, nextIndex } = generateFromMinutes(target, consumedIdx, sequence);
     if (!planRows.length) {
       alert("Nothing fits in the selected time. Try a larger time window.");
       return;
@@ -208,7 +237,7 @@ export default function TodaysWorkout() {
     setHasCompleted(false);
 
     setConsumedIdx(nextIndex);
-    setRemaining(Math.max(0, WEEKLY_SEQUENCE.length - nextIndex));
+    setRemaining(Math.max(0, sequence.length - nextIndex));
   }
 
   async function saveToDb() {
@@ -355,7 +384,7 @@ rows.forEach((rw, idx) => {
 
       const newIdx = await getConsumedIndexThisWeek({ supabase });
       setConsumedIdx(newIdx);
-      setRemaining(Math.max(0, WEEKLY_SEQUENCE.length - newIdx));
+      setRemaining(Math.max(0, sequence.length - newIdx));
 
       setOpen(false);
       setRows([]);

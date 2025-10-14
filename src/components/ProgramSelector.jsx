@@ -3,67 +3,92 @@ import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { PROGRAMS, PROGRAM_KEYS } from "../data/program-registry";
 
+const LS_KEY = "selected-program";
+
 export default function ProgramSelector() {
-  const [value, setValue] = useState("default");
+  // Initialize from localStorage so it stays sticky across pages
+  const [value, setValue] = useState(() => {
+    try {
+      return localStorage.getItem(LS_KEY) || "default";
+    } catch {
+      return "default";
+    }
+  });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
+  // Load server preference (if any) on mount and mirror to localStorage
   useEffect(() => {
     let isMounted = true;
+
     (async () => {
-      setError("");
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      // load
-const { data, error } = await supabase
-  .from("profiles")
-  .select("selected_program")
-  .eq("id", user.id)
-  .maybeSingle();               // <-- was .single()
+      try {
+        setError("");
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
 
-if (!error && data?.selected_program) {
-  setValue(data.selected_program);
-} else if (!error && !data) {
-  // no profile row yet — create one with default
-  await supabase
-  .from("profiles")
-  .upsert({ id: user.id, selected_program: next }, { onConflict: "id" }); // upsert instead of update
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("selected_program")
+          .eq("id", user.id)
+          .maybeSingle();
 
-  setValue("default");
-}
+        if (error) {
+          if (isMounted) setError(error.message);
+          return;
+        }
 
-
-        
-      if (error) { setError(error.message); return; }
-      if (isMounted && data?.selected_program) setValue(data.selected_program);
+        // If row exists and key is valid → prefer it
+        if (data?.selected_program && PROGRAMS[data.selected_program]) {
+          const key = data.selected_program;
+          if (isMounted) setValue(key);
+          try { localStorage.setItem(LS_KEY, key); } catch {}
+        } else if (!data) {
+          // No row yet → create with current value (or default)
+          const fallback = value || "default";
+          const { error: upErr } = await supabase
+            .from("profiles")
+            .upsert({ id: user.id, selected_program: fallback }, { onConflict: "id" });
+          if (upErr) {
+            if (isMounted) setError(upErr.message);
+            return;
+          }
+          try { localStorage.setItem(LS_KEY, fallback); } catch {}
+          if (isMounted) setValue(fallback);
+        }
+      } catch (e) {
+        if (isMounted) setError(e.message || String(e));
+      }
     })();
-    return () => { isMounted = false; };
-  }, []);
 
-  async function onSelect(next) {
+    return () => { isMounted = false; };
+  }, []); // ← mount only
+
+  async function onSelect(nextKey) {
     setSaving(true);
     setError("");
     try {
+      // Update UI & localStorage immediately so Today’s page can read it
+      setValue(nextKey);
+      try { localStorage.setItem(LS_KEY, nextKey); } catch {}
+
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (user) {
+        // Upsert profile (handles "no row yet")
+        const { error: upErr } = await supabase
+          .from("profiles")
+          .upsert({ id: user.id, selected_program: nextKey }, { onConflict: "id" });
+        if (upErr) throw upErr;
 
-      // 1) save preference on profile
-      const { error: upErr } = await supabase
-        .from("profiles")
-        .update({ selected_program: next })
-        .eq("id", user.id);
-      if (upErr) throw upErr;
-
-      // 2) ensure a state row exists for this program (pointer starts at 0 if new)
-      const { error: stErr } = await supabase
-        .from("user_program_state")
-        .upsert(
-          { user_id: user.id, program_key: next, pointer: 0 },
-          { onConflict: "user_id,program_key" }
-        );
-      if (stErr) throw stErr;
-
-      setValue(next);
+        // Ensure a state row exists for this program
+        const { error: stErr } = await supabase
+          .from("user_program_state")
+          .upsert(
+            { user_id: user.id, program_key: nextKey, pointer: 0 },
+            { onConflict: "user_id,program_key" }
+          );
+        if (stErr) throw stErr;
+      }
     } catch (e) {
       setError(e.message || String(e));
     } finally {
