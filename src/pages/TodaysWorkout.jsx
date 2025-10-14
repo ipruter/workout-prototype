@@ -152,15 +152,15 @@ function generateFromMinutes(minutes, startIndex, sequence) {
     };
 
     const rawCost = Number(estimateExerciseMinutes(draft));
-    const cost = Number.isFinite(rawCost) ? rawCost : 8;
+const cost = Number.isFinite(rawCost) ? rawCost : 8;
 
-    if (rows.length === 0 || used + cost <= minutes) {
-      rows.push(draft);
-      used += cost;
-      i += 1;
-    } else {
-      break;
-    }
+// STRICT order: if the next item doesn't fit, stop — no exceptions, no skipping
+if (used + cost > minutes) break;
+
+rows.push(draft);
+used += cost;
+i += 1;
+
   }
 
   return { rows, nextIndex: i };
