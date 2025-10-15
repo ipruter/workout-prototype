@@ -20,7 +20,9 @@ import { CATALOG_BY_ID as LIFT_CATALOG } from "../data/lifts";
 const LS_KEY = "selected-program";
 const CATALOG_BY_ID = LIFT_CATALOG;
 const LOCAL_PROGRAM_KEY = "selected-program";
-
+// ---- inline draft persistence (per-day) ----
+const LS_DRAFT_KEY = "tw-pending-plan-v1";
+const todayStr = () => new Date().toISOString().slice(0, 10);
 
 // ---------- small helpers ----------
 function nowLabel(min) {
@@ -178,16 +180,15 @@ export default function TodaysWorkout() {
   const used = useMemo(() => totalMinutes(rows), [rows]);
   const [consumedIdx, setConsumedIdx] = useState(0);
   const [remaining, setRemaining] = useState((PROGRAMS.default.list || []).length);
+  const [baseConsumedIdx, setBaseConsumedIdx] = useState(0);
 
   useEffect(() => {
   (async () => {
     await syncOrmsFromDb();
 
+    // 1) Load user's selected program
+    let key = "default";
     try {
-      // 1) Start with whatever was last chosen locally
-      let key = localStorage.getItem(LOCAL_PROGRAM_KEY) || "default";
-
-      // 2) If user has a server-side selection, prefer that (and mirror to local)
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { data, error } = await supabase
@@ -195,50 +196,94 @@ export default function TodaysWorkout() {
           .select("selected_program")
           .eq("id", user.id)
           .maybeSingle();
-
         if (!error && data?.selected_program && PROGRAMS[data.selected_program]) {
           key = data.selected_program;
-          try { localStorage.setItem(LOCAL_PROGRAM_KEY, key); } catch {}
         }
       }
-
-      const chosenList = PROGRAMS[key]?.list || [];
-      setSequence(chosenList);
-
-      const idx = await getConsumedIndexThisWeek({ supabase });
-      setConsumedIdx(idx);
-      setRemaining(Math.max(0, chosenList.length - idx));
     } catch (e) {
       console.error(e);
     }
+    const chosenList = PROGRAMS[key]?.list || [];
+    setSequence(chosenList);
+
+    // 2) Get base index from DB
+    const idx = await getConsumedIndexThisWeek({ supabase });
+    setBaseConsumedIdx(idx);
+    setConsumedIdx(idx);
+    setRemaining(Math.max(0, chosenList.length - idx));
+
+    // 3) See if there’s a pending draft for today
+    try {
+      const raw = JSON.parse(localStorage.getItem(LS_DRAFT_KEY) || "null");
+
+      if (raw && raw.date === todayStr()) {
+        // Restore draft
+        setMinutes(Number.isFinite(raw.minutes) ? raw.minutes : 60);
+        setRows(Array.isArray(raw.rows) ? raw.rows : []);
+        setSuccessMarks(Array.isArray(raw.successMarks) ? raw.successMarks : []);
+        if (Number.isFinite(raw.consumedIdxNext)) setConsumedIdx(raw.consumedIdxNext);
+        if (Number.isFinite(raw.baseConsumedIdx)) setBaseConsumedIdx(raw.baseConsumedIdx);
+        setRemaining(Math.max(0, chosenList.length - (raw.consumedIdxNext ?? idx)));
+      }
+    } catch {}
   })();
 }, []);
-
 
 useEffect(() => {
   setRemaining(Math.max(0, sequence.length - consumedIdx));
 }, [sequence, consumedIdx]);
 
-  function generateForMinutes() {
-    const target = Math.max(10, Number(minutes) || 0);
-    if (consumedIdx >= sequence.length) {
-      alert("You’ve reached this week’s volume. Nice work!");
-      return;
-    }
-    const { rows: planRows, nextIndex } = generateFromMinutes(target, consumedIdx, sequence);
-    if (!planRows.length) {
-      alert("Nothing fits in the selected time. Try a larger time window.");
-      return;
-    }
-    setRows(planRows);
-    setSuccessMarks(planRows.map(() => false));
-    setOpen(true);
-    setIsCompleting(false);
-    setHasCompleted(false);
+useEffect(() => {
+  if (!rows.length) return; // nothing to persist
+  try {
+    const raw = JSON.parse(localStorage.getItem(LS_DRAFT_KEY) || "{}");
+    localStorage.setItem(LS_DRAFT_KEY, JSON.stringify({
 
-    setConsumedIdx(nextIndex);
-    setRemaining(Math.max(0, sequence.length - nextIndex));
+      date: todayStr(),
+      minutes,
+      rows,
+      successMarks,
+      baseConsumedIdx: raw.baseConsumedIdx ?? baseConsumedIdx,
+      consumedIdxNext: consumedIdx
+    }));
+  } catch {}
+}, [rows, successMarks, minutes, consumedIdx, baseConsumedIdx]);
+
+
+  function generateForMinutes() {
+  const target = Math.max(10, Number(minutes) || 0);
+  if (consumedIdx >= sequence.length) {
+    alert("You’ve reached this week’s volume. Nice work!");
+    return;
   }
+  const { rows: planRows, nextIndex } = generateFromMinutes(target, consumedIdx, sequence);
+  if (!planRows.length) {
+    alert("Nothing fits in the selected time. Try a larger time window.");
+    return;
+  }
+
+  setRows(planRows);
+  setSuccessMarks(planRows.map(() => false));
+  setIsCompleting(false);
+  setHasCompleted(false);
+
+  // reflect the hypothetical pointer advance in the UI
+  setConsumedIdx(nextIndex);
+  setRemaining(Math.max(0, sequence.length - nextIndex));
+
+  // persist draft to LS
+  try {
+    localStorage.setItem(LS_DRAFT_KEY, JSON.stringify({
+
+      date: todayStr(),
+      minutes: target,
+      rows: planRows,
+      successMarks: planRows.map(() => false),
+      baseConsumedIdx,        // so we can restore on cancel
+      consumedIdxNext: nextIndex
+    }));
+  } catch {}
+}
 
   async function saveToDb() {
     const name = nowLabel(minutes);
@@ -298,6 +343,18 @@ useEffect(() => {
     if (iErr) throw iErr;
   }
 
+  // === draft helpers (inline panel) ===
+function cancelDraft() {
+  setRows([]);
+  setSuccessMarks([]);
+  setIsCompleting(false);
+  setHasCompleted(false);
+  setConsumedIdx(baseConsumedIdx);
+  setRemaining(Math.max(0, sequence.length - baseConsumedIdx));
+  try { localStorage.removeItem(LS_DRAFT_KEY); } catch {}
+}
+
+
   function startComplete() {
   // Only allow one completion per opened modal
   if (isCompleting || hasCompleted) return;
@@ -318,83 +375,80 @@ useEffect(() => {
 }
 
   async function handleComplete() {
-    if (hasCompleted || isCompleting) return;
-    try {
-      await saveToDb();
+  if (hasCompleted || isCompleting) return;
 
-      // 1) Persist a baseline 1RM for every row we generated (new lifts will now get saved)
-rows.forEach((rw) => {
-  const baseline =
-    (Number.isFinite(rw.orm) ? rw.orm : null) ??
-    estimate1RMFromWeight({
-      weight: rw.weight,
-      intensityPct: rw.intensityPct,
-      sets: rw.sets,
-      liftId: rw.liftId,       // if your estimator uses liftId/bodyweight
-    });
+  try {
+    await saveToDb();
 
-  if (Number.isFinite(baseline) && baseline > 0) {
-    setKnown1RM(rw.liftId, Math.round(baseline));  // local + DB upsert
-  }
-});
+    // 1) Persist a baseline 1RM for every row we generated (new lifts will now get saved)
+    rows.forEach((rw) => {
+      const baseline =
+        (Number.isFinite(rw.orm) ? rw.orm : null) ??
+        estimate1RMFromWeight({
+          weight: rw.weight,
+          intensityPct: rw.intensityPct,
+          sets: rw.sets,
+          liftId: rw.liftId,
+        });
 
-// 2) Apply progressive overload for checked rows (this also calls setKnown1RM under the hood)
-rows.forEach((rw, idx) => {
-  if (!successMarks[idx]) return;
-  const base =
-    (Number.isFinite(rw.orm) ? rw.orm : null) ??
-    getKnown1RM(rw.liftId) ??
-    estimate1RMFromWeight({
-      weight: rw.weight,
-      intensityPct: rw.intensityPct,
-      sets: rw.sets,
-      liftId: rw.liftId,
-    });
-
-  if (Number.isFinite(base)) {
-  // primary gets +2.5%, related lifts get propagated bump
-  bumpWithPropagation(rw.liftId);
-} // saves to DB via setKnown1RM
-});
-
-
-      // Progressive overload for each successful exercise
-      for (let idx = 0; idx < rows.length; idx++) {
-        if (!successMarks[idx]) continue;
-        const rw = rows[idx];
-
-        const base =
-          (Number.isFinite(rw.orm) ? rw.orm : null) ??
-          getKnown1RM(rw.liftId) ??
-          estimate1RMFromWeight({
-            weight: rw.weight,
-            intensityPct: rw.intensityPct,
-            sets: rw.sets,
-          });
-
-        if (Number.isFinite(base)) {
-  // self + related
-  bumpWithPropagation(rw.liftId);
-
-  // keep your max_lifts log consistent with prior behavior for the primary lift
-  const bumped = Math.round(base * 1.025);
-  await upsertOrm(rw.liftId, bumped);
-}
+      if (Number.isFinite(baseline) && baseline > 0) {
+        setKnown1RM(rw.liftId, Math.round(baseline));
       }
+    });
 
-      const newIdx = await getConsumedIndexThisWeek({ supabase });
-      setConsumedIdx(newIdx);
-      setRemaining(Math.max(0, sequence.length - newIdx));
+    // 2) Apply progressive overload for checked rows (this also calls setKnown1RM under the hood)
+    rows.forEach((rw, idx) => {
+      if (!successMarks[idx]) return;
+      const base =
+        (Number.isFinite(rw.orm) ? rw.orm : null) ??
+        getKnown1RM(rw.liftId) ??
+        estimate1RMFromWeight({
+          weight: rw.weight,
+          intensityPct: rw.intensityPct,
+          sets: rw.sets,
+          liftId: rw.liftId,
+        });
 
-      setOpen(false);
-      setRows([]);
-      setSuccessMarks([]);
-      alert("Workout saved and overloads applied.");
-    } catch (e) {
-      console.error(e);
-      alert(e.message || "Failed to complete workout.");
+      if (Number.isFinite(base)) {
+        bumpWithPropagation(rw.liftId);
+      }
+    });
+
+    // keep your max_lifts log behavior for the primary lift(s)
+    for (let idx = 0; idx < rows.length; idx++) {
+      if (!successMarks[idx]) continue;
+      const rw = rows[idx];
+      const base =
+        (Number.isFinite(rw.orm) ? rw.orm : null) ??
+        getKnown1RM(rw.liftId) ??
+        estimate1RMFromWeight({
+          weight: rw.weight,
+          intensityPct: rw.intensityPct,
+          sets: rw.sets,
+        });
+
+      if (Number.isFinite(base)) {
+        const bumped = Math.round(base * 1.025);
+        await upsertOrm(rw.liftId, bumped);
+      }
     }
+
+    const newIdx = await getConsumedIndexThisWeek({ supabase });
+    setBaseConsumedIdx(newIdx);
+    setConsumedIdx(newIdx);
+    setRemaining(Math.max(0, sequence.length - newIdx));
+
+    // clear inline draft + planner rows
+    try { localStorage.removeItem(LS_DRAFT_KEY); } catch {}
+    setRows([]);
+    setSuccessMarks([]);
+
+    alert("Workout saved and overloads applied.");
+  } catch (e) {
+    console.error(e);
+    alert(e.message || "Failed to complete workout.");
   }
+}
 
   return (
     <div style={{ maxWidth: 900, margin: "40px auto", padding: "0 16px" }}>
@@ -420,85 +474,72 @@ rows.forEach((rw, idx) => {
         </div>
       </div>
 
-      {/* Modal with scrollable body */}
-      {open && (
-        <div
+      {/* Inline planner panel (persists as draft until Complete or Cancel) */}
+<div
+  style={{
+    marginTop: 12,
+    background: "#fff",
+    border: "1px solid #e5e7eb",
+    borderRadius: 12,
+    padding: 16,
+    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+  }}
+>
+  {rows.length === 0 ? (
+    <div style={{ opacity: 0.8 }}>No workout created yet today.</div>
+  ) : (
+    <>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <h3 style={{ margin: 0 }}>Today’s workout (draft)</h3>
+        <div style={{ fontWeight: 600 }}>Used: {used.toFixed(1)} / {minutes} min</div>
+      </div>
+
+      <SessionPlanner
+        targetMinutes={minutes}
+        value={rows}
+        onChange={(next) => {
+          setRows(next);
+          setSuccessMarks((prev = []) => next.map((_, i) => prev[i] || false));
+        }}
+        hidePicker
+        successMarks={successMarks}
+        onToggleSuccess={(i, val) =>
+          setSuccessMarks((prev) => {
+            const arr = prev.slice();
+            arr[i] = val;
+            return arr;
+          })
+        }
+      />
+
+      <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 12 }}>
+        <button
+          onMouseDown={() => document.activeElement?.blur()}
+          onClick={cancelDraft}
+        >
+          Cancel
+        </button>
+        <button
+          onMouseDown={() => document.activeElement?.blur()}
+          onClick={startComplete}
+          disabled={isCompleting || hasCompleted}
           style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.45)",
-            display: "grid",
-            placeItems: "center",
-            zIndex: 50,
+            background: "#0a7",
+            color: "#fff",
+            border: "none",
+            padding: "8px 12px",
+            borderRadius: 8,
+            opacity: (isCompleting || hasCompleted) ? 0.6 : 1,
+            cursor: (isCompleting || hasCompleted) ? "not-allowed" : "pointer",
           }}
         >
-          <div
-            style={{
-              background: "#fff",
-              width: "min(900px, 95vw)",
-              maxHeight: "85vh",
-              overflowY: "auto",
-              borderRadius: 12,
-              padding: 16,
-              boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
-            }}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <h3 style={{ margin: 0 }}>Today’s workout</h3>
-              <button
-                onMouseDown={() => document.activeElement?.blur()}
-                onClick={() => { setOpen(false); setIsCompleting(false); setHasCompleted(false); }}
-                aria-label="close"
-              >
-                ✕
-              </button>
-            </div>
+          {isCompleting ? "Saving…" : "Complete workout"}
+        </button>
+      </div>
+    </>
+  )}
+</div>
 
-            <SessionPlanner
-              targetMinutes={minutes}
-              value={rows}
-              onChange={(next) => {
-                setRows(next);
-                setSuccessMarks((prev = []) => next.map((_, i) => prev[i] || false));
-              }}
-              hidePicker
-              successMarks={successMarks}
-              onToggleSuccess={(i, val) =>
-                setSuccessMarks((prev) => {
-                  const arr = prev.slice();
-                  arr[i] = val;
-                  return arr;
-                })
-              }
-            />
-
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 12 }}>
-              <button
-                onMouseDown={() => document.activeElement?.blur()}
-                onClick={() => setOpen(false)}
-              >
-                Cancel
-              </button>
-              <button
-  onMouseDown={() => document.activeElement?.blur()}
-   onClick={startComplete}
-  disabled={isCompleting || hasCompleted}
-  style={{
-    background: "#0a7",
-    color: "#fff",
-     border: "none",
-     padding: "8px 12px",
-    borderRadius: 8,
-     opacity: (isCompleting || hasCompleted) ? 0.6 : 1,
-     cursor: (isCompleting || hasCompleted) ? "not-allowed" : "pointer",
-   }}
- >
-   {isCompleting ? "Saving…" : "Complete workout"}
- </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

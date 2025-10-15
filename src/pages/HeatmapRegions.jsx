@@ -99,6 +99,18 @@ export function MetricsHeatmap({
   weeklySets,
   labelForGroup
 }) {
+    // Legend rows (per-region weekly % change) + formatters
+  const legendRows = [
+    { name: "blue",   color: "#3b82f6", pct: [-0.6,  0.2],  label: "Loss → Maint / Small Gains" },
+    { name: "green",  color: "#22c55e", pct: [-0.1,  0.5],  label: "Threshold: Maint → Gains" },
+    { name: "yellow", color: "#eab308", pct: [ 0.2,  0.9],  label: "Maintenance → Gains" },
+    { name: "orange", color: "#f97316", pct: [ 0.4,  1.2],  label: "Sweet-Spot Gains" },
+    { name: "red",    color: "#ef4444", pct: [ 0.5,  1.4],  label: "Diminishing Returns (↑ total)" },
+    { name: "purple", color: "#a855f7", pct: [ 0.6,  1.6],  label: "Hard Diminishing (↑ total)" },
+  ];
+  const fmt = (v) => `${v >= 0 ? "+" : ""}${Number(v).toFixed(1)}%`;
+  const fmtRange = ([lo, hi]) => `${fmt(lo)} – ${fmt(hi)} / wk`;
+
   return (
     <section>
       <h1>Muscle Region Heatmaps</h1>
@@ -114,18 +126,17 @@ export function MetricsHeatmap({
                 disabled={side==="back" && layer==="deep"}>Deep (back)</button>
       </div>
 
-      <div style={{ fontSize:12, opacity:.75, marginBottom:8 }}>
-        Coloring is normalized within the current view. Max in view: <strong>{maxInView}</strong> sets/week.
-      </div>
-
+      
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:24, alignItems:"start" }}>
         <MuscleHeatmapRegions
           data={heatData}
           view={view}
           side={side}
           onRegionClick={undefined}
-          showLegend={true}
+          showLegend={false}
         />
+
+                
 
         <div>
           <h3 style={{ marginTop: 0 }}>Modified sets/week — {view} regions</h3>
@@ -140,7 +151,61 @@ export function MetricsHeatmap({
             ))}
           </div>
 
-          <div style={{ marginTop: 24 }}>
+            <h4 style={{ margin: "16px 0 8px" }}>Percentage of muscle lost or gained</h4>
+        <div
+          style={{
+            display: "grid",
+            gap: 8,
+            marginTop: 4,
+            maxWidth: 560,
+          }}
+          aria-label="Heatmap legend for weekly percent change per muscle region"
+        >
+          {legendRows.map((row) => (
+            <div
+              key={row.name}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "18px 1fr",
+                alignItems: "center",
+                columnGap: 10,
+              }}
+            >
+              <span
+                aria-hidden
+                style={{
+                  width: 18,
+                  height: 18,
+                  borderRadius: 4,
+                  background: row.color,
+                  boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.08)",
+                }}
+              />
+              <div style={{ display: "flex", gap: 10, alignItems: "baseline", flexWrap: "wrap" }}>
+                <span
+                  style={{
+                    fontVariantNumeric: "tabular-nums",
+                    fontSize: 14,
+                    lineHeight: "18px",
+                    color: "#111",
+                  }}
+                >
+                  {fmtRange(row.pct)}
+                </span>
+                <span
+                  style={{
+                    fontSize: 12,
+                    opacity: 0.75,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  • {row.label}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+         {/* <div style={{ marginTop: 24 }}>
             <ProgramMetrics
               catalogById={CATALOG_BY_ID}
               weeklySets={weeklySets}
@@ -150,7 +215,7 @@ export function MetricsHeatmap({
               regionOrder={Array.from(groups.keys())}
               regionLabel={(rid) => labelForGroup(rid, groups.get(rid) || [rid])}
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

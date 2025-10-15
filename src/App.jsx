@@ -18,9 +18,9 @@ function AppLayout() {
       <h1>Workout Prototype</h1>
       <nav style={{ display: "flex", gap: 12, marginBottom: 24 }}>
         <Link to="/">Home</Link>
-        <Link to="/heatmap">Heatmap</Link>
-        <Link to="/week">This Week</Link>
-        <Link to="/today">Today</Link>
+        <Link to="/heatmap">Custome Routine Builder</Link>
+        <Link to="/week">This Week's Progress</Link>
+        <Link to="/today">Generate Workout Session</Link>
         <Link to="/signin">Sign in</Link>
         <Link to="/signup">Sign up</Link>
       </nav>

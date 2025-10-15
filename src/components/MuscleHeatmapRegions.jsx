@@ -10,7 +10,7 @@ export default function MuscleHeatmapRegions({
   view = "front",       // 'front' | 'back' | 'deep'  (which regions to show)
   side = "front",       // 'front' | 'back'           (which photo to show)
   onRegionClick,        // optional (we disable it from the page now)
-  showLegend = true,
+  showLegend = false,
   style,
 }) {
   // ---- Tracer (dev) ----
@@ -57,27 +57,54 @@ export default function MuscleHeatmapRegions({
     const v = data?.[id];
     return Number.isFinite(v) ? Math.max(0, Math.min(1, v)) : 0;
   };
-  function heatColor(t) {
-    // opaque, high-contrast ramp
-    const x = Math.pow(t, 0.7);
-    const h = 220 - 220 * x;    // blue -> red
-    const s = 85;
-    const l = 55 - 10 * x;
-    return `hsl(${h} ${s}% ${l}%)`;
-  }
+  // 0..1 -> rgb, matching legend: blue→green→yellow→orange→red→purple
+function heatColor(t) {
+  t = Math.max(0, Math.min(1, Number(t) || 0));
+  const stops = [
+    { t: 0.00, c: [ 59,130,246] }, // #3b82f6 blue
+    { t: 0.20, c: [ 34,197, 94] }, // #22c55e green
+    { t: 0.40, c: [234,179,  8] }, // #eab308 yellow
+    { t: 0.60, c: [249,115, 22] }, // #f97316 orange
+    { t: 0.80, c: [239, 68, 68] }, // #ef4444 red
+    { t: 1.00, c: [168, 85,247] }, // #a855f7 purple
+  ];
+  let i = 0;
+  while (i < stops.length - 1 && t > stops[i + 1].t) i++;
+  const a = stops[i], b = stops[Math.min(i + 1, stops.length - 1)];
+  const span = Math.max(1e-6, b.t - a.t);
+  const u = (t - a.t) / span;
+  const r = Math.round(a.c[0] + (b.c[0] - a.c[0]) * u);
+  const g = Math.round(a.c[1] + (b.c[1] - a.c[1]) * u);
+  const bl = Math.round(a.c[2] + (b.c[2] - a.c[2]) * u);
+  return `rgb(${r},${g},${bl})`;
+}
+
   const handle = (id) => (onRegionClick ? () => onRegionClick(id) : undefined);
 
   return (
     <div style={style}>
       {/* Legend (optional) */}
+      {/* Legend (optional) — hidden for now
       {showLegend && (
         <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "0 0 12px" }}>
-          <div style={{ width: 160, height: 10, background: "linear-gradient(90deg, hsl(220 85% 55%), hsl(0 85% 45%))", borderRadius: 6 }} />
-          <span style={{ fontSize: 12, opacity: .7 }}>Cool → Hot</span>
+          <div
+            style={{
+              width: 160,
+              height: 10,
+              borderRadius: 6,
+              background:
+                "linear-gradient(90deg, #3b82f6 0%, #22c55e 20%, #eab308 40%, #f97316 60%, #ef4444 80%, #a855f7 100%)",
+            }}
+          />
+          <span style={{ fontSize: 12, opacity: .7 }}>
+            Blue → Green → Yellow → Orange → Red → Purple
+          </span>
         </div>
       )}
+      */}
 
       {/* Tracer UI (dev) */}
+            {/* Tracer UI (dev) — hidden
       <div style={{ display: "flex", gap: 8, alignItems: "center", margin: "8px 0" }}>
         <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <input type="checkbox" checked={traceOn} onChange={e => setTraceOn(e.target.checked)} />
@@ -88,6 +115,8 @@ export default function MuscleHeatmapRegions({
         <button onClick={clearPts} disabled={!tracePts.length}>Clear</button>
         <div style={{ fontSize: 12, opacity: .7 }}>Points: {tracePts.length}</div>
       </div>
+      */}
+
 
       {/* SVG */}
       <svg
@@ -105,6 +134,7 @@ export default function MuscleHeatmapRegions({
           pointerEvents="none"
         />
         {/* live preview of trace */}
+                {/* live preview of trace — hidden
         {tracePts.length > 0 && (
           <polyline
             points={tracePts.map(p => `${p.x},${p.y}`).join(" ")}
@@ -115,6 +145,8 @@ export default function MuscleHeatmapRegions({
             pointerEvents="none"
           />
         )}
+        */}
+
 
         {/* Regions */}
         {items.map((r) => {
