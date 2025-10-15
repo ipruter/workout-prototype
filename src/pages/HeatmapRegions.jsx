@@ -130,15 +130,15 @@ export function MetricsHeatmap({
       <div
   style={{
     display: "grid",
-    // Give the heatmap a generous min width and allow the container to scroll on phones
-    gridTemplateColumns: "minmax(360px, 1fr) minmax(240px, 520px)",
+    // Force a wider heatmap column so it stays large on mobile and induces horizontal scroll
+    gridTemplateColumns: "minmax(520px, 1fr) minmax(220px, 420px)",
     gap: 24,
     alignItems: "start",
     overflowX: "auto",
-    // a little breathing room so the horizontal scrollbar doesn't overlay content
     paddingBottom: 4,
   }}
 >
+
 
         <MuscleHeatmapRegions
           data={heatData}
