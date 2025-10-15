@@ -131,7 +131,7 @@ export function MetricsHeatmap({
         style={{
           display: "grid",
           // Force a wider heatmap column so it stays large on mobile and induces horizontal scroll
-          gridTemplateColumns: "minmax(220px, 1fr) minmax(150px, 420px)",
+          gridTemplateColumns: "minmax(260px, 1fr) minmax(120px, 320px)",
           gap: 24,
           alignItems: "start",
           overflowX: "auto",
