@@ -306,6 +306,35 @@ useEffect(() => {
   const visibleIds = useMemo(() => idsFor(view, side), [view, side]);
 
   // === Metrics (single source of truth) ======================
+
+  // Absolute set buckets → color position used by heatColor()
+const SET_BUCKETS = [
+  { t: 0.00, min:   0, max:  3 },   // blue
+  { t: 0.20, min:   4, max:  6 },   // green
+  { t: 0.40, min:   7, max:  9 },   // yellow
+  { t: 0.60, min:  10, max: 15 },   // orange
+  { t: 0.80, min:  16, max: 24 },   // red
+  { t: 1.00, min:  25, max: Infinity }, // purple
+];
+
+// Given a set count, return a 0..1 position corresponding to the bucket.
+// We also linearly interpolate *within* a bucket so colors shift smoothly with sets.
+// Map sets to a *fixed* color position per bucket (no gradient within the bucket)
+// Solid bucket mapping: always return the bucket's base t
+function setsToT(sets) {
+  const s = Math.max(0, Number(sets) || 0);
+  for (let i = 0; i < SET_BUCKETS.length; i++) {
+    const b = SET_BUCKETS[i];
+    if (s >= b.min && s <= b.max) {
+      return b.t; // e.g., 0–3 => 0.00 (pure blue), 4–6 => 0.20 (pure green), etc.
+    }
+  }
+  // Fallback to first bucket color
+  return SET_BUCKETS[0].t;
+}
+
+
+
   // Compute modified sets per region using our new pipeline.
   const metrics = useMemo(() => {
     return computeModifiedSets({
@@ -340,13 +369,15 @@ useEffect(() => {
       const val = ids.length > 1 ? sum / ids.length : sum; // 👈 average L/R
       gc[k] = Math.round(val);
     }
-    const maxGroup = Math.max(1, ...Object.values(gc));
     const nextHeat = { ...seed };
-    for (const [k, ids] of groups.entries()) {
-      const norm = (gc[k] || 0) / maxGroup;
-      ids.forEach(id => { nextHeat[id] = norm; });
-    }
-  return { groupCounts: gc, heatData: nextHeat, maxInView: maxGroup };
+for (const [k, ids] of groups.entries()) {
+  const t = setsToT(gc[k] || 0);      // absolute mapping to 0..1
+  ids.forEach(id => { nextHeat[id] = t; });
+}
+// We keep maxInView available, but it no longer drives color.
+const maxGroup = Math.max(1, ...Object.values(gc));
+return { groupCounts: gc, heatData: nextHeat, maxInView: maxGroup };
+
   }, [groups, modifiedSets]);
 
   // label for a group: use the first member's label and strip (L)/(R)
