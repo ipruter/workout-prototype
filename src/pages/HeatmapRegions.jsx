@@ -128,16 +128,16 @@ export function MetricsHeatmap({
 
       
       <div
-  style={{
-    display: "grid",
-    // Force a wider heatmap column so it stays large on mobile and induces horizontal scroll
-    gridTemplateColumns: "minmax(520px, 1fr) minmax(220px, 420px)",
-    gap: 24,
-    alignItems: "start",
-    overflowX: "auto",
-    paddingBottom: 4,
-  }}
->
+        style={{
+          display: "grid",
+          // Force a wider heatmap column so it stays large on mobile and induces horizontal scroll
+          gridTemplateColumns: "minmax(420px, 1fr) minmax(170px, 420px)",
+          gap: 24,
+          alignItems: "start",
+          overflowX: "auto",
+          paddingBottom: 4,
+        }}
+      >
 
 
         <MuscleHeatmapRegions
