@@ -127,7 +127,19 @@ export function MetricsHeatmap({
       </div>
 
       
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:24, alignItems:"start" }}>
+      <div
+  style={{
+    display: "grid",
+    // Give the heatmap a generous min width and allow the container to scroll on phones
+    gridTemplateColumns: "minmax(360px, 1fr) minmax(240px, 520px)",
+    gap: 24,
+    alignItems: "start",
+    overflowX: "auto",
+    // a little breathing room so the horizontal scrollbar doesn't overlay content
+    paddingBottom: 4,
+  }}
+>
+
         <MuscleHeatmapRegions
           data={heatData}
           view={view}
@@ -140,11 +152,11 @@ export function MetricsHeatmap({
 
         <div>
           <h3 style={{ marginTop: 0 }}>Modified sets/week — {view} regions</h3>
-          <div style={{ display:"grid", gridTemplateColumns:"auto auto", gap:8 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 36px", columnGap: 6, rowGap: 6 }}>
             {Array.from(groups.entries()).map(([k, ids]) => (
               <React.Fragment key={k}>
                 <div style={{ fontSize:13, opacity:.85 }}>{labelForGroup(k, ids)}</div>
-                <div style={{ width:60, textAlign:"right", fontWeight:600 }}>
+                <div style={{ width:36, textAlign:"right", fontWeight:600 }}>
                   {groupCounts[k] ?? 0}
                 </div>
               </React.Fragment>
