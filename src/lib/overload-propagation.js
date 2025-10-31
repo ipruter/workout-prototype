@@ -11,7 +11,7 @@ const CATALOG_BY_ID = Object.fromEntries(WORKOUTS.map(w => [w.id, w]));
 const PRIME_K    = 3;     // how many of B's prime regions define B
 const TAU        = 0.30;  // minimum transfer score to propagate
 const T_CAP      = 0.60;  // cap per propagation event (<=60% of donor's base bump)
-const BASE_BUMP  = 1.25;  // your canonical per-lift bump
+const BASE_BUMP  = 0.75;  // your canonical per-lift bump
 const SELF_MULT  = 2.0;   // self gets 2× base bump → 2.5%
 
 // ---------- Helpers ----------

@@ -1,6 +1,5 @@
 // src/App.jsx
 import { Routes, Route, Link, Outlet } from "react-router-dom";
-
 // pages
 import Home from "./pages/Home.jsx";
 import Heatmap from "./pages/HeatmapRegions.jsx";
@@ -8,6 +7,8 @@ import ThisWeeksWorkout from "./pages/ThisWeeksWorkout.jsx";
 import TodaysWorkout from "./pages/TodaysWorkout.jsx";
 import SignIn from "./pages/SignIn.jsx";
 import SignUp from "./pages/SignUp.jsx";
+import AuthCallback from "./pages/AuthCallback.jsx";
+
 
 // auth guard
 import RequireAuth from "./components/RequireAuth.jsx";
@@ -36,6 +37,7 @@ export default function App() {
         {/* public routes */}
         <Route path="signin" element={<SignIn />} />
         <Route path="signup" element={<SignUp />} />
+        <Route path="auth/callback" element={<AuthCallback />} />
 
         {/* protected routes */}
         <Route element={<RequireAuth />}>

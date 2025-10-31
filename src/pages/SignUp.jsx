@@ -11,6 +11,8 @@ const [confirm, setConfirm] = useState("");
 const [loading, setLoading] = useState(false);
 const [err, setErr] = useState("");
 const [info, setInfo] = useState("");
+setInfo("We’ve sent a confirmation email. Tap the link—if nothing opens, copy & paste this into Safari/Chrome: " + `${window.location.origin}/#/auth/callback`);
+
 
 
 useEffect(() => {
@@ -28,7 +30,10 @@ if (password !== confirm) return setErr("Passwords do not match");
 
 
 setLoading(true);
-const { error } = await supabase.auth.signUp({ email, password });
+const { error } = await supabase.auth.signUp(
+  { email, password },
+  { emailRedirectTo: `${window.location.origin}/#/auth/callback` }
+);
 setLoading(false);
 if (error) return setErr(error.message);
 

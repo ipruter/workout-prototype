@@ -168,7 +168,7 @@ export function setKnown1RM(liftId, value) {
   })();
 }
 
-export function bumpOneRMPercent(liftId, baseOrm, pct = 2.5) {
+export function bumpOneRMPercent(liftId, baseOrm, pct = 1.5) {
   if (!Number.isFinite(baseOrm) || baseOrm <= 0) return null;
   const bumped = Math.round(baseOrm * (1 + pct / 100));
   setKnown1RM(liftId, bumped);

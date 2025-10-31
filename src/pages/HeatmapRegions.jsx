@@ -80,7 +80,7 @@ function flattenPlanToRows(plan) {
 export function WeeklyPlannerPanel({ onPlanChange }) {
   return (
     <section>
-      <h1>Weekly Workout Builder</h1>
+      <h1>Custome Workout Builder</h1>
       <p style={{ marginTop: 6, opacity: 0.8 }}>
         Select a workout for each day. Weight = <em>Intensity&nbsp;% × 1RM</em> (rounded to 5).
         Set a 1RM per lift once and it’s remembered.
