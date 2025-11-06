@@ -186,25 +186,35 @@ export default function TodaysWorkout() {
   (async () => {
     await syncOrmsFromDb();
 
-    // 1) Load user's selected program
-    let key = "default";
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("selected_program")
-          .eq("id", user.id)
-          .maybeSingle();
-        if (!error && data?.selected_program && PROGRAMS[data.selected_program]) {
-          key = data.selected_program;
-        }
-      }
-    } catch (e) {
-      console.error(e);
+    // 1) Load user's selected program (localStorage fallback, then DB)
+let key = "default";
+
+// (A) local fallback from ProgramSelector radio
+try {
+  const ls = localStorage.getItem(LS_KEY);
+  if (ls && PROGRAMS[ls]) key = ls;
+} catch {}
+
+// (B) DB override if available
+try {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("selected_program")
+      .eq("id", user.id)
+      .maybeSingle();
+    if (!error && data?.selected_program && PROGRAMS[data.selected_program]) {
+      key = data.selected_program;
     }
-    const chosenList = PROGRAMS[key]?.list || [];
-    setSequence(chosenList);
+  }
+} catch (e) {
+  console.error(e);
+}
+
+const chosenList = PROGRAMS[key]?.list || [];
+setSequence(chosenList);
+
 
     // 2) Get base index from DB
     const idx = await getConsumedIndexThisWeek({ supabase });

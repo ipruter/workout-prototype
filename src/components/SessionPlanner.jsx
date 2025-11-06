@@ -336,10 +336,22 @@ export default function SessionPlanner({
           key={i}
           row={r}
           onChange={(updated) => {
-            const next = rows.slice();
-            next[i] = updated;
-            commit(next);
-          }}
+  const prev = rows[i];
+  const next = rows.slice();
+  next[i] = updated;
+
+  // If this edit changed the 1RM, propagate to all rows with the same liftId
+  if (updated.orm != null && updated.orm !== prev.orm) {
+    for (let j = 0; j < next.length; j++) {
+      if (j !== i && next[j].liftId === updated.liftId) {
+        next[j] = { ...next[j], orm: updated.orm, weight: null }; // keep weight derived
+      }
+    }
+  }
+
+  commit(next);
+}}
+
           onRemove={() => removeAt(i)}
           withCheckbox={Array.isArray(successMarks)}
           checked={!!successMarks?.[i]}
