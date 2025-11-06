@@ -9,10 +9,10 @@ const CATALOG_BY_ID = Object.fromEntries(WORKOUTS.map(w => [w.id, w]));
 
 // ---------- Tunables ----------
 const PRIME_K    = 3;     // how many of B's prime regions define B
-const TAU        = 0.30;  // minimum transfer score to propagate
-const T_CAP      = 0.60;  // cap per propagation event (<=60% of donor's base bump)
-const BASE_BUMP  = 0.75;  // your canonical per-lift bump
-const SELF_MULT  = 2.0;   // self gets 2× base bump → 2.5%
+const TAU        = 0.30;  // minimum transfer score to treat as “similar/region”
+const T_CAP      = 0.60;  // (unused by flat propagation; kept for future graded spillover)
+const BASE_BUMP  = 0.75;  // 0.75% similar bump; primary = 2× this (1.5%)
+const SELF_MULT  = 2.0;   // self gets 2× base bump → 1.5% with BASE_BUMP = 0.75
 
 // ---------- Helpers ----------
 function topKRegions(regions, K = PRIME_K) {
@@ -88,22 +88,26 @@ export function applyQueuedBumpsIfAny() {
  * Bump a primary lift by +2×BASE_BUMP (e.g., +2.5%), then propagate up to +BASE_BUMP to others.
  * Example: bumpWithPropagation("bb_bench") → bench +2.5%; incline bench spills from bench by rule.
  */
+/**
+ * Bump a primary lift by +2×BASE_BUMP (→ 1.5%), then propagate a flat +BASE_BUMP (→ 0.75%)
+ * to “similar/region” lifts whose transfer score passes the threshold (TAU).
+ * Example: bumpWithPropagation("bb_bench") → bench +1.5%; incline bench +0.75% if T ≥ TAU.
+ */
 export function bumpWithPropagation(primaryLiftId, opts = {}) {
-  const base = Number(opts.baseBumpPct ?? BASE_BUMP);   // default 1.25
+  const base = Number(opts.baseBumpPct ?? BASE_BUMP);   // default 0.75%
   const tau  = Number(opts.threshold   ?? TAU);
-  const tcap = Number(opts.cap         ?? T_CAP);
   const K    = Number(opts.primeK      ?? PRIME_K);
 
-  // 1) Self bump: +2× base bump (easier than comparing overlap with itself)
+  // 1) Self bump: +2× base bump = 1.5% with current constants
   bumpLiftPercent(primaryLiftId, base * SELF_MULT);
 
-  // 2) Compute propagation for all other lifts
+  // 2) Flat propagation to similar lifts that meet transfer threshold
   for (const liftB of Object.keys(coverageByLR)) {
     if (liftB === primaryLiftId) continue;
     const T = transferScore(primaryLiftId, liftB, K);   // 0..1
     if (T >= tau) {
-      const pct = base * Math.min(T, tcap);             // percent points
-      if (pct > 0) bumpLiftPercent(liftB, pct);
+      bumpLiftPercent(liftB, base); // always +0.75% for qualified “similar” lifts
     }
   }
 }
+
