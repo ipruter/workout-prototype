@@ -2,29 +2,30 @@
 // Each entry is its own prescription regardless of having the same liftId elsewhere.
 export const WEEKLY_SEQUENCE = [
   // Example — replace with your list & prescriptions
-  { liftId: "squat_hb",      sets: 3, reps: 4, intensityPct: 89 },
+  
   { liftId: "dl_conv", sets: 3, reps: 4, intensityPct: 89 },
+  { liftId: "hack_sqt",  sets: 3, reps: 13, intensityPct: 65},
   { liftId: "pullup", sets: 3, reps: 4, intensityPct: 89 },
   { liftId: "bb_bench", sets: 3, reps: 4, intensityPct: 89 },
-  { liftId: "incline_bb", sets: 3, reps: 8, intensityPct: 75},
-
   { liftId: "row_cable", sets: 3, reps: 13, intensityPct: 65},
+
+  { liftId: "incline_bb", sets: 3, reps: 13, intensityPct: 65},
   { liftId: "upright_row", sets: 3, reps: 5, intensityPct: 86 },
-  { liftId: "hack_sqt",  sets: 3, reps: 13, intensityPct: 65},
+  { liftId: "squat_hb",      sets: 3, reps: 4, intensityPct: 89 },
   { liftId: "leg_curl", sets: 3, reps: 13, intensityPct: 65},
   { liftId: "sa_pulldown", sets: 3, reps: 8, intensityPct: 75},
   
-  { liftId: "dip", sets: 3, reps: 13, intensityPct: 65},
+  { liftId: "dip", sets: 3, reps: 8, intensityPct: 75},
   { liftId: "upright_row", sets: 3, reps: 8, intensityPct: 75 },
   { liftId: "row_cable", sets: 3, reps: 5, intensityPct: 86 },
-  { liftId: "incline_bb", sets: 3, reps: 5, intensityPct: 86},
+  { liftId: "incline_bb", sets: 3, reps: 8, intensityPct: 75},
   { liftId: "calf_donkey", sets: 3, reps: 10, intensityPct: 71 },
 
   { liftId: "hack_sqt",  sets: 3, reps: 8, intensityPct: 75},
   { liftId: "leg_curl", sets: 3, reps: 8, intensityPct: 75},
   { liftId: "upright_row", sets: 3, reps: 13, intensityPct: 65 },
   { liftId: "row_cable", sets: 3, reps: 8, intensityPct: 75},
-  { liftId: "dip", sets: 3, reps: 8, intensityPct: 75},
+  { liftId: "dip", sets: 3, reps: 5, intensityPct: 86},
 
   { liftId: "incline_bb", sets: 3, reps: 13, intensityPct: 65},
   { liftId: "sa_pulldown", sets: 3, reps: 8, intensityPct: 75},
