@@ -6,13 +6,27 @@ import { getKnown1RM, setKnown1RM } from "../utils/timeBudget";
 // Build the catalog-by-id from the WORKOUTS array
 const CATALOG_BY_ID = Object.fromEntries(WORKOUTS.map(w => [w.id, w]));
 
-
 // ---------- Tunables ----------
-const PRIME_K    = 3;     // how many of B's prime regions define B
-const TAU        = 0.30;  // minimum transfer score to treat as “similar/region”
-const T_CAP      = 0.60;  // (unused by flat propagation; kept for future graded spillover)
-const BASE_BUMP  = 0.75;  // 0.75% similar bump; primary = 2× this (1.5%)
-const SELF_MULT  = 2.0;   // self gets 2× base bump → 1.5% with BASE_BUMP = 0.75
+const PRIME_K    = 3;
+const TAU        = 0.30;
+const T_CAP      = 0.60;  // unused, kept
+const SELF_MULT  = 2.0;   // primary multiplier (keep for now)
+
+// NEW: C-based smooth-decay bump curve (percent per successful session)
+const BUMP_MIN_PCT = 0.45;  // at very high C (DL/squat)
+const BUMP_MAX_PCT = 1.85;  // at very low C (isolations)
+const BUMP_DECAY_K = 38;    // curve steepness
+
+function baseBumpFromC(C, { minPct = BUMP_MIN_PCT, maxPct = BUMP_MAX_PCT, k = BUMP_DECAY_K } = {}) {
+  const c = Number(C || 0);
+  return minPct + (maxPct - minPct) * Math.exp(-c / k);
+}
+
+function baseBumpForLift(liftId, curveOpts) {
+  const C = CATALOG_BY_ID[liftId]?.C ?? 0;
+  return baseBumpFromC(C, curveOpts);
+}
+
 
 // ---------- Helpers ----------
 function topKRegions(regions, K = PRIME_K) {
@@ -94,20 +108,37 @@ export function applyQueuedBumpsIfAny() {
  * Example: bumpWithPropagation("bb_bench") → bench +1.5%; incline bench +0.75% if T ≥ TAU.
  */
 export function bumpWithPropagation(primaryLiftId, opts = {}) {
-  const base = Number(opts.baseBumpPct ?? BASE_BUMP);   // default 0.75%
-  const tau  = Number(opts.threshold   ?? TAU);
-  const K    = Number(opts.primeK      ?? PRIME_K);
+  const tau  = Number(opts.threshold ?? TAU);
+  const K    = Number(opts.primeK    ?? PRIME_K);
+  const selfMult = Number(opts.selfMult ?? SELF_MULT);
 
-  // 1) Self bump: +2× base bump = 1.5% with current constants
-  bumpLiftPercent(primaryLiftId, base * SELF_MULT);
+  // Allow override, but default to C-based curve
+  const curveOpts = {
+    minPct: Number(opts.bumpMinPct ?? BUMP_MIN_PCT),
+    maxPct: Number(opts.bumpMaxPct ?? BUMP_MAX_PCT),
+    k:      Number(opts.bumpDecayK ?? BUMP_DECAY_K),
+  };
 
-  // 2) Flat propagation to similar lifts that meet transfer threshold
+  // 1) Self bump uses the PRIMARY lift's own C
+  const selfBase = Number.isFinite(opts.baseBumpPct)
+    ? Number(opts.baseBumpPct)
+    : baseBumpForLift(primaryLiftId, curveOpts);
+
+  bumpLiftPercent(primaryLiftId, selfBase * selfMult);
+
+  // 2) Propagation uses EACH RECEIVER lift's own C (so laterals don't bump like deadlifts)
   for (const liftB of Object.keys(coverageByLR)) {
     if (liftB === primaryLiftId) continue;
-    const T = transferScore(primaryLiftId, liftB, K);   // 0..1
+
+    const T = transferScore(primaryLiftId, liftB, K);
     if (T >= tau) {
-      bumpLiftPercent(liftB, base); // always +0.75% for qualified “similar” lifts
+      const recvBase = Number.isFinite(opts.baseBumpPctSimilar)
+        ? Number(opts.baseBumpPctSimilar)
+        : baseBumpForLift(liftB, curveOpts);
+
+      bumpLiftPercent(liftB, recvBase);
     }
   }
 }
+
 
